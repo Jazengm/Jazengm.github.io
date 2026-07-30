@@ -1,0 +1,52 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date?: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  placeholder?: boolean;
+}
+
+const { title, description, date, updatedDate, tags = [], placeholder = false } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <article class="content-article">
+    <header class="content-header content-column">
+      <p class="eyebrow">Note</p>
+      <h1 class="page-title">{title}</h1>
+      <p class="page-lede">{description}</p>
+      <div class="content-meta">
+        {date && <time datetime={date.toISOString()}>{date.toLocaleDateString('en', { dateStyle: 'long' })}</time>}
+        {updatedDate && <span>Updated {updatedDate.toLocaleDateString('en', { dateStyle: 'long' })}</span>}
+      </div>
+      {tags.length > 0 && <ul class="tag-list">{tags.map((tag) => <li class="tag">{tag}</li>)}</ul>}
+      {placeholder && <p class="placeholder-note">This is explicitly fictional template content. Replace it before presenting the site as a personal academic record.</p>}
+    </header>
+    <div class="prose content-body">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .content-header {
+    margin-bottom: var(--space-6);
+  }
+
+  .content-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-block: var(--space-3);
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .placeholder-note {
+    margin-top: var(--space-4);
+  }
+</style>

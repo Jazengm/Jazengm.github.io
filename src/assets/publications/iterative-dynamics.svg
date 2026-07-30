@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
+  <title id="title">Iterative orbit diagram</title>
+  <desc id="desc">A sequence of points connected by shrinking arcs around a central fixed point.</desc>
+  <rect width="960" height="600" fill="#f0f2ef"/>
+  <g fill="none" stroke="#3f6f6b" stroke-width="7">
+    <path d="M100 410C220 100 550 70 820 260C650 520 340 540 175 345C260 155 520 130 720 270C590 430 380 440 255 325C330 210 500 205 625 288"/>
+  </g>
+  <g fill="#25312f">
+    <circle cx="100" cy="410" r="14"/>
+    <circle cx="175" cy="345" r="13"/>
+    <circle cx="255" cy="325" r="12"/>
+    <circle cx="625" cy="288" r="16"/>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FractalExplorer from '../../components/FractalExplorer';
+---
+
+<BaseLayout
+  title="Mandelbrot and Julia explorer"
+  description="An accessible Canvas 2D explorer for Mandelbrot and Julia sets."
+>
+  <header class="content-column">
+    <p class="eyebrow">Complex dynamics</p>
+    <h1 class="page-title">Fractal explorer</h1>
+    <p class="page-lede">
+      Drag to pan, use the wheel or buttons to zoom, adjust iteration depth, switch to a Julia set,
+      and export the current canvas as a PNG. Rendering is bounded and runs in a Web Worker.
+    </p>
+  </header>
+  <FractalExplorer client:visible />
+</BaseLayout>

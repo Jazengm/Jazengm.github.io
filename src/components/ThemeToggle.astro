@@ -1,0 +1,60 @@
+<button class="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme">
+  <span aria-hidden="true" data-theme-icon>◐</span>
+  <span class="sr-only" data-theme-label>Theme</span>
+</button>
+
+<script is:inline>
+  (() => {
+    const button = document.querySelector('[data-theme-toggle]');
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const resolvedTheme = () =>
+      document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+    const update = () => {
+      const dark = resolvedTheme() === 'dark';
+      button.setAttribute('aria-label', `Use ${dark ? 'light' : 'dark'} theme`);
+      button.setAttribute('aria-pressed', String(dark));
+    };
+
+    button.addEventListener('click', () => {
+      const next = resolvedTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try {
+        localStorage.setItem('academic-theme', next);
+      } catch {
+        // The chosen theme still applies for this page when storage is unavailable.
+      }
+      update();
+    });
+
+    media.addEventListener('change', update);
+    update();
+  })();
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    flex: 0 0 auto;
+    width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    place-items: center;
+    color: var(--color-text);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast),
+      rotate var(--transition-standard);
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent-soft);
+    rotate: 18deg;
+  }
+</style>

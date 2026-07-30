@@ -1,0 +1,38 @@
+---
+import { site } from '../config/site';
+---
+
+<footer class="site-footer">
+  <div class="site-shell footer-inner">
+    <p>© {new Date().getFullYear()} {site.name}. Built as a static, maintainable academic site.</p>
+    {
+      site.isPlaceholder && (
+        <p class="placeholder-status">Profile fields are intentionally marked as placeholders.</p>
+      )
+    }
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: var(--space-5);
+    border-top: 1px solid var(--color-line);
+    color: var(--color-muted);
+    font-size: 0.85rem;
+  }
+
+  .footer-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+  }
+
+  .footer-inner p {
+    margin: 0;
+  }
+
+  .placeholder-status {
+    color: var(--color-accent-strong);
+  }
+</style>

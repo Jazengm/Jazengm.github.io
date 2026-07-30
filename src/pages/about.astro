@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../config/site';
+
+const contactLinks = [
+  site.email && { label: 'Email', href: `mailto:${site.email}` },
+  site.cvUrl && { label: 'Curriculum vitae', href: site.cvUrl },
+  site.github && { label: 'GitHub', href: site.github },
+  site.orcid && { label: 'ORCID', href: site.orcid },
+  site.googleScholar && { label: 'Google Scholar', href: site.googleScholar },
+].filter(Boolean) as { label: string; href: string }[];
+---
+
+<BaseLayout title="About" description="Biography, academic timeline, and contact information.">
+  <header class="about-header">
+    <div class="content-column">
+      <p class="eyebrow">Biography and contact</p>
+      <h1 class="page-title">About</h1>
+      <p class="page-lede">{site.currentPosition} at {site.institution}, based in {site.location}.</p>
+    </div>
+    {site.avatar && <img class="avatar" src={site.avatar} alt={`Portrait of ${site.name}`} />}
+  </header>
+
+  <section class="content-column section-block" aria-labelledby="biography-heading">
+    <h2 class="section-heading" id="biography-heading">Biography</h2>
+    {site.biography.map((paragraph) => <p>{paragraph}</p>)}
+    <p><strong>Research areas:</strong> {site.researchAreas.join(', ')}</p>
+    {site.isPlaceholder && <p class="placeholder-note">All bracketed profile and timeline fields come from <code>src/config/site.ts</code> and must be verified before publication.</p>}
+  </section>
+
+  <div class="timeline-grid section-block">
+    <section aria-labelledby="appointments-heading">
+      <h2 class="section-heading" id="appointments-heading">Appointments</h2>
+      <ol class="timeline">
+        {site.appointments.map((item) => <li><p>{item.period}</p><div><h3>{item.role}</h3><p>{item.institution}</p>{item.detail && <p>{item.detail}</p>}</div></li>)}
+      </ol>
+    </section>
+    <section aria-labelledby="education-heading">
+      <h2 class="section-heading" id="education-heading">Education</h2>
+      <ol class="timeline">
+        {site.education.map((item) => <li><p>{item.period}</p><div><h3>{item.role}</h3><p>{item.institution}</p>{item.detail && <p>{item.detail}</p>}</div></li>)}
+      </ol>
+    </section>
+  </div>
+
+  <section class="content-column section-block" aria-labelledby="contact-heading">
+    <h2 class="section-heading" id="contact-heading">Contact</h2>
+    {contactLinks.length > 0 ? <ul class="contact-list">{contactLinks.map((link) => <li><a href={link.href}>{link.label}</a></li>)}</ul> : <p>Contact links are omitted until verified values are added to the site configuration.</p>}
+  </section>
+</BaseLayout>
+
+<style>
+  .about-header { display: flex; justify-content: space-between; gap: var(--space-5); align-items: end; }
+  .avatar { width: min(15rem, 30vw); aspect-ratio: 1; object-fit: cover; border-radius: 50%; }
+  .timeline-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 7vw, 6rem); }
+  .timeline { margin: 0; padding: 0; border-top: 1px solid var(--color-line); list-style: none; }
+  .timeline li { display: grid; grid-template-columns: 7rem 1fr; gap: var(--space-3); padding-block: var(--space-3); border-bottom: 1px solid var(--color-line); }
+  .timeline p, .timeline h3 { margin: 0; }
+  .timeline > li > p, .timeline div p { color: var(--color-muted); }
+  .timeline h3 { font-family: var(--font-serif); font-size: 1.05rem; }
+  .contact-list { display: flex; flex-wrap: wrap; gap: var(--space-3); padding: 0; list-style: none; }
+  @media (max-width: 720px) { .timeline-grid { grid-template-columns: 1fr; } .about-header { align-items: start; } }
+  @media (max-width: 480px) { .timeline li { grid-template-columns: 1fr; gap: .2rem; } }
+</style>

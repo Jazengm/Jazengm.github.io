@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../utils/paths';
+
+const experiments = await getCollection('experiments');
+---
+
+<BaseLayout title="Experiments" description="A directory of small, focused mathematical programs.">
+  <header class="content-column">
+    <p class="eyebrow">Programs and visualizations</p>
+    <h1 class="page-title">Experiments</h1>
+    <p class="page-lede">
+      Self-contained mathematical programs live here, separate from static academic content and
+      hydrated only when interaction is useful.
+    </p>
+  </header>
+  <div class="experiment-grid section-block">
+    {
+      experiments.map((experiment) => (
+        <article class="experiment-card quiet-card">
+          {experiment.data.thumbnail && (
+            <Image
+              src={experiment.data.thumbnail}
+              alt={experiment.data.thumbnailAlt ?? ''}
+              width={720}
+              format="svg"
+            />
+          )}
+          <div>
+            <p class="eyebrow">Experiment</p>
+            <h2><a href={withBase(experiment.data.path)}>{experiment.data.title}</a></h2>
+            <p>{experiment.data.description}</p>
+            <ul class="tag-list">{experiment.data.tags.map((tag) => <li class="tag">{tag}</li>)}</ul>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .experiment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 21rem), 1fr)); gap: var(--space-4); }
+  .experiment-card { overflow: hidden; }
+  .experiment-card img { width: 100%; height: auto; aspect-ratio: 8 / 5; object-fit: cover; }
+  .experiment-card > div { padding: var(--space-4); }
+  .experiment-card h2 { margin: 0; font-family: var(--font-serif); font-size: 1.55rem; }
+  .experiment-card p:not(.eyebrow) { color: var(--color-muted); }
+</style>

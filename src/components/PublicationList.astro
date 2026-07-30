@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import { site } from '../config/site';
+import { withBase } from '../utils/paths';
+import PublicationExplorer, { type PublicationRecord } from './PublicationExplorer';
+
+const entries = (await getCollection('publications')).sort(
+  (left, right) =>
+    right.data.year - left.data.year ||
+    (left.data.order ?? Number.MAX_SAFE_INTEGER) -
+      (right.data.order ?? Number.MAX_SAFE_INTEGER),
+);
+
+const publications: PublicationRecord[] = await Promise.all(
+  entries.map(async ({ id, data }) => {
+    const preview = data.previewImage
+      ? await getImage({ src: data.previewImage, width: 640, format: 'svg' })
+      : null;
+    const links = Object.fromEntries(
+      Object.entries(data.links ?? {}).map(([key, value]) => [
+        key,
+        value?.startsWith('/') ? withBase(value) : value,
+      ]),
+    ) as Record<string, string>;
+
+    return {
+      id,
+      title: data.title,
+      authors: data.authors,
+      year: data.year,
+      venue: data.venue,
+      status: data.status,
+      type: data.type,
+      abstract: data.abstract,
+      shortAbstract: data.shortAbstract,
+      tags: data.tags,
+      preview: preview
+        ? {
+            src: preview.src,
+            alt: data.previewImageAlt ?? '',
+            width: preview.attributes.width,
+            height: preview.attributes.height,
+          }
+        : undefined,
+      links,
+      placeholder: true,
+    };
+  }),
+);
+---
+
+<PublicationExplorer
+  publications={publications}
+  authorMatches={[...site.authorNameMatches]}
+  client:load
+/>

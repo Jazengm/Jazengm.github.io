@@ -1,0 +1,143 @@
+.fractal-explorer {
+  margin-top: var(--space-6);
+}
+.fractal-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+.fractal-controls label,
+.fractal-controls label > span {
+  display: block;
+}
+.fractal-controls label > span {
+  margin-bottom: 0.25rem;
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.fractal-controls select,
+.fractal-controls input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+.fractal-controls input:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+.fractal-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.fractal-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  align-items: center;
+}
+.fractal-frame {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: #1f2a28;
+  touch-action: none;
+}
+.fractal-frame canvas {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 8 / 5;
+  cursor: grab;
+}
+.fractal-frame canvas:active {
+  cursor: grabbing;
+}
+.fractal-status {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.45rem;
+  margin: 0;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  color: #f4f6f3;
+  background: rgb(19 27 25 / 78%);
+  font-size: 0.74rem;
+}
+.pan-controls {
+  display: grid;
+  grid-template-columns: repeat(2, 2.75rem);
+  gap: 0.35rem;
+}
+.pan-controls button {
+  display: grid;
+  width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  place-items: center;
+  color: var(--color-text);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+.pan-controls button:first-child,
+.pan-controls button:last-child {
+  grid-column: 1 / -1;
+  justify-self: center;
+}
+.viewport-readout {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: var(--space-3) 0 0;
+  border-top: 1px solid var(--color-line);
+  border-left: 1px solid var(--color-line);
+}
+.viewport-readout div {
+  min-width: 0;
+  padding: var(--space-2);
+  border-right: 1px solid var(--color-line);
+  border-bottom: 1px solid var(--color-line);
+}
+.viewport-readout dt {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+.viewport-readout dd {
+  overflow-wrap: anywhere;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+@media (max-width: 640px) {
+  .fractal-controls {
+    grid-template-columns: 1fr;
+  }
+  .fractal-actions {
+    grid-column: auto;
+  }
+  .fractal-stage {
+    grid-template-columns: 1fr;
+  }
+  .pan-controls {
+    grid-template-columns: repeat(4, 2.75rem);
+    justify-content: center;
+  }
+  .pan-controls button:first-child,
+  .pan-controls button:last-child {
+    grid-column: auto;
+  }
+  .viewport-readout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../utils/paths';
+---
+
+<BaseLayout title="Page not found" description="The requested page could not be found.">
+  <section class="content-column not-found">
+    <p class="eyebrow">404</p>
+    <h1 class="page-title">Page not found</h1>
+    <p class="page-lede">The path may have changed, or the requested page may not exist.</p>
+    <p><a class="button" href={withBase('/')}>Return home</a></p>
+  </section>
+</BaseLayout>
+
+<style>.not-found { min-height: 52vh; }</style>

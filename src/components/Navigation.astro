@@ -1,0 +1,85 @@
+---
+import type { NavigationItem } from '../config/site';
+import { withBase } from '../utils/paths';
+
+interface Props {
+  items: NavigationItem[];
+  currentPath: string;
+}
+
+const { items, currentPath } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const normalizedCurrent = currentPath.replace(base, '/').replace(/\/+$/, '') || '/';
+---
+
+<nav class="primary-nav" aria-label="Primary navigation">
+  <ul>
+    {
+      items.map((item) => {
+        const normalizedHref = item.href.replace(/\/+$/, '') || '/';
+        const isCurrent =
+          normalizedHref === '/'
+            ? normalizedCurrent === '/'
+            : normalizedCurrent === normalizedHref || normalizedCurrent.startsWith(`${normalizedHref}/`);
+        return (
+          <li>
+            <a href={withBase(item.href)} aria-current={isCurrent ? 'page' : undefined}>
+              {item.label}
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<style>
+  .primary-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .primary-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.35rem 0.55rem;
+    border-radius: var(--radius-sm);
+    color: var(--color-muted);
+    font-size: 0.87rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      color var(--transition-fast),
+      background var(--transition-fast);
+  }
+
+  .primary-nav a:hover,
+  .primary-nav a:focus-visible,
+  .primary-nav a[aria-current='page'] {
+    color: var(--color-text);
+    background: var(--color-accent-soft);
+  }
+
+  @media (max-width: 760px) {
+    .primary-nav {
+      order: 3;
+      width: 100%;
+    }
+
+    .primary-nav ul {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .primary-nav a {
+      padding-inline: 0.45rem;
+      font-size: 0.82rem;
+    }
+  }
+</style>

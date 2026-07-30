@@ -1,0 +1,221 @@
+# Astro academic homepage
+
+A static, accessible academic homepage template for a mathematics researcher. It separates verified profile data from content, stores publications and notes in typed Astro Content Collections, and limits React to four focused interactions: the site atlas, publication explorer, MDX demonstration, and fractal experiment.
+
+The repository currently contains conspicuous fictional sample records. It does not claim a real identity, institution, paper, DOI, ORCID, or journal affiliation.
+
+## First customization checklist
+
+Before publishing the site as a personal academic record:
+
+1. Open `src/config/site.ts` and replace every bracketed profile, biography, position, institution, location, research-area, timeline, research-theme, and teaching value.
+2. Add only verified optional URLs or contact fields (`email`, `github`, `orcid`, `googleScholar`, `cvUrl`, and `avatar`). Leave an unknown value as `null`; the corresponding link will remain hidden.
+3. Change `isPlaceholder` to `false` only after all profile fields are checked. This enables Person JSON-LD.
+4. Replace the five files under `src/content/publications/` with real records and remove each placeholder warning only after verification.
+5. Replace or remove the two sample notes and centralized sample course/theme data.
+6. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
+7. Replace the favicon and local diagrams if desired, then run the complete validation commands below.
+
+Unknown personal information is deliberately centralized in `src/config/site.ts`. Example academic content lives in its relevant collection because that is where future real content belongs, and every such example has `[Placeholder]` in its title plus `placeholder: true` in frontmatter.
+
+## Requirements and installation
+
+- Node.js 24.18.0 (recorded in `.nvmrc`; any compatible Node 24 release satisfies `package.json#engines`)
+- npm 11 or a compatible npm included with Node 24
+- Git
+
+With `nvm`:
+
+```bash
+nvm install
+nvm use
+npm ci
+```
+
+Without `nvm`, install an official compatible Node 24 release by your normal system method, verify it with `node --version`, then run `npm ci`. Use `npm ci`, not `npm install`, when you want an exact reproduction of `package-lock.json`.
+
+## Local development
+
+```bash
+npm run dev
+```
+
+Open the URL printed by Astro (normally `http://localhost:4321`). Build and inspect the static output with:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Where content lives
+
+- `src/config/site.ts`: profile, navigation labels, research themes, course metadata, author-name matches, canonical URL, and visual accent.
+- `src/content/publications/`: one Markdown or MDX file per publication.
+- `src/content/notes/`: one Markdown or MDX file per note.
+- `src/content/experiments/`: experiment directory records.
+- `src/content.config.ts`: all collection schemas. This is the source of truth for permitted frontmatter.
+- `src/assets/`: images imported by content and processed by Astro.
+- `public/`: files copied unchanged, such as `robots.txt`, downloads, and an optional `CNAME`.
+
+Pages read these sources automatically. Adding a publication, note, or experiment does not require editing a listing component.
+
+## Modify the profile and design
+
+Edit `src/config/site.ts`. Navigation is also defined there once and consumed by both the header and home page. Optional links are rendered only when their values are non-null.
+
+To change the one low-saturation accent color, replace `accentColor` in that file. Light, dark, spacing, typography, and motion tokens are in `src/styles/tokens.css`. Keep sufficient contrast in both themes.
+
+## Add a publication
+
+Copy one file in `src/content/publications/`, rename it with a stable lowercase identifier, and update its frontmatter. A minimal real entry is:
+
+```yaml
+---
+title: "A verified paper title"
+authors:
+  - "Your Name"
+  - "Coauthor Name"
+year: 2026
+status: "preprint"
+type: "article"
+abstract: "A verified abstract."
+tags:
+  - "algebraic geometry"
+placeholder: true
+---
+```
+
+The schema accepts statuses `published`, `forthcoming`, `preprint`, and `working-paper`; types `article`, `book`, `chapter`, `thesis`, and `note`; plus optional `venue`, `shortAbstract`, `featured`, `order`, `previewImage`, `previewImageAlt`, and a `links` object containing `pdf`, `doi`, `arxiv`, `code`, `slides`, or `journal`.
+
+The template schema intentionally requires `placeholder: true` so a sample cannot silently masquerade as real scholarship. During real customization, change that schema field in `src/content.config.ts` to `z.boolean().default(false)`, set verified records to `false`, and adjust the warning text. Do this only as one explicit, reviewed change.
+
+Set `authorNameMatches` in `src/config/site.ts` to the exact spellings that should be emphasized. Sorting, filters, author emphasis, desktop hover/focus previews, and mobile click previews are generated by `PublicationList.astro` and `PublicationExplorer.tsx`.
+
+### Add a publication preview image
+
+1. Put a local image in `src/assets/publications/`.
+2. Reference it relative to the publication file, for example:
+
+   ```yaml
+   previewImage: "../../assets/publications/my-diagram.png"
+   previewImageAlt: "A concise description of what the diagram communicates"
+   ```
+
+3. Always provide meaningful alt text. Omit both fields for the supported text-only preview.
+
+Astro validates the image reference and handles dimensions/output. SVG samples are passed safely through Astro's image pipeline; raster images can use Astro's optimized formats.
+
+## Add a Note
+
+Create `src/content/notes/my-note.mdx` with:
+
+```yaml
+---
+title: "My note"
+description: "One useful sentence for lists and metadata."
+publishedDate: 2026-07-30
+tags: ["geometry"]
+draft: false
+featured: false
+placeholder: true
+---
+```
+
+Write ordinary Markdown below the frontmatter. Inline math uses `$...$`; display math uses `$$...$$`. See `sample-math-note.mdx`. To embed a focused React island, import a component and add an Astro client directive as demonstrated by `interactive-parameters.mdx`:
+
+```mdx
+import MathDemo from "../../components/MathDemo";
+
+<MathDemo client:visible />
+```
+
+Use an island only when stateful interaction is necessary; ordinary prose should remain static HTML.
+
+## Add an Experiment
+
+1. Create its implementation under `src/components/` and a route under `src/pages/experiments/`.
+2. Add a directory record in `src/content/experiments/` with `title`, `description`, `tags`, `path`, and optional `thumbnail`/`thumbnailAlt`.
+3. Prefer `client:visible` so heavier programs hydrate only near the viewport.
+4. Bound expensive inputs, announce progress, provide keyboard/touch controls, and test the narrow layout.
+
+The included Mandelbrot/Julia explorer is a reference: a React Canvas 2D island delegates bounded computation to `src/workers/fractal.worker.ts` and supports drag, wheel/buttons, keyboard pan controls, iterations, Julia parameters, reset, viewport readout, and PNG export.
+
+## Checks and tests
+
+Install the Playwright browser once on each machine:
+
+```bash
+npx playwright install chromium
+```
+
+Then run the same checks as CI:
+
+```bash
+npm ci
+npm run format:check
+npm run check
+npm run build
+npm run test
+```
+
+Use `npm run format` to apply formatting. Browser tests cover required routes, navigation, publication data and hover/focus/touch previews, ResearchMap keyboard access, fractal controls, MDX math/islands, uncaught console errors, and 360px horizontal overflow.
+
+## GitHub Pages deployment
+
+`.github/workflows/deploy.yml` follows Astro's official GitHub Pages workflow. It builds and deploys on each push to `main` and supports manual dispatch. In GitHub, open **Settings → Pages** and choose **GitHub Actions** as the source.
+
+For this special user-site repository, configuration is:
+
+```js
+site: "https://jazengm.github.io",
+base: "/",
+```
+
+### Repository-name and `base` troubleshooting
+
+If the repository is instead named `academic-homepage-astro`, its Pages URL is `https://USERNAME.github.io/academic-homepage-astro/`. Set:
+
+```js
+site: "https://USERNAME.github.io",
+base: "/academic-homepage-astro",
+```
+
+Internal links use `withBase()` or Astro asset URLs so the prefix is preserved. If a newly added internal link starts at `/` and works locally but fails on Pages, pass it through `withBase()` and test a production build. Also update `canonicalUrl` in `src/config/site.ts` and the sitemap URL in `public/robots.txt`.
+
+### Custom domain
+
+After configuring the domain and DNS in GitHub, add `public/CNAME` containing only the verified domain, for example `math.example.edu`. Then set `site` and `canonicalUrl` to `https://math.example.edu`, use `base: "/"`, and update `robots.txt`. No fictional CNAME is included in this template.
+
+## A second computer and the recommended two-machine workflow
+
+Clone a separate working copy on the second computer:
+
+```bash
+git clone https://github.com/Jazengm/Jazengm.github.io.git
+cd Jazengm.github.io
+nvm install
+nvm use
+npm ci
+npx playwright install chromium
+npm run dev
+```
+
+For each editing session on either computer:
+
+```bash
+git pull --rebase
+# modify files
+npm run check
+npm run build
+git add .
+git commit -m "Describe the change"
+git push
+```
+
+Run `npm run test` for interactive, layout, dependency, or infrastructure changes. Do not synchronize one Git working directory through Dropbox, OneDrive, iCloud Drive, or another cloud drive. Clone separately on each computer and synchronize commits through Git; pull before editing and push after a verified commit.
+
+## Architecture notes
+
+Astro renders all ordinary content and navigation to static HTML. React is not loaded on About, Teaching, Research, or the Notes/Experiments indexes. Theme switching is a tiny native script. CSS variables provide a system-font, one-accent light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`. Placeholder Person JSON-LD is withheld until the centralized profile is verified.
+
+The repository is MIT licensed. See `AGENTS.md` for rules that future coding agents must follow.

@@ -1,0 +1,73 @@
+---
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+import '../styles/prose.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { site } from '../config/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  type?: 'website' | 'article';
+}
+
+const {
+  title = site.pageTitle,
+  description = site.tagline,
+  type = 'website',
+} = Astro.props;
+const fullTitle = title === site.pageTitle ? title : `${title} · ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.canonicalUrl);
+const personJsonLd = !site.isPlaceholder
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: site.name,
+      url: site.canonicalUrl,
+      jobTitle: site.currentPosition,
+      affiliation: { '@type': 'Organization', name: site.institution },
+      sameAs: [site.github, site.orcid, site.googleScholar].filter(Boolean),
+    }
+  : null;
+---
+
+<!doctype html>
+<html lang={site.defaultLanguage} style={`--color-accent: ${site.accentColor}`}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content={site.accentColor} />
+    <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.pageTitle} />
+    <title>{fullTitle}</title>
+    <script is:inline>
+      (() => {
+        try {
+          const stored = localStorage.getItem('academic-theme');
+          if (stored === 'light' || stored === 'dark') {
+            document.documentElement.dataset.theme = stored;
+          }
+        } catch {
+          // System preference remains the accessible fallback.
+        }
+      })();
+    </script>
+    {personJsonLd && <script is:inline type="application/ld+json" set:html={JSON.stringify(personJsonLd)} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <Header currentPath={Astro.url.pathname} />
+    <main id="main-content" class="site-main site-shell">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
