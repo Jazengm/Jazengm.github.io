@@ -14,7 +14,7 @@ export type PublicationRecord = {
   tags: string[];
   preview?: { src: string; alt: string; width: number; height: number };
   links: Record<string, string>;
-  placeholder: true;
+  placeholder: boolean;
 };
 
 type Props = {
@@ -46,6 +46,9 @@ function Preview({ publication }: { publication: PublicationRecord }) {
         {publication.year} · {publication.status.replace("-", " ")}
         {publication.venue ? ` · ${publication.venue}` : ""}
       </p>
+      {publication.placeholder && (
+        <p className="placeholder-label">Fictional sample record</p>
+      )}
       <p>{publication.shortAbstract ?? publication.abstract}</p>
       <ul className="tag-list" aria-label="Publication tags">
         {publication.tags.map((tag) => (
@@ -183,6 +186,9 @@ export default function PublicationExplorer({
                 >
                   <p className="publication-year">{publication.year}</p>
                   <div>
+                    {publication.placeholder && (
+                      <p className="placeholder-label">Fictional sample</p>
+                    )}
                     <h3>{publication.title}</h3>
                     <p className="publication-authors">
                       {publication.authors.map((author, index) => (

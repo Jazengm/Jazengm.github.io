@@ -34,7 +34,7 @@ const publications = defineCollection({
       previewImage: image().optional(),
       previewImageAlt: z.string().optional(),
       links: linksSchema,
-      placeholder: z.literal(true),
+      placeholder: z.boolean().default(false),
     }),
 });
 
@@ -48,7 +48,7 @@ const notes = defineCollection({
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
     featured: z.boolean().default(false),
-    placeholder: z.literal(true),
+    placeholder: z.boolean().default(false),
   }),
 });
 

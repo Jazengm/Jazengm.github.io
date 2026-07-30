@@ -44,7 +44,7 @@ const publications: PublicationRecord[] = await Promise.all(
           }
         : undefined,
       links,
-      placeholder: true,
+      placeholder: data.placeholder,
     };
   }),
 );
