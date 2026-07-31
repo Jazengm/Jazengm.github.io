@@ -8,7 +8,7 @@ export type TimelineItem = {
   period: string;
   role: string;
   institution: string;
-  detail?: string;
+  detail?: string | null;
 };
 
 export type ResearchTheme = {
@@ -69,8 +69,9 @@ export const site = {
   isPlaceholder: true,
   name: "Xiangru Zeng",
   pageTitle: "Xiangru Zeng · Mathematics",
-  /* tagline: "[One sentence describing your mathematical work and current role.]",*/
-  biography: [/*
+  tagline: null as string | null,
+  biography: [
+    /*
     "[Replace this paragraph with a concise introduction to your research, mathematical perspective, and current questions.]",
     "[Replace this paragraph with a short account of your collaborations, methods, or broader academic interests.]",
     "[Optionally replace this paragraph with current projects, availability, or a note for students and visitors.]",*/
@@ -99,7 +100,7 @@ export const site = {
       period: "2020-2024",
       role: "B.S. in Mathematics",
       institution: "University of Sciences and Technology of China (USTC)",
-      // detail: "[Optional advisor or thesis title]",
+      detail: null,
     },
   ] satisfies TimelineItem[],
 } as const;

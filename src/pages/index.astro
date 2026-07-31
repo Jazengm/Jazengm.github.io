@@ -35,7 +35,7 @@ const contactLinks = [
   <section class="home-intro content-column">
     <p class="eyebrow">{site.currentPosition} · {site.institution}</p>
     <h1 class="page-title">{site.name}</h1>
-    <p class="home-tagline">{site.tagline}</p>
+    {site.tagline && <p class="home-tagline">{site.tagline}</p>}
     <div class="home-biography">
       {site.biography.map((paragraph) => <p>{paragraph}</p>)}
     </div>
