@@ -1,20 +1,16 @@
 import { useMemo, useState } from "react";
+import type { CollectionEntry } from "astro:content";
 import "../styles/publications.css";
 
-export type PublicationRecord = {
+type PublicationData = CollectionEntry<"publications">["data"];
+
+export type PublicationRecord = Omit<
+  PublicationData,
+  "previewImage" | "previewImageAlt" | "links"
+> & {
   id: string;
-  title: string;
-  authors: string[];
-  year: number | "TBA";
-  venue?: string;
-  status: "published" | "forthcoming" | "preprint" | "working-paper";
-  type?: "article" | "book" | "chapter" | "thesis" | "note";
-  abstract: string;
-  shortAbstract?: string;
-  tags: string[];
   preview?: { src: string; alt: string; width: number; height: number };
   links: Record<string, string>;
-  placeholder: boolean;
 };
 
 type Props = {
@@ -49,7 +45,7 @@ function Preview({ publication }: { publication: PublicationRecord }) {
       {publication.placeholder && (
         <p className="placeholder-label">Fictional sample record</p>
       )}
-      <p>{publication.shortAbstract ?? publication.abstract}</p>
+      <p>{publication.abstract}</p>
       <ul className="tag-list" aria-label="Publication tags">
         {publication.tags.map((tag) => (
           <li className="tag" key={tag}>

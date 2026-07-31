@@ -8,7 +8,6 @@ venue: "[Placeholder Combinatorics Journal]"
 status: "published"
 type: "article"
 abstract: "This fictional article demonstrates an older published item, tag filtering, and a multi-author citation without inventing real identifiers or external links."
-shortAbstract: "A fictional comparison between finite combinatorial data and continuous families."
 tags:
   - "combinatorics"
   - "optimization"

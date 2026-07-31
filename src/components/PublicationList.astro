@@ -18,11 +18,12 @@ const entries = (await getCollection('publications')).sort(
 
 const publications: PublicationRecord[] = await Promise.all(
   entries.map(async ({ id, data }) => {
-    const preview = data.previewImage
-      ? await getImage({ src: data.previewImage, width: 640, format: 'svg' })
+    const { previewImage, previewImageAlt, links: rawLinks, ...publication } = data;
+    const preview = previewImage
+      ? await getImage({ src: previewImage, width: 640, format: 'svg' })
       : null;
     const links = Object.fromEntries(
-      Object.entries(data.links ?? {}).map(([key, value]) => [
+      Object.entries(rawLinks ?? {}).map(([key, value]) => [
         key,
         value?.startsWith('/') ? withBase(value) : value,
       ]),
@@ -30,25 +31,16 @@ const publications: PublicationRecord[] = await Promise.all(
 
     return {
       id,
-      title: data.title,
-      authors: data.authors,
-      year: data.year,
-      venue: data.venue,
-      status: data.status,
-      type: data.type,
-      abstract: data.abstract,
-      shortAbstract: data.shortAbstract,
-      tags: data.tags,
+      ...publication,
       preview: preview
         ? {
             src: preview.src,
-            alt: data.previewImageAlt ?? '',
+            alt: previewImageAlt ?? '',
             width: preview.attributes.width,
             height: preview.attributes.height,
           }
         : undefined,
       links,
-      placeholder: data.placeholder,
     };
   }),
 );

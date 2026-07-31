@@ -77,15 +77,11 @@ authors:
   - "Coauthor Name"
 year: 2026
 status: "preprint"
-type: "article"
 abstract: "A verified abstract."
-tags:
-  - "algebraic geometry"
-placeholder: false
 ---
 ```
 
-The publication year accepts an integer or `"TBA"`. The schema accepts statuses `published`, `forthcoming`, `preprint`, and `working-paper`; types `article`, `book`, `chapter`, `thesis`, and `note`; plus optional `venue`, `shortAbstract`, `featured`, `order`, `previewImage`, `previewImageAlt`, and a `links` object containing `pdf`, `doi`, `arxiv`, `code`, `slides`, or `journal`.
+The publication year accepts an integer or `"TBA"`; status accepts `published`, `forthcoming`, `preprint`, or `working-paper`. Optional fields include `venue`, `tags`, `order`, `previewImage`, `previewImageAlt`, links, and `type`, whose accepted values are `article`, `book`, `chapter`, `thesis`, and `note`.
 
 Fictional samples explicitly use `placeholder: true` and receive a visible label. Verified records should use `placeholder: false` or omit the field, whose schema default is `false`.
 
@@ -116,7 +112,6 @@ description: "One useful sentence for lists and metadata."
 publishedDate: 2026-07-30
 tags: ["geometry"]
 draft: false
-featured: false
 placeholder: true
 ---
 ```
@@ -136,9 +131,10 @@ Use an island only when stateful interaction is necessary; ordinary prose should
 ## Add an Experiment
 
 1. Create its implementation under `src/components/` and a route under `src/pages/experiments/`.
-2. Add a directory record in `src/content/experiments/` with `title`, `description`, `tags`, `path`, and optional `thumbnail`/`thumbnailAlt`.
-3. Prefer `client:visible` so heavier programs hydrate only near the viewport.
-4. Bound expensive inputs, announce progress, provide keyboard/touch controls, and test the narrow layout.
+2. Add a directory record in `src/content/experiments/` with `title`, `description`, optional `tags`, and optional `thumbnail`/`thumbnailAlt`. The record filename determines its `/experiments/ID/` URL.
+3. Load that record in the route with `getEntry()` so its title and description remain single-source.
+4. Prefer `client:visible` so heavier programs hydrate only near the viewport.
+5. Bound expensive inputs, announce progress, provide keyboard/touch controls, and test the narrow layout.
 
 The included Mandelbrot/Julia explorer is a reference: a React Canvas 2D island delegates bounded computation to `src/workers/fractal.worker.ts` and supports drag, wheel/buttons, keyboard pan controls, iterations, Julia parameters, reset, viewport readout, and PNG export.
 

@@ -30,7 +30,7 @@ const experiments = await getCollection('experiments');
           )}
           <div>
             <p class="eyebrow">Experiment</p>
-            <h2><a href={withBase(experiment.data.path)}>{experiment.data.title}</a></h2>
+            <h2><a href={withBase(`/experiments/${experiment.id}/`)}>{experiment.data.title}</a></h2>
             <p>{experiment.data.description}</p>
             <ul class="tag-list">{experiment.data.tags.map((tag) => <li class="tag">{tag}</li>)}</ul>
           </div>

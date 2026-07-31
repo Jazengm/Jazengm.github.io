@@ -8,8 +8,6 @@ tags:
   - "React"
 thumbnail: "../../assets/experiments/fractal-preview.svg"
 thumbnailAlt: "Monochrome Mandelbrot set silhouette with contour bands"
-featured: true
-path: "/experiments/fractal/"
 placeholder: false
 ---
 

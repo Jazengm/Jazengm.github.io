@@ -26,10 +26,8 @@ const publications = defineCollection({
       venue: z.string().optional(),
       status: z.enum(["published", "forthcoming", "preprint", "working-paper"]),
       type: z.enum(["article", "book", "chapter", "thesis", "note"]).optional(),
-      abstract: z.string(),
-      shortAbstract: z.string().optional(),
+      abstract: z.string().min(1),
       tags: z.array(z.string()).default([]),
-      featured: z.boolean().default(false),
       order: z.number().optional(),
       previewImage: image().optional(),
       previewImageAlt: z.string().optional(),
@@ -47,7 +45,6 @@ const notes = defineCollection({
     updatedDate: z.coerce.date().optional(),
     tags: z.array(z.string()).default([]),
     draft: z.boolean().default(false),
-    featured: z.boolean().default(false),
     placeholder: z.boolean().default(false),
   }),
 });
@@ -62,8 +59,6 @@ const experiments = defineCollection({
       tags: z.array(z.string()).default([]),
       thumbnail: image().optional(),
       thumbnailAlt: z.string().optional(),
-      featured: z.boolean().default(false),
-      path: z.string(),
       placeholder: z.boolean().default(false),
     }),
 });
