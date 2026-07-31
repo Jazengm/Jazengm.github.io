@@ -22,7 +22,7 @@ const publications = defineCollection({
     z.object({
       title: z.string(),
       authors: z.array(z.string()).min(1),
-      year: z.number().int(),
+      year: z.union([z.number().int(), z.literal("TBA")]),
       venue: z.string().optional(),
       status: z.enum(["published", "forthcoming", "preprint", "working-paper"]),
       type: z.enum(["article", "book", "chapter", "thesis", "note"]).optional(),

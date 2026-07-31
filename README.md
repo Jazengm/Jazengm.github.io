@@ -85,7 +85,7 @@ placeholder: false
 ---
 ```
 
-The schema accepts statuses `published`, `forthcoming`, `preprint`, and `working-paper`; types `article`, `book`, `chapter`, `thesis`, and `note`; plus optional `venue`, `shortAbstract`, `featured`, `order`, `previewImage`, `previewImageAlt`, and a `links` object containing `pdf`, `doi`, `arxiv`, `code`, `slides`, or `journal`.
+The publication year accepts an integer or `"TBA"`. The schema accepts statuses `published`, `forthcoming`, `preprint`, and `working-paper`; types `article`, `book`, `chapter`, `thesis`, and `note`; plus optional `venue`, `shortAbstract`, `featured`, `order`, `previewImage`, `previewImageAlt`, and a `links` object containing `pdf`, `doi`, `arxiv`, `code`, `slides`, or `journal`.
 
 Fictional samples explicitly use `placeholder: true` and receive a visible label. Verified records should use `placeholder: false` or omit the field, whose schema default is `false`.
 

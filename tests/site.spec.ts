@@ -46,15 +46,18 @@ test("primary navigation points to valid routes", async ({ page, request }) => {
   }
 });
 
-test("publication records render newest first and filter", async ({ page }) => {
+test("publication records render TBA entries first and filter", async ({
+  page,
+}) => {
   await page.goto("/publications/");
   await expect(page.locator("astro-island[ssr]")).toHaveCount(0);
   const items = page.locator("[data-publication-item]");
-  await expect(items).toHaveCount(5);
-  await expect(items.first()).toContainText("2026");
-  await page.getByLabel("Keywords").fill("derived");
+  expect(await items.count()).toBeGreaterThan(0);
+  await expect(items.first()).toContainText("TBA");
+  await expect(items.first()).toContainText("Tensor Generating Line Bundles");
+  await page.getByLabel("Keywords").fill("toric varieties");
   await expect(items).toHaveCount(1);
-  await expect(items.first()).toContainText("Derived Invariants");
+  await expect(items.first()).toContainText("Tensor Generating Line Bundles");
 });
 
 test("desktop publication preview responds to hover and keyboard focus", async ({

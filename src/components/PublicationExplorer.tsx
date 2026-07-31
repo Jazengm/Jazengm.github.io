@@ -5,7 +5,7 @@ export type PublicationRecord = {
   id: string;
   title: string;
   authors: string[];
-  year: number;
+  year: number | "TBA";
   venue?: string;
   status: "published" | "forthcoming" | "preprint" | "working-paper";
   type?: "article" | "book" | "chapter" | "thesis" | "note";
@@ -166,8 +166,8 @@ export default function PublicationExplorer({
       </div>
 
       <p className="publication-count" role="status">
-        Showing {filtered.length} of {publications.length} fictional sample
-        publications, newest first.
+        Showing {filtered.length} of {publications.length} publications, newest
+        first.
       </p>
 
       <div className="publication-layout">
