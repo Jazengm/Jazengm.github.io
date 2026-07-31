@@ -42,11 +42,11 @@ export const navigation: NavigationItem[] = [
     href: "/research",
     description: "Themes, questions, and connections between projects.",
   },
-  {
-    label: "Teaching",
-    href: "/teaching",
-    description: "Current and past courses, notes, and assignments.",
-  },
+  // {
+  //   label: "Teaching",
+  //   href: "/teaching",
+  //   description: "Current and past courses, notes, and assignments.",
+  // },
   {
     label: "Notes",
     href: "/notes",
@@ -60,28 +60,28 @@ export const navigation: NavigationItem[] = [
   {
     label: "About",
     href: "/about",
-    description: "Biography, appointments, and contact details.",
+    description: "Biography, education, and contact details.",
   },
 ];
 
 export const site = {
   /** Keep true until every bracketed value below has been replaced and verified. */
   isPlaceholder: true,
-  name: "[Your Name]",
-  pageTitle: "[Your Name] · Mathematics",
-  tagline: "[One sentence describing your mathematical work and current role.]",
-  biography: [
+  name: "Xiangru Zeng",
+  pageTitle: "Xiangru Zeng · Mathematics",
+  /* tagline: "[One sentence describing your mathematical work and current role.]",*/
+  biography: [/*
     "[Replace this paragraph with a concise introduction to your research, mathematical perspective, and current questions.]",
     "[Replace this paragraph with a short account of your collaborations, methods, or broader academic interests.]",
-    "[Optionally replace this paragraph with current projects, availability, or a note for students and visitors.]",
+    "[Optionally replace this paragraph with current projects, availability, or a note for students and visitors.]",*/
   ],
-  currentPosition: "[Current Position]",
-  institution: "[Institution]",
-  location: "[City, Country or Region]",
+  currentPosition: "PhD Student",
+  institution: "UC Berkeley",
+  location: "Berkeley",
   researchAreas: [
-    "[Research area one]",
-    "[Research area two]",
-    "[Research area three]",
+    "Algebraic Geometry",
+    /* "[Research area two]",
+    "[Research area three]",*/
   ],
   email: null as string | null,
   github: null as string | null,
@@ -96,18 +96,10 @@ export const site = {
   navigation,
   education: [
     {
-      period: "[Year–Year]",
-      role: "[Degree and field]",
-      institution: "[University]",
-      detail: "[Optional advisor or thesis title]",
-    },
-  ] satisfies TimelineItem[],
-  appointments: [
-    {
-      period: "[Year–present]",
-      role: "[Academic appointment]",
-      institution: "[Institution]",
-      detail: "[Optional department or center]",
+      period: "2020-2024",
+      role: "B.S. in Mathematics",
+      institution: "University of Sciences and Technology of China (USTC)",
+      // detail: "[Optional advisor or thesis title]",
     },
   ] satisfies TimelineItem[],
 } as const;
