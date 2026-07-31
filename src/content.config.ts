@@ -13,6 +13,8 @@ const linksSchema = z
   })
   .optional();
 
+// Collection schemas validate frontmatter during development and production builds.
+// A record's filename becomes its entry ID, which listing pages use to derive URLs.
 const publications = defineCollection({
   loader: glob({
     base: "./src/content/publications",

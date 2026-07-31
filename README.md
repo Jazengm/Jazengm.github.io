@@ -49,6 +49,8 @@ npm run preview
 
 ## Where content lives
 
+For the complete file map, build pipeline, routing rules, styling boundaries, and a Home-page image example, see [Architecture and page generation](docs/architecture.md).
+
 - `src/config/site.ts`: profile, navigation labels, research themes, course metadata, author-name matches, canonical URL, and visual accent.
 - `src/content/publications/`: one Markdown or MDX file per publication.
 - `src/content/notes/`: one Markdown or MDX file per note.
@@ -215,5 +217,7 @@ Run `npm run test` for interactive, layout, dependency, or infrastructure change
 ## Architecture notes
 
 Astro renders all ordinary content and navigation to static HTML. React is not loaded on About, Teaching, Research, or the Notes/Experiments indexes. Theme switching is a tiny native script. CSS variables provide a system-font, one-accent light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`. Placeholder Person JSON-LD is withheld until the centralized profile is verified.
+
+See [Architecture and page generation](docs/architecture.md) for a maintainer-oriented explanation of file responsibilities and how data becomes a deployed page.
 
 The repository is MIT licensed. See `AGENTS.md` for rules that future coding agents must follow.

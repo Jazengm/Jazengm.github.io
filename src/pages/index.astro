@@ -4,6 +4,7 @@ import ResearchMap, { type ResearchMapNode } from '../components/ResearchMap';
 import { site } from '../config/site';
 import { withBase } from '../utils/paths';
 
+// Navigation is declared once in site.ts; Home derives both its cards and atlas from that source.
 const primaryLinks = site.navigation.filter((item) => item.href !== '/');
 const positions = [
   [360, 155],
