@@ -7,24 +7,8 @@
   gap: var(--space-3);
   padding: var(--space-3);
 }
-.fractal-controls label,
 .fractal-controls label > span {
-  display: block;
-}
-.fractal-controls label > span {
-  margin-bottom: 0.25rem;
-  color: var(--color-muted);
   font-size: 0.8rem;
-  font-weight: 700;
-}
-.fractal-controls select,
-.fractal-controls input {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-line);
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  background: var(--color-bg);
 }
 .fractal-controls input:disabled {
   opacity: 0.48;

@@ -1,0 +1,42 @@
+---
+import { site } from "../config/site";
+
+interface Props {
+  ariaLabel?: string;
+  emptyMessage?: string;
+}
+
+const { ariaLabel = "Profile links", emptyMessage } = Astro.props;
+const links = [
+  site.email && { label: "Email", href: `mailto:${site.email}` },
+  site.cvUrl && { label: "Curriculum vitae", href: site.cvUrl },
+  site.github && { label: "GitHub", href: site.github },
+  site.orcid && { label: "ORCID", href: site.orcid },
+  site.googleScholar && { label: "Google Scholar", href: site.googleScholar },
+].filter(Boolean) as { label: string; href: string }[];
+---
+
+{
+  links.length > 0 ? (
+    <ul class="profile-links" aria-label={ariaLabel}>
+      {links.map((link) => (
+        <li>
+          <a href={link.href}>{link.label}</a>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    emptyMessage && <p>{emptyMessage}</p>
+  )
+}
+
+<style>
+  .profile-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-block: var(--space-4) 0;
+    padding: 0;
+    list-style: none;
+  }
+</style>

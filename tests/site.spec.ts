@@ -1,5 +1,16 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const requiredRoutes = [
+  "/",
+  "/publications/",
+  "/research/",
+  "/teaching/",
+  "/notes/",
+  "/experiments/",
+  "/experiments/fractal/",
+  "/about/",
+];
+
 function captureConsoleErrors(page: Page) {
   const errors: string[] = [];
   page.on("console", (message) => {
@@ -10,28 +21,33 @@ function captureConsoleErrors(page: Page) {
 }
 
 async function getInternalLinks(page: Page, selector: string) {
-  return page.locator(selector).evaluateAll((elements) => [
+  await page.waitForLoadState("networkidle");
+  const links = page.locator(selector);
+  await expect(links.first()).toBeVisible();
+  const hrefs = await links.evaluateAll((elements) =>
+    elements.map((element) => (element as HTMLAnchorElement).href),
+  );
+  return [
     ...new Set(
-      elements
-        .map((element) => new URL((element as HTMLAnchorElement).href))
-        .filter((url) => url.origin === window.location.origin)
-        .map((url) => url.href),
+      hrefs.filter(
+        (href) => new URL(href).origin === new URL(page.url()).origin,
+      ),
     ),
-  ]);
+  ];
 }
 
-test("primary navigation routes render without browser errors", async ({
-  page,
-}) => {
-  const errors = captureConsoleErrors(page);
-  await page.goto("/");
-  const routes = await getInternalLinks(
-    page,
-    'nav[aria-label="Primary navigation"] a',
-  );
+async function waitForIslands(page: Page) {
+  const islands = page.locator("astro-island");
+  for (let index = 0; index < (await islands.count()); index += 1) {
+    const island = islands.nth(index);
+    await island.scrollIntoViewIfNeeded();
+    await expect(island).not.toHaveAttribute("ssr", "");
+  }
+}
 
-  expect(routes.length).toBeGreaterThan(1);
-  for (const route of routes) {
+test("required routes render without browser errors", async ({ page }) => {
+  const errors = captureConsoleErrors(page);
+  for (const route of requiredRoutes) {
     const response = await page.goto(route);
     expect(response?.ok(), `${route} should load`).toBeTruthy();
     await expect(page.locator("main")).toBeVisible();
@@ -39,10 +55,25 @@ test("primary navigation routes render without browser errors", async ({
   expect(errors).toEqual([]);
 });
 
-test("publication explorer filters and exposes accessible previews", async ({
+test("primary navigation links resolve", async ({ page, request }) => {
+  await page.goto("/");
+  const routes = await getInternalLinks(
+    page,
+    'nav[aria-label="Primary navigation"] a',
+  );
+  expect(routes.length).toBeGreaterThan(1);
+  for (const route of routes) {
+    const response = await request.get(route);
+    expect(response.ok(), route).toBeTruthy();
+  }
+});
+
+test("publication explorer filters and exposes desktop previews", async ({
   page,
 }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
   await page.goto("/publications/");
+  await waitForIslands(page);
   const items = page.locator("[data-publication-item]");
   expect(await items.count()).toBeGreaterThan(0);
 
@@ -55,11 +86,31 @@ test("publication explorer filters and exposes accessible previews", async ({
 
   await page.getByLabel("Keywords").fill(title);
   await expect(items).toHaveCount(1);
+});
+
+test("publication preview has a touch-friendly inline alternative", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.goto("/publications/");
+  await waitForIslands(page);
+  const first = page.locator("[data-publication-item]").first();
   await first.getByRole("button", { name: "Show preview" }).click();
   await expect(first.locator(".publication-inline-preview")).toBeVisible();
 });
 
-test("content directory entries resolve and hydrate optional islands", async ({
+test("ResearchMap nodes respond to keyboard focus", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  await waitForIslands(page);
+  const map = page.locator(".research-map");
+  const node = map.locator("svg a[data-map-node]").nth(1);
+  await node.focus();
+  await expect(node).toBeFocused();
+  await expect(map.locator("#research-map-detail")).not.toBeEmpty();
+});
+
+test("note and experiment entries resolve and hydrate optional islands", async ({
   page,
 }) => {
   const errors = captureConsoleErrors(page);
@@ -75,44 +126,71 @@ test("content directory entries resolve and hydrate optional islands", async ({
       entries.length,
       `${directory.path} should list entries`,
     ).toBeGreaterThan(0);
-
     for (const entry of entries) {
       const response = await page.goto(entry);
       expect(response?.ok(), `${entry} should load`).toBeTruthy();
-      await expect(page.locator("main")).toBeVisible();
-
-      const islands = page.locator("astro-island");
-      for (let index = 0; index < (await islands.count()); index += 1) {
-        const island = islands.nth(index);
-        await island.scrollIntoViewIfNeeded();
-        await expect(island).not.toHaveAttribute("ssr", "");
-      }
+      await waitForIslands(page);
     }
   }
   expect(errors).toEqual([]);
 });
 
-test("theme persists and navigation routes fit a narrow viewport", async ({
+test("fractal mode switches and Reset restores defaults", async ({ page }) => {
+  const errors = captureConsoleErrors(page);
+  await page.goto("/experiments/fractal/");
+  await waitForIslands(page);
+  const mode = page.getByLabel("Fractal mode");
+  await mode.selectOption("julia");
+  await expect(mode).toHaveValue("julia");
+  await page.getByLabel("Julia real parameter").fill("-0.4");
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(mode).toHaveValue("mandelbrot");
+  await expect(page.getByLabel("Julia real parameter")).toHaveValue("-0.8");
+  await expect(page.getByText("Render complete")).toBeVisible({
+    timeout: 15_000,
+  });
+  expect(errors).toEqual([]);
+});
+
+test("theme choice persists and reduced motion is honored", async ({
   page,
 }) => {
   await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
   await page.goto("/");
-  const routes = await getInternalLinks(
-    page,
-    'nav[aria-label="Primary navigation"] a',
-  );
-
   await expect(page.locator("html")).toHaveCSS("color-scheme", "dark");
   await page.getByRole("button", { name: "Use light theme" }).click();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
-  await page.setViewportSize({ width: 360, height: 780 });
-  for (const route of routes) {
-    await page.goto(route);
-    const overflow = await page.evaluate(
-      () => document.documentElement.scrollWidth - window.innerWidth,
-    );
-    expect(overflow, `${route} overflow`).toBeLessThanOrEqual(1);
+  const transitionMilliseconds = await page
+    .locator(".link-grid a")
+    .first()
+    .evaluate((element) => {
+      const duration = getComputedStyle(element).transitionDuration;
+      return duration.endsWith("ms")
+        ? Number.parseFloat(duration)
+        : Number.parseFloat(duration) * 1000;
+    });
+  expect(transitionMilliseconds).toBeLessThanOrEqual(0.01);
+});
+
+test("360px and 768px viewports have no horizontal overflow", async ({
+  page,
+}) => {
+  for (const viewport of [
+    { width: 360, height: 800 },
+    { width: 768, height: 1024 },
+  ]) {
+    await page.setViewportSize(viewport);
+    for (const route of requiredRoutes) {
+      await page.goto(route);
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - window.innerWidth,
+      );
+      expect(
+        overflow,
+        `${viewport.width}px ${route} overflow`,
+      ).toBeLessThanOrEqual(1);
+    }
   }
 });

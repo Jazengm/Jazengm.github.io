@@ -42,6 +42,8 @@ export const navigation: NavigationItem[] = [
     href: "/research",
     description: "Themes, questions, and connections between projects.",
   },
+  // Teaching remains routable but is intentionally hidden from primary navigation
+  // until the placeholder course records below are replaced and verified.
   // {
   //   label: "Teaching",
   //   href: "/teaching",
@@ -112,10 +114,7 @@ export const researchThemes: ResearchTheme[] = [
     summary:
       "[Replace with a short description of a research direction and the questions that organize it.]",
     keywords: ["geometry", "moduli", "curvature"],
-    publicationIds: [
-      "placeholder-curvature-moduli",
-      "placeholder-derived-invariants",
-    ],
+    publicationIds: ["placeholder-curvature-moduli", "toric-tensor-generation"],
     symbol: "orbit",
   },
   {
@@ -125,8 +124,8 @@ export const researchThemes: ResearchTheme[] = [
       "[Replace with a concise account of how combinatorial and analytic viewpoints interact in your work.]",
     keywords: ["combinatorics", "dynamics", "optimization"],
     publicationIds: [
-      "placeholder-iterative-dynamics",
       "placeholder-combinatorial-shadows",
+      "toric-tensor-generation",
     ],
     symbol: "lattice",
   },
@@ -136,10 +135,7 @@ export const researchThemes: ResearchTheme[] = [
     summary:
       "[Replace with the role of computation, visualization, formal methods, or software in your research.]",
     keywords: ["computation", "visualization", "experiments"],
-    publicationIds: [
-      "placeholder-iterative-dynamics",
-      "placeholder-expository-note",
-    ],
+    publicationIds: [],
     symbol: "wave",
   },
 ];

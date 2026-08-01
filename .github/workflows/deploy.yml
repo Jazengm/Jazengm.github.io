@@ -1,25 +1,71 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions: {}
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  verify-manual:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+      - name: Use Node.js from .nvmrc
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Check formatting
+        run: npm run format:check
+      - name: Check Astro and TypeScript
+        run: npm run check
+      - name: Build static site
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run browser tests
+        run: npm run test
+
+  build:
+    needs: verify-manual
+    if: >-
+      always() &&
+      (
+        (
+          github.event_name == 'workflow_run' &&
+          github.event.workflow_run.conclusion == 'success' &&
+          github.event.workflow_run.event == 'push' &&
+          github.event.workflow_run.head_branch == 'main'
+        ) ||
+        (
+          github.event_name == 'workflow_dispatch' &&
+          github.ref == 'refs/heads/main' &&
+          needs.verify-manual.result == 'success'
+        )
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       - name: Install, build, and upload site
         uses: withastro/action@v6
         with:
@@ -28,6 +74,10 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

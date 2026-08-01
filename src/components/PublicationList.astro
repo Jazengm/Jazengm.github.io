@@ -1,14 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
-import { getImage } from 'astro:assets';
-import { site } from '../config/site';
-import { withBase } from '../utils/paths';
-import PublicationExplorer, { type PublicationRecord } from './PublicationExplorer';
+import { getCollection } from "astro:content";
+import { getImage } from "astro:assets";
+import { site } from "../config/site";
+import { withBase } from "../utils/paths";
+import PublicationExplorer, {
+  type PublicationRecord,
+} from "./PublicationExplorer";
 
-const publicationYearSortValue = (year: number | 'TBA') =>
-  year === 'TBA' ? Number.MAX_SAFE_INTEGER : year;
+const publicationYearSortValue = (year: number | "TBA") =>
+  year === "TBA" ? Number.MAX_SAFE_INTEGER : year;
 
-const entries = (await getCollection('publications')).sort(
+const entries = (await getCollection("publications")).sort(
   (left, right) =>
     publicationYearSortValue(right.data.year) -
       publicationYearSortValue(left.data.year) ||
@@ -18,14 +20,19 @@ const entries = (await getCollection('publications')).sort(
 
 const publications: PublicationRecord[] = await Promise.all(
   entries.map(async ({ id, data }) => {
-    const { previewImage, previewImageAlt, links: rawLinks, ...publication } = data;
+    const {
+      previewImage,
+      previewImageAlt,
+      links: rawLinks,
+      ...publication
+    } = data;
     const preview = previewImage
-      ? await getImage({ src: previewImage, width: 640, format: 'svg' })
+      ? await getImage({ src: previewImage, width: 640, format: "svg" })
       : null;
     const links = Object.fromEntries(
       Object.entries(rawLinks ?? {}).map(([key, value]) => [
         key,
-        value?.startsWith('/') ? withBase(value) : value,
+        value?.startsWith("/") ? withBase(value) : value,
       ]),
     ) as Record<string, string>;
 
@@ -35,7 +42,7 @@ const publications: PublicationRecord[] = await Promise.all(
       preview: preview
         ? {
             src: preview.src,
-            alt: previewImageAlt ?? '',
+            alt: previewImageAlt ?? "",
             width: preview.attributes.width,
             height: preview.attributes.height,
           }

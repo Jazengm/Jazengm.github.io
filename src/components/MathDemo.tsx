@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import "../styles/math-demo.css";
 
 export default function MathDemo() {
   const [steps, setSteps] = useState(6);

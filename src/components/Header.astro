@@ -1,8 +1,8 @@
 ---
-import { site } from '../config/site';
-import { withBase } from '../utils/paths';
-import Navigation from './Navigation.astro';
-import ThemeToggle from './ThemeToggle.astro';
+import { site } from "../config/site";
+import { withBase } from "../utils/paths";
+import Navigation from "./Navigation.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 
 interface Props {
   currentPath: string;
@@ -13,7 +13,9 @@ const { currentPath } = Astro.props;
 
 <header class="site-header">
   <div class="site-shell header-inner">
-    <a class="site-name" href={withBase('/')} aria-label={`${site.name}, home`}>{site.name}</a>
+    <a class="site-name" href={withBase("/")} aria-label={`${site.name}, home`}
+      >{site.name}</a
+    >
     <Navigation items={site.navigation} currentPath={currentPath} />
     <ThemeToggle />
   </div>

@@ -1,34 +1,40 @@
-<button class="theme-toggle" type="button" data-theme-toggle aria-label="Use dark theme">
+<button
+  class="theme-toggle"
+  type="button"
+  data-theme-toggle
+  aria-label="Use dark theme"
+>
   <span aria-hidden="true" data-theme-icon>◐</span>
   <span class="sr-only" data-theme-label>Theme</span>
 </button>
 
 <script is:inline>
   (() => {
-    const button = document.querySelector('[data-theme-toggle]');
+    const button = document.querySelector("[data-theme-toggle]");
     if (!(button instanceof HTMLButtonElement)) return;
 
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
     const resolvedTheme = () =>
-      document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+      document.documentElement.dataset.theme ||
+      (media.matches ? "dark" : "light");
     const update = () => {
-      const dark = resolvedTheme() === 'dark';
-      button.setAttribute('aria-label', `Use ${dark ? 'light' : 'dark'} theme`);
-      button.setAttribute('aria-pressed', String(dark));
+      const dark = resolvedTheme() === "dark";
+      button.setAttribute("aria-label", `Use ${dark ? "light" : "dark"} theme`);
+      button.setAttribute("aria-pressed", String(dark));
     };
 
-    button.addEventListener('click', () => {
-      const next = resolvedTheme() === 'dark' ? 'light' : 'dark';
+    button.addEventListener("click", () => {
+      const next = resolvedTheme() === "dark" ? "light" : "dark";
       document.documentElement.dataset.theme = next;
       try {
-        localStorage.setItem('academic-theme', next);
+        localStorage.setItem("academic-theme", next);
       } catch {
         // The chosen theme still applies for this page when storage is unavailable.
       }
       update();
     });
 
-    media.addEventListener('change', update);
+    media.addEventListener("change", update);
     update();
   })();
 </script>

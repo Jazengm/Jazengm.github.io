@@ -1,13 +1,18 @@
 ---
-import { site } from '../config/site';
+import { site } from "../config/site";
 ---
 
 <footer class="site-footer">
   <div class="site-shell footer-inner">
-    <p>© {new Date().getFullYear()} {site.name}. Built as a static, maintainable academic site.</p>
+    <p>
+      © {new Date().getFullYear()}
+      {site.name}. Built as a static, maintainable academic site.
+    </p>
     {
       site.isPlaceholder && (
-        <p class="placeholder-status">Profile fields are intentionally marked as placeholders.</p>
+        <p class="placeholder-status">
+          Profile fields are intentionally marked as placeholders.
+        </p>
       )
     }
   </div>

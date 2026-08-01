@@ -1,24 +1,27 @@
 ---
-import { getEntry } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import FractalExplorer from '../../components/FractalExplorer';
+import { getEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import FractalExplorer from "../../components/FractalExplorer";
+import PageHeader from "../../components/PageHeader.astro";
 
-const experiment = await getEntry('experiments', 'fractal');
-if (!experiment) throw new Error('Missing experiment metadata for fractal');
+const experiment = await getEntry("experiments", "fractal");
+if (!experiment) throw new Error("Missing experiment metadata for fractal");
 ---
 
 <BaseLayout
   title={experiment.data.title}
   description={experiment.data.description}
 >
-  <header class="content-column">
-    <p class="eyebrow">Complex dynamics</p>
-    <h1 class="page-title">{experiment.data.title}</h1>
-    <p class="page-lede">{experiment.data.description}</p>
+  <PageHeader
+    eyebrow="Complex dynamics"
+    title={experiment.data.title}
+    lede={experiment.data.description}
+  >
     <p>
-      Drag to pan, use the wheel or buttons to zoom, adjust iteration depth, switch to a Julia set,
-      and export the current canvas as a PNG. Rendering is bounded and runs in a Web Worker.
+      Drag to pan, use the wheel or buttons to zoom, adjust iteration depth,
+      switch to a Julia set, and export the current canvas as a PNG. Rendering
+      is bounded and runs in a Web Worker.
     </p>
-  </header>
+  </PageHeader>
   <FractalExplorer client:visible />
 </BaseLayout>

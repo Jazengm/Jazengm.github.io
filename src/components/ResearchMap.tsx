@@ -1,11 +1,10 @@
 import { useState } from "react";
+import "../styles/research-map.css";
 
 export type ResearchMapNode = {
   label: string;
   href: string;
   description: string;
-  x: number;
-  y: number;
 };
 
 type Props = {
@@ -15,6 +14,17 @@ type Props = {
 export default function ResearchMap({ nodes }: Props) {
   const [active, setActive] = useState(nodes[0]?.label ?? "");
   const activeNode = nodes.find((node) => node.label === active) ?? nodes[0];
+  const center = { x: 360, y: 155 };
+  const orbitCount = Math.max(nodes.length - 1, 1);
+  const positionedNodes = nodes.map((node, index) => {
+    if (index === 0) return { ...node, ...center };
+    const angle = -Math.PI / 2 + ((index - 1) * Math.PI * 2) / orbitCount;
+    return {
+      ...node,
+      x: center.x + Math.cos(angle) * 250,
+      y: center.y + Math.sin(angle) * 102,
+    };
+  });
 
   return (
     <section className="research-map" aria-labelledby="research-map-title">
@@ -34,17 +44,17 @@ export default function ResearchMap({ nodes }: Props) {
         aria-label="Connected paths to the main sections of the site"
       >
         <g className="research-map-lines" aria-hidden="true">
-          {nodes.slice(1).map((node) => (
+          {positionedNodes.slice(1).map((node) => (
             <line
               key={`${nodes[0]?.label}-${node.label}`}
-              x1={nodes[0]?.x}
-              y1={nodes[0]?.y}
+              x1={center.x}
+              y1={center.y}
               x2={node.x}
               y2={node.y}
             />
           ))}
         </g>
-        {nodes.map((node, index) => {
+        {positionedNodes.map((node, index) => {
           const selected = node.label === active;
           return (
             <a

@@ -137,9 +137,10 @@ export default function FractalExplorer() {
         Fractal controls and canvas
       </h2>
       <div className="fractal-controls quiet-card">
-        <label>
+        <label className="control-field">
           <span>Fractal mode</span>
           <select
+            className="control-input"
             value={mode}
             onChange={(event) => changeMode(event.target.value as Mode)}
           >
@@ -147,9 +148,10 @@ export default function FractalExplorer() {
             <option value="julia">Julia</option>
           </select>
         </label>
-        <label>
+        <label className="control-field">
           <span>Maximum iterations: {iterations}</span>
           <input
+            className="control-input"
             type="range"
             min="40"
             max="360"
@@ -158,9 +160,10 @@ export default function FractalExplorer() {
             onChange={(event) => setIterations(Number(event.target.value))}
           />
         </label>
-        <label>
+        <label className="control-field">
           <span>Julia real parameter</span>
           <input
+            className="control-input"
             type="number"
             min="-2"
             max="2"
@@ -170,9 +173,10 @@ export default function FractalExplorer() {
             onChange={(event) => setJuliaReal(Number(event.target.value))}
           />
         </label>
-        <label>
+        <label className="control-field">
           <span>Julia imaginary parameter</span>
           <input
+            className="control-input"
             type="number"
             min="-2"
             max="2"

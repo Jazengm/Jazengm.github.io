@@ -1,9 +1,9 @@
 ---
-import { getCollection, render } from 'astro:content';
-import ContentLayout from '../../layouts/ContentLayout.astro';
+import { getCollection, render } from "astro:content";
+import ContentLayout from "../../layouts/ContentLayout.astro";
 
 export async function getStaticPaths() {
-  const notes = await getCollection('notes', ({ data }) => !data.draft);
+  const notes = await getCollection("notes", ({ data }) => !data.draft);
   return notes.map((note) => ({ params: { id: note.id }, props: { note } }));
 }
 

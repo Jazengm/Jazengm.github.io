@@ -120,8 +120,8 @@ Place a file at `src/assets/profile.jpg`, then edit `src/pages/index.astro`:
 
 ```astro
 ---
-import { Image } from 'astro:assets';
-import profileImage from '../assets/profile.jpg';
+import { Image } from "astro:assets";
+import profileImage from "../assets/profile.jpg";
 ---
 
 <Image
@@ -163,7 +163,11 @@ For a two-column introduction, wrap the text and image in a `home-hero` section 
 If the image is profile data that should be configurable, the existing `site.avatar` field can instead contain a URL under `public/`. Render it conditionally and pass the path through `withBase()`:
 
 ```astro
-{site.avatar && <img src={withBase(site.avatar)} alt={`${site.name} portrait`} />}
+{
+  site.avatar && (
+    <img src={withBase(site.avatar)} alt={`${site.name} portrait`} />
+  )
+}
 ```
 
 The distinction is useful: `site.ts` answers _which portrait belongs to the profile_, while `index.astro` and its CSS answer _where and how it is presented_.

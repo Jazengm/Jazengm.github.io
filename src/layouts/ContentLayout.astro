@@ -1,5 +1,5 @@
 ---
-import BaseLayout from './BaseLayout.astro';
+import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   title: string;
@@ -10,7 +10,14 @@ interface Props {
   placeholder?: boolean;
 }
 
-const { title, description, date, updatedDate, tags = [], placeholder = false } = Astro.props;
+const {
+  title,
+  description,
+  date,
+  updatedDate,
+  tags = [],
+  placeholder = false,
+} = Astro.props;
 ---
 
 <BaseLayout title={title} description={description} type="article">
@@ -20,11 +27,39 @@ const { title, description, date, updatedDate, tags = [], placeholder = false } 
       <h1 class="page-title">{title}</h1>
       <p class="page-lede">{description}</p>
       <div class="content-meta">
-        {date && <time datetime={date.toISOString()}>{date.toLocaleDateString('en', { dateStyle: 'long' })}</time>}
-        {updatedDate && <span>Updated {updatedDate.toLocaleDateString('en', { dateStyle: 'long' })}</span>}
+        {
+          date && (
+            <time datetime={date.toISOString()}>
+              {date.toLocaleDateString("en", { dateStyle: "long" })}
+            </time>
+          )
+        }
+        {
+          updatedDate && (
+            <span>
+              Updated{" "}
+              {updatedDate.toLocaleDateString("en", { dateStyle: "long" })}
+            </span>
+          )
+        }
       </div>
-      {tags.length > 0 && <ul class="tag-list">{tags.map((tag) => <li class="tag">{tag}</li>)}</ul>}
-      {placeholder && <p class="placeholder-note">This is explicitly fictional template content. Replace it before presenting the site as a personal academic record.</p>}
+      {
+        tags.length > 0 && (
+          <ul class="tag-list">
+            {tags.map((tag) => (
+              <li class="tag">{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+      {
+        placeholder && (
+          <p class="placeholder-note">
+            This is explicitly fictional template content. Replace it before
+            presenting the site as a personal academic record.
+          </p>
+        )
+      }
     </header>
     <div class="prose content-body">
       <slot />

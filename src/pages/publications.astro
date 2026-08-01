@@ -1,20 +1,18 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PublicationList from '../components/PublicationList.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import PublicationList from "../components/PublicationList.astro";
 ---
 
 <BaseLayout
   title="Publications"
   description="A filterable collection of papers, preprints, notes, and supporting material."
 >
-  <header class="content-column page-header">
-    <p class="eyebrow">Writing and results</p>
-    <h1 class="page-title">Publications</h1>
-    <p class="page-lede">
-      Filter by type, subject, or keyword. Every entry below is explicitly fictional template data
-      until replaced with a verified academic record.
-    </p>
-  </header>
+  <PageHeader
+    eyebrow="Writing and results"
+    title="Publications"
+    lede="Filter by type, subject, or keyword. Fictional samples are explicitly labeled; verified records are shown without a placeholder label."
+  />
   <div class="section-block publication-section">
     <PublicationList />
   </div>

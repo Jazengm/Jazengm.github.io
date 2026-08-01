@@ -122,18 +122,20 @@ export default function PublicationExplorer({
         className="publication-filters quiet-card"
         aria-label="Filter publications"
       >
-        <label>
+        <label className="control-field">
           <span>Keywords</span>
           <input
+            className="control-input"
             type="search"
             value={query}
             placeholder="Title, author, or subject"
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
-        <label>
+        <label className="control-field">
           <span>Type</span>
           <select
+            className="control-input"
             value={type}
             onChange={(event) => setType(event.target.value)}
           >
@@ -145,9 +147,13 @@ export default function PublicationExplorer({
             ))}
           </select>
         </label>
-        <label>
+        <label className="control-field">
           <span>Tag</span>
-          <select value={tag} onChange={(event) => setTag(event.target.value)}>
+          <select
+            className="control-input"
+            value={tag}
+            onChange={(event) => setTag(event.target.value)}
+          >
             <option value="all">All tags</option>
             {tags.map((value) => (
               <option key={value} value={value}>
