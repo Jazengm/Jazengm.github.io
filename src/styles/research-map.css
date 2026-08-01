@@ -3,7 +3,8 @@
   grid-template-columns: minmax(15rem, 0.6fr) minmax(0, 1.4fr);
   gap: clamp(2rem, 7vw, 6rem);
   padding: clamp(1.5rem, 5vw, 3.5rem);
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
   border-radius: var(--radius-md);
   background: var(--color-surface);
 }
@@ -14,7 +15,7 @@
 
 .research-map-copy > p:last-child {
   min-height: 5.5em;
-  color: var(--color-muted);
+  color: var(--color-text-muted);
 }
 
 .research-map-graphic {
@@ -23,19 +24,19 @@
 }
 
 .research-map-lines line {
-  stroke: var(--color-line);
+  stroke: var(--color-border);
   stroke-width: 2;
   transition: stroke var(--transition-standard);
 }
 
 .research-map-graphic a {
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   text-decoration: none;
 }
 
 .research-map-graphic circle {
   fill: var(--color-bg);
-  stroke: var(--color-accent);
+  stroke: var(--color-primary);
   stroke-width: 3;
   transition:
     fill var(--transition-standard),
@@ -52,7 +53,8 @@
 .research-map-graphic a:hover circle,
 .research-map-graphic a:focus circle,
 .research-map-graphic a.is-active circle {
-  fill: var(--color-accent);
+  fill: var(--color-secondary);
+  stroke: var(--color-primary);
   r: 24px;
 }
 
@@ -84,7 +86,7 @@
   .research-map-links a {
     display: block;
     padding: var(--space-3);
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-sm);
     color: var(--color-text);
     text-decoration: none;
@@ -96,7 +98,7 @@
   }
 
   .research-map-links span {
-    color: var(--color-muted);
+    color: var(--color-text-muted);
     font-size: 0.9rem;
   }
 }

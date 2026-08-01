@@ -94,7 +94,6 @@ export const site = {
   avatar: null as string | null,
   authorNameMatches: ["[Your Name]"],
   defaultLanguage: "en",
-  accentColor: "#3f6f6b",
   canonicalUrl: "https://jazengm.github.io",
   navigation,
   education: [

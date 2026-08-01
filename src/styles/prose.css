@@ -29,14 +29,14 @@
 .prose blockquote {
   margin-inline: 0;
   padding-left: var(--space-4);
-  border-left: 2px solid var(--color-accent);
-  color: var(--color-muted);
+  border-left: 2px solid var(--color-secondary);
+  color: var(--color-text-muted);
 }
 
 .prose code {
   padding: 0.1em 0.28em;
   border-radius: 0.2em;
-  background: var(--color-accent-soft);
+  background: var(--color-primary-soft);
   font-family: var(--font-mono);
   font-size: 0.88em;
 }
@@ -45,7 +45,7 @@
   max-width: 100%;
   overflow-x: auto;
   padding: var(--space-3);
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
 }
@@ -65,7 +65,7 @@
 .prose th,
 .prose td {
   padding: 0.55rem 0.75rem;
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-border);
   text-align: left;
 }
 

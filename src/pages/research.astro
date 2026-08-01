@@ -20,7 +20,8 @@ const publicationsById = new Map(
     lede="A compact map of research directions. Theme descriptions live in site configuration; related publications resolve from the content collection by identifier."
   />
 
-  <div class="research-themes section-block">
+  <div class="research-themes section-block decorated-section">
+    <span class="halftone-dots" aria-hidden="true"></span>
     {
       researchThemes.map((theme, index) => (
         <section
@@ -71,7 +72,7 @@ const publicationsById = new Map(
 
 <style>
   .research-themes {
-    border-top: 1px solid var(--color-line);
+    border-top: 1px solid var(--color-border);
   }
 
   .research-theme {
@@ -79,7 +80,7 @@ const publicationsById = new Map(
     grid-template-columns: minmax(8rem, 0.45fr) minmax(0, 1fr);
     gap: clamp(1.5rem, 6vw, 6rem);
     padding-block: clamp(2.5rem, 7vw, 5rem);
-    border-bottom: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .research-theme > div:last-child {
@@ -88,7 +89,7 @@ const publicationsById = new Map(
 
   .theme-index {
     margin: 0;
-    color: var(--color-faint);
+    color: var(--color-secondary-strong);
     font-family: var(--font-mono);
     font-size: 0.8rem;
   }
@@ -103,7 +104,7 @@ const publicationsById = new Map(
     position: relative;
     width: 8rem;
     height: 8rem;
-    border: 1px solid var(--color-line);
+    border: 1px solid var(--color-border);
     border-radius: 50%;
   }
 
@@ -113,7 +114,11 @@ const publicationsById = new Map(
     width: 0.8rem;
     height: 0.8rem;
     border-radius: 50%;
-    background: var(--color-accent);
+    background: var(--color-primary);
+  }
+
+  .theme-symbol span:first-child {
+    background: var(--color-secondary);
   }
 
   .theme-symbol span:nth-child(1) {

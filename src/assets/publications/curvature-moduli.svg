@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
   <title id="title">Nested curves and marked points</title>
   <desc id="desc">A restrained geometric diagram of nested curves, tangent lines, and marked points.</desc>
-  <rect width="960" height="600" fill="#eef1ed"/>
-  <g fill="none" stroke="#3f6f6b" stroke-width="8">
+  <rect width="960" height="600" fill="#edf2f8"/>
+  <g fill="none" stroke="#235d9f" stroke-width="8">
     <ellipse cx="480" cy="300" rx="330" ry="190"/>
     <ellipse cx="480" cy="300" rx="220" ry="120" opacity=".72"/>
     <path d="M120 440C330 190 650 170 850 390" opacity=".42"/>
     <path d="M170 155L790 470" opacity=".3"/>
   </g>
-  <g fill="#24302e">
+  <g fill="#c65c2e">
     <circle cx="318" cy="245" r="13"/>
     <circle cx="598" cy="338" r="13"/>
     <circle cx="715" cy="265" r="13"/>

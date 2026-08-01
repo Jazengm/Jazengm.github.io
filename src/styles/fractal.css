@@ -32,9 +32,9 @@
   width: 100%;
   min-width: 0;
   overflow: hidden;
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  background: #1f2a28;
+  background: var(--color-canvas);
   touch-action: none;
 }
 .fractal-frame canvas {
@@ -53,8 +53,8 @@
   margin: 0;
   padding: 0.2rem 0.45rem;
   border-radius: var(--radius-sm);
-  color: #f4f6f3;
-  background: rgb(19 27 25 / 78%);
+  color: var(--color-on-dark);
+  background: var(--color-canvas-overlay);
   font-size: 0.74rem;
 }
 .pan-controls {
@@ -67,7 +67,7 @@
   width: 2.75rem;
   min-height: 2.75rem;
   padding: 0;
-  border: 1px solid var(--color-line);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   place-items: center;
   color: var(--color-text);
@@ -83,17 +83,17 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: var(--space-3) 0 0;
-  border-top: 1px solid var(--color-line);
-  border-left: 1px solid var(--color-line);
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
 }
 .viewport-readout div {
   min-width: 0;
   padding: var(--space-2);
-  border-right: 1px solid var(--color-line);
-  border-bottom: 1px solid var(--color-line);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 .viewport-readout dt {
-  color: var(--color-muted);
+  color: var(--color-text-muted);
   font-size: 0.75rem;
   text-transform: uppercase;
 }

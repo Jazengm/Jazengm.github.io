@@ -17,7 +17,8 @@ const atlasNodes: ResearchMapNode[] = atlasItems.map((item) => ({
 ---
 
 <BaseLayout>
-  <section class="home-intro content-column">
+  <section class="home-intro content-column decorated-section">
+    <span class="halftone-dots" aria-hidden="true"></span>
     <p class="eyebrow">{site.currentPosition} · {site.institution}</p>
     <h1 class="page-title">{site.name}</h1>
     {site.tagline && <p class="home-tagline">{site.tagline}</p>}
@@ -66,7 +67,7 @@ const atlasNodes: ResearchMapNode[] = atlasItems.map((item) => ({
   .home-tagline {
     max-width: 56ch;
     margin-block: var(--space-4) var(--space-5);
-    color: var(--color-muted);
+    color: var(--color-text-muted);
     font-family: var(--font-serif);
     font-size: clamp(1.3rem, 3vw, 1.85rem);
     line-height: 1.35;

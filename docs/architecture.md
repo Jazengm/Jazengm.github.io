@@ -52,10 +52,13 @@ Files under `src/pages/` define URLs:
 | `src/pages/index.astro`               | `/`                    | Home page                    |
 | `src/pages/about.astro`               | `/about`               | About page                   |
 | `src/pages/publications.astro`        | `/publications`        | Publication directory        |
+| `src/pages/research.astro`            | `/research`            | Research-theme directory     |
+| `src/pages/teaching.astro`            | `/teaching`            | Course directory             |
 | `src/pages/notes/index.astro`         | `/notes`               | Note directory               |
 | `src/pages/notes/[...id].astro`       | `/notes/ENTRY-ID`      | One route per non-draft note |
 | `src/pages/experiments/index.astro`   | `/experiments`         | Experiment directory         |
 | `src/pages/experiments/fractal.astro` | `/experiments/fractal` | One interactive experiment   |
+| `src/pages/404.astro`                 | `/404`                 | Static not-found page        |
 
 `[...id].astro` is a dynamic route template. Its `getStaticPaths()` function reads the notes collection and tells Astro which concrete paths to generate. The result is still a set of static pages.
 
@@ -65,19 +68,22 @@ Adding a publication, note, or experiment directory record normally updates its 
 
 Choose the source according to what the information represents:
 
-| Change                                                | Source of truth                                    |
-| ----------------------------------------------------- | -------------------------------------------------- |
-| Name, position, institution, biography, profile links | `src/config/site.ts`                               |
-| Navigation labels, descriptions, and order            | `src/config/site.ts`                               |
-| Home-only wording or section order                    | `src/pages/index.astro`                            |
-| Publication, note, or experiment metadata             | A file under `src/content/`                        |
-| Allowed content frontmatter fields                    | `src/content.config.ts`                            |
-| Shared header, metadata, main container, and footer   | `src/layouts/BaseLayout.astro`                     |
-| Shared long-form note presentation                    | `src/layouts/ContentLayout.astro`                  |
-| Reusable visual block                                 | `src/components/`                                  |
-| Site-wide colors, widths, spacing, and typography     | `src/styles/tokens.css`                            |
-| Shared element and utility styles                     | `src/styles/global.css` and `src/styles/prose.css` |
-| Styles used by only one page/component                | That file's scoped `<style>` block                 |
+| Change                                                | Source of truth                                            |
+| ----------------------------------------------------- | ---------------------------------------------------------- |
+| Name, position, institution, biography, profile links | `src/config/site.ts`                                       |
+| Navigation labels, descriptions, and order            | `src/config/site.ts`                                       |
+| Home-only wording or section order                    | `src/pages/index.astro`                                    |
+| Publication, note, or experiment metadata             | A file under `src/content/`                                |
+| Allowed content frontmatter fields                    | `src/content.config.ts`                                    |
+| Shared header, metadata, main container, and footer   | `src/layouts/BaseLayout.astro`                             |
+| Shared long-form note presentation                    | `src/layouts/ContentLayout.astro`                          |
+| Reusable visual block                                 | `src/components/`                                          |
+| Site-wide colors, widths, spacing, and typography     | `src/styles/tokens.css`                                    |
+| Shared element and utility styles                     | `src/styles/global.css` and `src/styles/prose.css`         |
+| Publication explorer presentation                     | `src/styles/publications.css`                              |
+| Research-map and math-demo island presentation        | `src/styles/research-map.css` / `src/styles/math-demo.css` |
+| Fractal experiment presentation                       | `src/styles/fractal.css`                                   |
+| Styles used by only one static page/component         | That file's scoped `<style>` block                         |
 
 This separation prevents the same fact from being repeated in multiple components. For example, navigation is declared once in `site.ts`; both the header and Home page derive their links from it.
 
@@ -188,7 +194,7 @@ Two width tokens are especially important:
 
 Removing `content-column` from an outer section can be appropriate when that section becomes a multi-column hero, but the text inside it should usually keep a readable maximum width.
 
-Light and dark colors are defined together in `tokens.css`. Any new color must be checked in both themes, along with keyboard focus, touch layout, reduced motion, and meaningful image alternative text.
+Light and dark colors are defined together in `tokens.css`. Primary blue, secondary orange, focus, surfaces, and the halftone color are semantic decisions rather than page-level values. Any new color must be checked in both themes, along with keyboard focus, touch layout, reduced motion, and meaningful image alternative text. The local SVG and worker-rendered canvas palettes are the only intentional non-CSS copies because CSS custom properties are not available inside those standalone assets and worker pixels.
 
 ## Internal URLs and GitHub Pages
 

@@ -11,7 +11,7 @@ Before publishing the site as a personal academic record:
 1. Open `src/config/site.ts` and replace every bracketed profile, biography, position, institution, location, research-area, timeline, research-theme, and teaching value.
 2. Add only verified optional URLs or contact fields (`email`, `github`, `orcid`, `googleScholar`, `cvUrl`, and `avatar`). Leave an unknown value as `null`; the corresponding link will remain hidden.
 3. Change `isPlaceholder` to `false` only after all profile fields are checked. This enables Person JSON-LD.
-4. Replace the five files under `src/content/publications/` with real records and remove each placeholder warning only after verification.
+4. Replace the three files under `src/content/publications/` with real records and remove each placeholder warning only after verification.
 5. Replace or remove the two sample notes and centralized sample course/theme data.
 6. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
 7. Replace the favicon and local diagrams if desired, then run the complete validation commands below.
@@ -51,7 +51,7 @@ npm run preview
 
 For the complete file map, build pipeline, routing rules, styling boundaries, and a Home-page image example, see [Architecture and page generation](docs/architecture.md).
 
-- `src/config/site.ts`: profile, navigation labels, research themes, course metadata, author-name matches, canonical URL, and visual accent.
+- `src/config/site.ts`: profile, navigation labels, research themes, course metadata, author-name matches, and canonical URL.
 - `src/content/publications/`: one Markdown or MDX file per publication.
 - `src/content/notes/`: one Markdown or MDX file per note.
 - `src/content/experiments/`: experiment directory records.
@@ -63,9 +63,16 @@ Pages read these sources automatically. Adding a publication, note, or experimen
 
 ## Modify the profile and design
 
-Edit `src/config/site.ts`. Navigation is also defined there once and consumed by both the header and home page. Optional links are rendered only when their values are non-null.
+Edit `src/config/site.ts`. Navigation is defined there once and consumed by both the header and home page. Add, remove, or reorder a `navigation` item there; use a root-relative `href`, and the shared components will preserve the configured GitHub Pages base. Optional profile links are rendered only when their values are non-null.
 
-To change the one low-saturation accent color, replace `accentColor` in that file. Light, dark, spacing, typography, and motion tokens are in `src/styles/tokens.css`. Keep sufficient contrast in both themes.
+The visual source of truth is `src/styles/tokens.css`. Change the semantic light and dark tokens there rather than placing colors in page components:
+
+- `--color-bg`, `--color-surface`, and `--color-surface-muted` control the page and card hierarchy.
+- `--color-text`, `--color-text-muted`, and `--color-border` control readable structure.
+- `--color-primary` is academic blue; `--color-secondary` is the restrained orange accent. Their `-soft` and `-strong` forms handle states and links.
+- `--color-focus` and `--color-halftone` control keyboard focus and decorative dots.
+
+The reusable halftone utilities are in `src/styles/global.css`. Their decorative, `aria-hidden` spans currently appear only in the Home introduction, Research theme directory, and Experiments directory. Keep them local and sparse; do not turn the dots into a full-page background. Under reduced motion they are removed, and on small screens they are reduced.
 
 ## Add a publication
 
@@ -158,11 +165,11 @@ npm run build
 npm run test
 ```
 
-Use `npm run format` to apply formatting. Browser tests cover required routes, navigation, publication data and hover/focus/touch previews, ResearchMap keyboard access, fractal controls, MDX math/islands, uncaught console errors, and 360px horizontal overflow.
+Use `npm run format` to apply formatting. Browser tests cover required routes, navigation, desktop and touch publication previews, ResearchMap keyboard access, fractal controls, MDX math/islands, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
 
 ## GitHub Pages deployment
 
-`.github/workflows/deploy.yml` follows Astro's official GitHub Pages workflow. It builds and deploys on each push to `main` and supports manual dispatch. In GitHub, open **Settings → Pages** and choose **GitHub Actions** as the source.
+`.github/workflows/deploy.yml` follows Astro's official GitHub Pages workflow. A `main` push deploys only after CI succeeds for that exact commit. Manual dispatch runs the same repository checks before build and deployment. In GitHub, open **Settings → Pages** and choose **GitHub Actions** as the source.
 
 For this special user-site repository, configuration is:
 
@@ -185,6 +192,28 @@ Internal links use `withBase()` or Astro asset URLs so the prefix is preserved. 
 ### Custom domain
 
 After configuring the domain and DNS in GitHub, add `public/CNAME` containing only the verified domain, for example `math.example.edu`. Then set `site` and `canonicalUrl` to `https://math.example.edu`, use `base: "/"`, and update `robots.txt`. No fictional CNAME is included in this template.
+
+### Roll back the visual redesign
+
+The annotated tag `pre-visual-redesign-20260731` points to the last verified commit before the architecture and visual redesign. It is a recovery reference, not an instruction to rewrite shared history.
+
+To inspect the complete redesign:
+
+```bash
+git fetch origin --tags
+git diff pre-visual-redesign-20260731..main
+```
+
+To undo it on the shared branch, list the redesign commits and revert them newest first, then push the new revert commits:
+
+```bash
+git log --oneline pre-visual-redesign-20260731..main
+git revert <visual-commit-sha>
+git revert <architecture-commit-sha>
+git push origin main
+```
+
+Do not reset `main`, force-push, or delete the recovery tag. For non-deploying inspection, create a separate branch at the tag with `git switch -c inspect-pre-redesign pre-visual-redesign-20260731`.
 
 ## A second computer and the recommended two-machine workflow
 
@@ -216,7 +245,7 @@ Run `npm run test` for interactive, layout, dependency, or infrastructure change
 
 ## Architecture notes
 
-Astro renders all ordinary content and navigation to static HTML. React is not loaded on About, Teaching, Research, or the Notes/Experiments indexes. Theme switching is a tiny native script. CSS variables provide a system-font, one-accent light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`. Placeholder Person JSON-LD is withheld until the centralized profile is verified.
+Astro renders all ordinary content and navigation to static HTML. React is not loaded on About, Teaching, Research, or the Notes/Experiments indexes. Theme switching is a tiny native script. Semantic CSS variables provide the system-font blue-orange light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`. Placeholder Person JSON-LD is withheld until the centralized profile is verified.
 
 See [Architecture and page generation](docs/architecture.md) for a maintainer-oriented explanation of file responsibilities and how data becomes a deployed page.
 

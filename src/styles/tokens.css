@@ -1,15 +1,31 @@
 :root {
   color-scheme: light;
-  --color-bg: #f5f5f1;
-  --color-surface: #fdfdfb;
-  --color-surface-raised: #ffffff;
-  --color-text: #202625;
-  --color-muted: #5f6866;
-  --color-faint: #7b8582;
-  --color-line: #d5d9d5;
-  --color-accent-soft: color-mix(in srgb, var(--color-accent) 11%, transparent);
-  --color-accent-strong: color-mix(in srgb, var(--color-accent) 84%, #101817);
-  --shadow-card: 0 10px 34px rgb(20 31 29 / 7%);
+  --color-bg: #f7f9fc;
+  --color-surface: #ffffff;
+  --color-surface-muted: #edf2f8;
+  --color-text: #182536;
+  --color-text-muted: #526173;
+  --color-text-faint: #738095;
+  --color-border: #d7e0eb;
+  --color-primary: #235d9f;
+  --color-primary-strong: #174678;
+  --color-primary-soft: color-mix(
+    in srgb,
+    var(--color-primary) 11%,
+    var(--color-surface)
+  );
+  --color-secondary: #c65c2e;
+  --color-secondary-strong: #963b1c;
+  --color-secondary-soft: color-mix(
+    in srgb,
+    var(--color-secondary) 12%,
+    var(--color-surface)
+  );
+  --color-focus: #c84e1d;
+  --color-halftone: color-mix(in srgb, var(--color-primary) 34%, transparent);
+  --color-canvas: #142438;
+  --color-canvas-overlay: rgb(10 19 31 / 82%);
+  --color-on-dark: #f6f9fc;
   --font-sans:
     ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", serif;
@@ -31,34 +47,62 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --color-bg: #171a19;
-  --color-surface: #1d211f;
-  --color-surface-raised: #222725;
-  --color-text: #edf0ed;
-  --color-muted: #b3bbb7;
-  --color-faint: #939d98;
-  --color-line: #3a423e;
-  --color-accent-soft: color-mix(in srgb, var(--color-accent) 28%, transparent);
-  --color-accent-strong: color-mix(in srgb, var(--color-accent) 45%, white);
-  --shadow-card: 0 14px 40px rgb(0 0 0 / 24%);
+  --color-bg: #0f1722;
+  --color-surface: #162130;
+  --color-surface-muted: #1d2b3b;
+  --color-text: #edf3fa;
+  --color-text-muted: #b3c0cf;
+  --color-text-faint: #8797aa;
+  --color-border: #34465a;
+  --color-primary: #82afe6;
+  --color-primary-strong: #b7d5f6;
+  --color-primary-soft: color-mix(
+    in srgb,
+    var(--color-primary) 19%,
+    var(--color-surface)
+  );
+  --color-secondary: #f0a26f;
+  --color-secondary-strong: #ffc299;
+  --color-secondary-soft: color-mix(
+    in srgb,
+    var(--color-secondary) 17%,
+    var(--color-surface)
+  );
+  --color-focus: #ffb27b;
+  --color-halftone: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  --color-canvas: #09121e;
+  --color-canvas-overlay: rgb(5 10 17 / 84%);
+  --color-on-dark: #f6f9fc;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     color-scheme: dark;
-    --color-bg: #171a19;
-    --color-surface: #1d211f;
-    --color-surface-raised: #222725;
-    --color-text: #edf0ed;
-    --color-muted: #b3bbb7;
-    --color-faint: #939d98;
-    --color-line: #3a423e;
-    --color-accent-soft: color-mix(
+    --color-bg: #0f1722;
+    --color-surface: #162130;
+    --color-surface-muted: #1d2b3b;
+    --color-text: #edf3fa;
+    --color-text-muted: #b3c0cf;
+    --color-text-faint: #8797aa;
+    --color-border: #34465a;
+    --color-primary: #82afe6;
+    --color-primary-strong: #b7d5f6;
+    --color-primary-soft: color-mix(
       in srgb,
-      var(--color-accent) 28%,
-      transparent
+      var(--color-primary) 19%,
+      var(--color-surface)
     );
-    --color-accent-strong: color-mix(in srgb, var(--color-accent) 45%, white);
-    --shadow-card: 0 14px 40px rgb(0 0 0 / 24%);
+    --color-secondary: #f0a26f;
+    --color-secondary-strong: #ffc299;
+    --color-secondary-soft: color-mix(
+      in srgb,
+      var(--color-secondary) 17%,
+      var(--color-surface)
+    );
+    --color-focus: #ffb27b;
+    --color-halftone: color-mix(in srgb, var(--color-primary) 35%, transparent);
+    --color-canvas: #09121e;
+    --color-canvas-overlay: rgb(5 10 17 / 84%);
+    --color-on-dark: #f6f9fc;
   }
 }

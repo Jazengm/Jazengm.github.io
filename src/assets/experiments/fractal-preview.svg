@@ -1,14 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="title desc">
   <title id="title">Mandelbrot set preview</title>
-  <desc id="desc">A monochrome silhouette of a Mandelbrot set with subtle contour bands.</desc>
-  <rect width="960" height="600" fill="#edf0ec"/>
-  <g fill="#3f6f6b">
+  <desc id="desc">A blue Mandelbrot silhouette framed by restrained orange contour bands.</desc>
+  <rect width="960" height="600" fill="#edf2f8"/>
+  <g fill="#235d9f">
     <circle cx="415" cy="300" r="174"/>
     <circle cx="615" cy="300" r="95"/>
     <circle cx="715" cy="300" r="42"/>
     <circle cx="760" cy="300" r="18"/>
   </g>
-  <g fill="none" stroke="#25312f" stroke-width="7" opacity=".72">
+  <g fill="none" stroke="#c65c2e" stroke-width="7" opacity=".72">
     <ellipse cx="415" cy="300" rx="220" ry="205"/>
     <ellipse cx="415" cy="300" rx="275" ry="242" opacity=".45"/>
   </g>

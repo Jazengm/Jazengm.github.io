@@ -18,6 +18,14 @@ type RenderResponse = {
   pixels: ArrayBuffer;
 };
 
+const INTERIOR_COLOR = [20, 36, 56] as const;
+const EXTERIOR_LIGHT = [237, 242, 248] as const;
+const EXTERIOR_BLUE = [35, 93, 159] as const;
+const EXTERIOR_ORANGE = [198, 92, 46] as const;
+
+const mixChannel = (start: number, end: number, amount: number) =>
+  Math.round(start + (end - start) * amount);
+
 self.onmessage = (event: MessageEvent<RenderRequest>) => {
   const request = event.data;
   const pixels = new Uint8ClampedArray(request.width * request.height * 4);
@@ -45,15 +53,27 @@ self.onmessage = (event: MessageEvent<RenderRequest>) => {
       }
 
       if (iteration === request.maxIterations) {
-        pixels[offset] = 31;
-        pixels[offset + 1] = 42;
-        pixels[offset + 2] = 40;
+        pixels[offset] = INTERIOR_COLOR[0];
+        pixels[offset + 1] = INTERIOR_COLOR[1];
+        pixels[offset + 2] = INTERIOR_COLOR[2];
       } else {
         const normalized = iteration / request.maxIterations;
         const band = Math.floor(normalized * 12) / 12;
-        pixels[offset] = 229 - Math.round(band * 126);
-        pixels[offset + 1] = 235 - Math.round(band * 113);
-        pixels[offset + 2] = 230 - Math.round(band * 118);
+        const warmAmount = Math.max(0, (band - 0.72) / 0.28) * 0.72;
+        const blue = EXTERIOR_LIGHT.map((channel, index) =>
+          mixChannel(channel, EXTERIOR_BLUE[index], band),
+        );
+        pixels[offset] = mixChannel(blue[0], EXTERIOR_ORANGE[0], warmAmount);
+        pixels[offset + 1] = mixChannel(
+          blue[1],
+          EXTERIOR_ORANGE[1],
+          warmAmount,
+        );
+        pixels[offset + 2] = mixChannel(
+          blue[2],
+          EXTERIOR_ORANGE[2],
+          warmAmount,
+        );
       }
       pixels[offset + 3] = 255;
       offset += 4;

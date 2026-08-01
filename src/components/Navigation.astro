@@ -54,7 +54,7 @@ const normalizedCurrent =
     min-height: 2.75rem;
     padding: 0.35rem 0.55rem;
     border-radius: var(--radius-sm);
-    color: var(--color-muted);
+    color: var(--color-text-muted);
     font-size: 0.87rem;
     font-weight: 600;
     text-decoration: none;
@@ -66,8 +66,9 @@ const normalizedCurrent =
   .primary-nav a:hover,
   .primary-nav a:focus-visible,
   .primary-nav a[aria-current="page"] {
-    color: var(--color-text);
-    background: var(--color-accent-soft);
+    color: var(--color-primary-strong);
+    background: var(--color-primary-soft);
+    box-shadow: inset 0 -2px var(--color-secondary);
   }
 
   @media (max-width: 760px) {

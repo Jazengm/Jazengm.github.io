@@ -33,13 +33,22 @@ const personJsonLd = !site.isPlaceholder
 ---
 
 <!doctype html>
-<html lang={site.defaultLanguage} style={`--color-accent: ${site.accentColor}`}>
+<html lang={site.defaultLanguage}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content={site.accentColor} />
+    <meta
+      name="theme-color"
+      content="#f7f9fc"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0f1722"
+      media="(prefers-color-scheme: dark)"
+    />
     <link
       rel="icon"
       type="image/svg+xml"

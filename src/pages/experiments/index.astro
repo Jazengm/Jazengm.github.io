@@ -17,7 +17,8 @@ const experiments = await getCollection("experiments");
     title="Experiments"
     lede="Self-contained mathematical programs live here, separate from static academic content and hydrated only when interaction is useful."
   />
-  <div class="experiment-grid section-block">
+  <div class="experiment-grid section-block decorated-section">
+    <span class="halftone-dots" aria-hidden="true"></span>
     {
       experiments.map((experiment) => (
         <article class="experiment-card quiet-card">
@@ -57,6 +58,15 @@ const experiments = await getCollection("experiments");
   }
   .experiment-card {
     overflow: hidden;
+    border-top: 3px solid var(--color-primary);
+    transition:
+      border-color var(--transition-fast),
+      translate var(--transition-fast);
+  }
+  .experiment-card:hover,
+  .experiment-card:focus-within {
+    border-top-color: var(--color-secondary);
+    translate: 0 -2px;
   }
   .experiment-card img {
     width: 100%;
@@ -73,6 +83,6 @@ const experiments = await getCollection("experiments");
     font-size: 1.55rem;
   }
   .experiment-card p:not(.eyebrow) {
-    color: var(--color-muted);
+    color: var(--color-text-muted);
   }
 </style>
