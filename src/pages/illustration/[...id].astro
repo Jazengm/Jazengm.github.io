@@ -43,7 +43,7 @@ const { Content } = await render(illustration);
     <figure class="full-image">
       <Image
         src={illustration.data.image}
-        alt={illustration.data.imageAlt}
+        alt={illustration.data.imageAlt ?? illustration.data.title}
         width={illustration.data.image.width}
         loading="eager"
       />

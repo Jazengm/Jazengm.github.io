@@ -75,7 +75,7 @@ const illustrations = defineCollection({
       title: z.string(),
       summary: z.string().min(1),
       image: image(),
-      imageAlt: z.string().min(1),
+      imageAlt: z.string().optional(),
       date: z.coerce.date().optional(),
       medium: z.string().optional(),
       dimensions: z.string().optional(),

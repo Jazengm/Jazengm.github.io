@@ -153,6 +153,8 @@ The included Mandelbrot/Julia explorer is a reference: a React Canvas 2D island 
 
 Put the local image under `src/assets/illustrations/` and add a matching Markdown record under `src/content/illustrations/`. The gallery and full-size detail route are generated automatically from that record. See [Manually add an illustration](docs/architecture.md#manually-add-an-illustration) for the complete frontmatter example and accessibility checklist.
 
+`imageAlt` is optional; when omitted, the illustration title is used as a fallback. Add a specific `imageAlt` whenever the image conveys information, and use `imageAlt: ""` only for a decorative image.
+
 ## Checks and tests
 
 Install the Playwright browser once on each machine:

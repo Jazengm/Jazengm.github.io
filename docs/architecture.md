@@ -143,8 +143,8 @@ construction process, medium, provenance, and any visual details that need more
 context than the alternative text.
 ```
 
-4. Keep `summary` concise, but make the Markdown body useful on its own. `date`, `medium`, `dimensions`, and `tags` are optional; `title`, `summary`, `image`, and `imageAlt` are required.
-5. Write `imageAlt` for the image itself, not merely its title. Do not begin with “image of,” and do not put essential information only in the hover overlay.
+4. Keep `summary` concise, but make the Markdown body useful on its own. `date`, `medium`, `dimensions`, `tags`, and `imageAlt` are optional; `title`, `summary`, and `image` are required.
+5. Write `imageAlt` for the image itself, not merely its title. If it is omitted, the page uses the illustration title as a fallback; use `imageAlt: ""` only for a genuinely decorative image. Do not begin with “image of,” and do not put essential information only in the hover overlay.
 6. Use `placeholder: true` only for explicit template samples. Use `order` to control gallery order; lower numbers appear first.
 7. Run the complete checks before committing. No gallery component or route table needs manual editing.
 

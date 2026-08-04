@@ -34,7 +34,7 @@ const illustrations = (await getCollection("illustrations")).sort(
             <figure>
               <Image
                 src={illustration.data.image}
-                alt={illustration.data.imageAlt}
+                alt={illustration.data.imageAlt ?? illustration.data.title}
                 width={720}
                 loading={index < 2 ? "eager" : "lazy"}
               />
