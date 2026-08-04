@@ -1,0 +1,176 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../utils/paths";
+
+export async function getStaticPaths() {
+  const illustrations = await getCollection("illustrations");
+  return illustrations.map((illustration) => ({
+    params: { id: illustration.id },
+    props: { illustration },
+  }));
+}
+
+const { illustration } = Astro.props;
+const { Content } = await render(illustration);
+---
+
+<BaseLayout
+  title={illustration.data.title}
+  description={illustration.data.summary}
+  type="article"
+>
+  <article class="illustration-detail">
+    <a class="back-link" href={withBase("/illustration/")}>
+      <span aria-hidden="true">←</span> All illustrations
+    </a>
+
+    <header class="illustration-header content-column">
+      <p class="eyebrow">Illustration</p>
+      <h1 class="page-title">{illustration.data.title}</h1>
+      <p class="page-lede">{illustration.data.summary}</p>
+      {
+        illustration.data.placeholder && (
+          <p class="placeholder-note">
+            This image and description are explicit placeholder content. Replace
+            them before treating this gallery as a portfolio.
+          </p>
+        )
+      }
+    </header>
+
+    <figure class="full-image">
+      <Image
+        src={illustration.data.image}
+        alt={illustration.data.imageAlt}
+        width={illustration.data.image.width}
+        loading="eager"
+      />
+    </figure>
+
+    <div class="illustration-information">
+      <dl class="illustration-metadata">
+        {
+          illustration.data.date && (
+            <>
+              <dt>Date</dt>
+              <dd>
+                <time datetime={illustration.data.date.toISOString()}>
+                  {illustration.data.date.toLocaleDateString("en", {
+                    dateStyle: "long",
+                  })}
+                </time>
+              </dd>
+            </>
+          )
+        }
+        {
+          illustration.data.medium && (
+            <>
+              <dt>Medium</dt>
+              <dd>{illustration.data.medium}</dd>
+            </>
+          )
+        }
+        {
+          illustration.data.dimensions && (
+            <>
+              <dt>Dimensions</dt>
+              <dd>{illustration.data.dimensions}</dd>
+            </>
+          )
+        }
+      </dl>
+
+      <div class="prose illustration-description">
+        <Content />
+        {
+          illustration.data.tags.length > 0 && (
+            <ul class="tag-list" aria-label="Illustration tags">
+              {illustration.data.tags.map((tag) => (
+                <li class="tag">{tag}</li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    gap: 0.4rem;
+    margin-bottom: var(--space-5);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .illustration-header {
+    margin-bottom: var(--space-5);
+  }
+
+  .placeholder-note {
+    margin-top: var(--space-4);
+  }
+
+  .full-image {
+    margin: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-muted);
+  }
+
+  .full-image img {
+    width: 100%;
+    height: auto;
+    max-height: 88vh;
+    object-fit: contain;
+  }
+
+  .illustration-information {
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.35fr) minmax(0, 1fr);
+    gap: clamp(2rem, 7vw, 6rem);
+    margin-top: var(--space-5);
+  }
+
+  .illustration-metadata {
+    margin: 0;
+  }
+
+  .illustration-metadata dt {
+    color: var(--color-primary-strong);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .illustration-metadata dd {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-muted);
+  }
+
+  .illustration-description {
+    width: 100%;
+  }
+
+  .illustration-description :global(p:first-child) {
+    margin-top: 0;
+  }
+
+  .illustration-description .tag-list {
+    margin-top: var(--space-5);
+  }
+
+  @media (max-width: 700px) {
+    .illustration-information {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+  }
+</style>

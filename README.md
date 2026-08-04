@@ -1,6 +1,6 @@
 # Astro academic homepage
 
-A static, accessible academic homepage template for a mathematics researcher. It separates verified profile data from content, stores publications and notes in typed Astro Content Collections, and limits React to four focused interactions: the site atlas, publication explorer, MDX demonstration, and fractal experiment.
+A static, accessible academic homepage template for a mathematics researcher. It separates verified profile data from content, stores publications, notes, illustrations, and experiments in typed Astro Content Collections, and limits React to four focused interactions: the site atlas, publication explorer, MDX demonstration, and fractal experiment.
 
 The repository currently contains conspicuous fictional sample records. It does not claim a real identity, institution, paper, DOI, ORCID, or journal affiliation.
 
@@ -13,8 +13,9 @@ Before publishing the site as a personal academic record:
 3. Change `isPlaceholder` to `false` only after all profile fields are checked. This enables Person JSON-LD.
 4. Replace the three files under `src/content/publications/` with real records and remove each placeholder warning only after verification.
 5. Replace or remove the two sample notes and centralized sample course/theme data.
-6. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
-7. Replace the favicon and local diagrams if desired, then run the complete validation commands below.
+6. Replace or remove the two placeholder Illustration records and SVG color fields.
+7. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
+8. Replace the favicon and local diagrams if desired, then run the complete validation commands below.
 
 Unknown personal information is deliberately centralized in `src/config/site.ts`. Example academic content lives in its relevant collection because that is where future real content belongs, and every such example has `[Placeholder]` in its title plus `placeholder: true` in frontmatter.
 
@@ -54,12 +55,13 @@ For the complete file map, build pipeline, routing rules, styling boundaries, an
 - `src/config/site.ts`: profile, navigation labels, research themes, course metadata, author-name matches, and canonical URL.
 - `src/content/publications/`: one Markdown or MDX file per publication.
 - `src/content/notes/`: one Markdown or MDX file per note.
+- `src/content/illustrations/`: one Markdown or MDX description per gallery image.
 - `src/content/experiments/`: experiment directory records.
 - `src/content.config.ts`: all collection schemas. This is the source of truth for permitted frontmatter.
 - `src/assets/`: images imported by content and processed by Astro.
 - `public/`: files copied unchanged, such as `robots.txt`, downloads, and an optional `CNAME`.
 
-Pages read these sources automatically. Adding a publication, note, or experiment does not require editing a listing component.
+Pages read these sources automatically. Adding a publication, note, illustration, or experiment does not require editing a listing component.
 
 ## Modify the profile and design
 
@@ -147,6 +149,10 @@ Use an island only when stateful interaction is necessary; ordinary prose should
 
 The included Mandelbrot/Julia explorer is a reference: a React Canvas 2D island delegates bounded computation to `src/workers/fractal.worker.ts` and supports drag, wheel/buttons, keyboard pan controls, iterations, Julia parameters, reset, viewport readout, and PNG export.
 
+## Add an Illustration
+
+Put the local image under `src/assets/illustrations/` and add a matching Markdown record under `src/content/illustrations/`. The gallery and full-size detail route are generated automatically from that record. See [Manually add an illustration](docs/architecture.md#manually-add-an-illustration) for the complete frontmatter example and accessibility checklist.
+
 ## Checks and tests
 
 Install the Playwright browser once on each machine:
@@ -165,7 +171,7 @@ npm run build
 npm run test
 ```
 
-Use `npm run format` to apply formatting. Browser tests cover required routes, navigation, desktop and touch publication previews, ResearchMap keyboard access, fractal controls, MDX math/islands, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
+Use `npm run format` to apply formatting. Browser tests cover required routes, navigation, desktop and touch publication previews, Illustration hover/focus/detail behavior, ResearchMap keyboard access, fractal controls, MDX math/islands, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
 
 ## GitHub Pages deployment
 

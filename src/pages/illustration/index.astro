@@ -1,0 +1,140 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import PageHeader from "../../components/PageHeader.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../utils/paths";
+
+const illustrations = (await getCollection("illustrations")).sort(
+  (left, right) =>
+    left.data.order - right.data.order ||
+    left.data.title.localeCompare(right.data.title),
+);
+---
+
+<BaseLayout
+  title="Illustration"
+  description="A gallery of mathematical images and visual studies."
+>
+  <PageHeader
+    eyebrow="Images and visual studies"
+    title="Illustration"
+    lede="A visual index of mathematical illustrations. Hover or focus an image to reveal its name, then open it for a full-size view and detailed notes."
+  />
+
+  <ul class="illustration-grid section-block" aria-label="Illustrations">
+    {
+      illustrations.map((illustration, index) => (
+        <li>
+          <a
+            class="illustration-card"
+            href={withBase("/illustration/" + illustration.id + "/")}
+            aria-label={"View " + illustration.data.title}
+          >
+            <figure>
+              <Image
+                src={illustration.data.image}
+                alt={illustration.data.imageAlt}
+                width={720}
+                loading={index < 2 ? "eager" : "lazy"}
+              />
+              <figcaption aria-hidden="true">
+                <span>{illustration.data.title}</span>
+              </figcaption>
+            </figure>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
+
+<style>
+  .illustration-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2.5vw, 1.5rem);
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .illustration-card,
+  .illustration-card figure {
+    display: block;
+    height: 100%;
+    margin: 0;
+  }
+
+  .illustration-card {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    text-decoration: none;
+  }
+
+  .illustration-card figure {
+    position: relative;
+  }
+
+  .illustration-card img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    transition:
+      filter var(--transition-standard),
+      scale var(--transition-standard);
+  }
+
+  .illustration-card figcaption {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: end;
+    padding: clamp(1rem, 3vw, 2rem);
+    color: var(--color-on-dark);
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--color-canvas) 92%, transparent),
+      transparent 68%
+    );
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+
+  .illustration-card figcaption span {
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 2.7vw, 2rem);
+    line-height: 1.15;
+  }
+
+  .illustration-card:hover img,
+  .illustration-card:focus-visible img {
+    filter: saturate(0.88);
+    scale: 1.015;
+  }
+
+  .illustration-card:hover figcaption,
+  .illustration-card:focus-visible figcaption {
+    opacity: 1;
+  }
+
+  @media (any-hover: none) {
+    .illustration-card figcaption {
+      background: linear-gradient(
+        to top,
+        color-mix(in srgb, var(--color-canvas) 88%, transparent),
+        transparent 52%
+      );
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .illustration-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

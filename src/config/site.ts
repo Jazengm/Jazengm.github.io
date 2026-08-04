@@ -60,6 +60,11 @@ export const navigation: NavigationItem[] = [
     description: "Small interactive mathematical programs.",
   },
   {
+    label: "Illustration",
+    href: "/illustration",
+    description: "Mathematical images and visual studies.",
+  },
+  {
     label: "About",
     href: "/about",
     description: "Biography, education, and contact details.",

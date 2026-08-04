@@ -65,4 +65,29 @@ const experiments = defineCollection({
     }),
 });
 
-export const collections = { publications, notes, experiments };
+const illustrations = defineCollection({
+  loader: glob({
+    base: "./src/content/illustrations",
+    pattern: "**/*.{md,mdx}",
+  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      summary: z.string().min(1),
+      image: image(),
+      imageAlt: z.string().min(1),
+      date: z.coerce.date().optional(),
+      medium: z.string().optional(),
+      dimensions: z.string().optional(),
+      tags: z.array(z.string()).default([]),
+      order: z.number().default(0),
+      placeholder: z.boolean().default(false),
+    }),
+});
+
+export const collections = {
+  publications,
+  notes,
+  experiments,
+  illustrations,
+};

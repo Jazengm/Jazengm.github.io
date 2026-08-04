@@ -8,6 +8,8 @@ const requiredRoutes = [
   "/notes/",
   "/experiments/",
   "/experiments/fractal/",
+  "/illustration/",
+  "/illustration/blue-field/",
   "/about/",
 ];
 
@@ -110,13 +112,14 @@ test("ResearchMap nodes respond to keyboard focus", async ({ page }) => {
   await expect(map.locator("#research-map-detail")).not.toBeEmpty();
 });
 
-test("note and experiment entries resolve and hydrate optional islands", async ({
+test("content directory entries resolve and hydrate optional islands", async ({
   page,
 }) => {
   const errors = captureConsoleErrors(page);
   const directories = [
     { path: "/notes/", links: ".note-list h2 a" },
     { path: "/experiments/", links: ".experiment-card h2 a" },
+    { path: "/illustration/", links: ".illustration-card" },
   ];
 
   for (const directory of directories) {
@@ -133,6 +136,28 @@ test("note and experiment entries resolve and hydrate optional islands", async (
     }
   }
   expect(errors).toEqual([]);
+});
+
+test("illustration names appear on hover and detail pages show full images", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/illustration/");
+  const first = page.locator(".illustration-card").first();
+  const caption = first.locator("figcaption");
+
+  await first.hover();
+  await expect(caption).toHaveCSS("opacity", "1");
+  await first.focus();
+  await expect(first).toBeFocused();
+  await expect(caption).toHaveCSS("opacity", "1");
+
+  await first.click();
+  await expect(page.locator(".full-image img")).toBeVisible();
+  await expect(page.locator(".illustration-description")).not.toBeEmpty();
+  await expect(
+    page.getByRole("link", { name: "All illustrations" }),
+  ).toBeVisible();
 });
 
 test("fractal mode switches and Reset restores defaults", async ({ page }) => {

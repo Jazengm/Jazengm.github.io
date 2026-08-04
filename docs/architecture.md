@@ -12,7 +12,7 @@ This document explains where to make common changes and how source files become 
 │   ├── assets/                Images imported and processed by Astro
 │   ├── components/            Reusable Astro structure and focused React islands
 │   ├── config/site.ts         Profile, navigation, themes, courses, and site settings
-│   ├── content/               Publication, note, and experiment records
+│   ├── content/               Publication, note, illustration, and experiment records
 │   ├── content.config.ts      Build-time schemas for those content records
 │   ├── layouts/               Shared page shells
 │   ├── pages/                 File-based routes; each file becomes a URL
@@ -47,43 +47,45 @@ React is reserved for stateful interactions. Components with directives such as 
 
 Files under `src/pages/` define URLs:
 
-| Source file                           | Generated route        | Purpose                      |
-| ------------------------------------- | ---------------------- | ---------------------------- |
-| `src/pages/index.astro`               | `/`                    | Home page                    |
-| `src/pages/about.astro`               | `/about`               | About page                   |
-| `src/pages/publications.astro`        | `/publications`        | Publication directory        |
-| `src/pages/research.astro`            | `/research`            | Research-theme directory     |
-| `src/pages/teaching.astro`            | `/teaching`            | Course directory             |
-| `src/pages/notes/index.astro`         | `/notes`               | Note directory               |
-| `src/pages/notes/[...id].astro`       | `/notes/ENTRY-ID`      | One route per non-draft note |
-| `src/pages/experiments/index.astro`   | `/experiments`         | Experiment directory         |
-| `src/pages/experiments/fractal.astro` | `/experiments/fractal` | One interactive experiment   |
-| `src/pages/404.astro`                 | `/404`                 | Static not-found page        |
+| Source file                            | Generated route          | Purpose                      |
+| -------------------------------------- | ------------------------ | ---------------------------- |
+| `src/pages/index.astro`                | `/`                      | Home page                    |
+| `src/pages/about.astro`                | `/about`                 | About page                   |
+| `src/pages/publications.astro`         | `/publications`          | Publication directory        |
+| `src/pages/research.astro`             | `/research`              | Research-theme directory     |
+| `src/pages/teaching.astro`             | `/teaching`              | Course directory             |
+| `src/pages/notes/index.astro`          | `/notes`                 | Note directory               |
+| `src/pages/notes/[...id].astro`        | `/notes/ENTRY-ID`        | One route per non-draft note |
+| `src/pages/illustration/index.astro`   | `/illustration`          | Image-led illustration index |
+| `src/pages/illustration/[...id].astro` | `/illustration/ENTRY-ID` | One full-size image detail   |
+| `src/pages/experiments/index.astro`    | `/experiments`           | Experiment directory         |
+| `src/pages/experiments/fractal.astro`  | `/experiments/fractal`   | One interactive experiment   |
+| `src/pages/404.astro`                  | `/404`                   | Static not-found page        |
 
-`[...id].astro` is a dynamic route template. Its `getStaticPaths()` function reads the notes collection and tells Astro which concrete paths to generate. The result is still a set of static pages.
+`[...id].astro` is a dynamic route template. Its `getStaticPaths()` function reads the corresponding notes or illustrations collection and tells Astro which concrete paths to generate. The result is still a set of static pages.
 
-Adding a publication, note, or experiment directory record normally updates its listing automatically because the listing page calls `getCollection()`. An experiment implementation still needs a matching page route because each interactive program has its own UI and code.
+Adding a publication, note, illustration, or experiment directory record normally updates its listing automatically because the listing page calls `getCollection()`. An experiment implementation still needs a matching page route because each interactive program has its own UI and code.
 
 ## Sources of truth
 
 Choose the source according to what the information represents:
 
-| Change                                                | Source of truth                                            |
-| ----------------------------------------------------- | ---------------------------------------------------------- |
-| Name, position, institution, biography, profile links | `src/config/site.ts`                                       |
-| Navigation labels, descriptions, and order            | `src/config/site.ts`                                       |
-| Home-only wording or section order                    | `src/pages/index.astro`                                    |
-| Publication, note, or experiment metadata             | A file under `src/content/`                                |
-| Allowed content frontmatter fields                    | `src/content.config.ts`                                    |
-| Shared header, metadata, main container, and footer   | `src/layouts/BaseLayout.astro`                             |
-| Shared long-form note presentation                    | `src/layouts/ContentLayout.astro`                          |
-| Reusable visual block                                 | `src/components/`                                          |
-| Site-wide colors, widths, spacing, and typography     | `src/styles/tokens.css`                                    |
-| Shared element and utility styles                     | `src/styles/global.css` and `src/styles/prose.css`         |
-| Publication explorer presentation                     | `src/styles/publications.css`                              |
-| Research-map and math-demo island presentation        | `src/styles/research-map.css` / `src/styles/math-demo.css` |
-| Fractal experiment presentation                       | `src/styles/fractal.css`                                   |
-| Styles used by only one static page/component         | That file's scoped `<style>` block                         |
+| Change                                                  | Source of truth                                            |
+| ------------------------------------------------------- | ---------------------------------------------------------- |
+| Name, position, institution, biography, profile links   | `src/config/site.ts`                                       |
+| Navigation labels, descriptions, and order              | `src/config/site.ts`                                       |
+| Home-only wording or section order                      | `src/pages/index.astro`                                    |
+| Publication, note, illustration, or experiment metadata | A file under `src/content/`                                |
+| Allowed content frontmatter fields                      | `src/content.config.ts`                                    |
+| Shared header, metadata, main container, and footer     | `src/layouts/BaseLayout.astro`                             |
+| Shared long-form note presentation                      | `src/layouts/ContentLayout.astro`                          |
+| Reusable visual block                                   | `src/components/`                                          |
+| Site-wide colors, widths, spacing, and typography       | `src/styles/tokens.css`                                    |
+| Shared element and utility styles                       | `src/styles/global.css` and `src/styles/prose.css`         |
+| Publication explorer presentation                       | `src/styles/publications.css`                              |
+| Research-map and math-demo island presentation          | `src/styles/research-map.css` / `src/styles/math-demo.css` |
+| Fractal experiment presentation                         | `src/styles/fractal.css`                                   |
+| Styles used by only one static page/component           | That file's scoped `<style>` block                         |
 
 This separation prevents the same fact from being repeated in multiple components. For example, navigation is declared once in `site.ts`; both the header and Home page derive their links from it.
 
@@ -111,13 +113,48 @@ MDX may import a focused interactive component, but ordinary prose and mathemati
 
 The experiments index gets title, description, tags, and optional thumbnail from `src/content/experiments/`. Its links are derived from each record ID. An experiment route uses `getEntry()` to load the same metadata instead of duplicating it in the page implementation.
 
+### Illustrations
+
+Each record in `src/content/illustrations/` supplies a title, short summary, imported image, accurate alternative text, optional metadata, and a Markdown body with the detailed description. The filename becomes the stable entry ID. The static index renders the image grid, while `src/pages/illustration/[...id].astro` generates one full-size detail page per record.
+
+The visible title overlay appears on pointer hover and keyboard focus. On devices without hover it remains visible, so a mouse is never required to identify or open an image.
+
+### Manually add an illustration
+
+1. Put the original local image in `src/assets/illustrations/`. Prefer a high-quality `jpg`, `png`, `webp`, `avif`, or `svg`; do not commit an unnecessarily large camera original.
+2. Create `src/content/illustrations/my-image.md`. The lowercase filename becomes `/illustration/my-image/`.
+3. Add frontmatter in this form:
+
+```yaml
+---
+title: "My illustration"
+summary: "A short sentence used on the detail page and in metadata."
+image: "../../assets/illustrations/my-image.jpg"
+imageAlt: "A concrete description of the image for someone who cannot see it"
+date: 2026-08-03
+medium: "Ink and digital color"
+dimensions: "2400 × 1600 px"
+tags: ["algebraic geometry", "diagram"]
+order: 10
+placeholder: false
+---
+Write the detailed description here. Explain the subject, mathematical idea,
+construction process, medium, provenance, and any visual details that need more
+context than the alternative text.
+```
+
+4. Keep `summary` concise, but make the Markdown body useful on its own. `date`, `medium`, `dimensions`, and `tags` are optional; `title`, `summary`, `image`, and `imageAlt` are required.
+5. Write `imageAlt` for the image itself, not merely its title. Do not begin with “image of,” and do not put essential information only in the hover overlay.
+6. Use `placeholder: true` only for explicit template samples. Use `order` to control gallery order; lower numbers appear first.
+7. Run the complete checks before committing. No gallery component or route table needs manual editing.
+
 ## Images: `src/assets` or `public`?
 
 Prefer `src/assets/` for page images. Importing an image lets Astro validate the path, read its dimensions, and process the output. Use `public/` for files that must retain their exact filename or are referenced as plain URLs, such as a downloadable PDF, favicon, or `CNAME`.
 
 | Requirement                                             | Recommended location |
 | ------------------------------------------------------- | -------------------- |
-| Portrait, diagram, thumbnail, or publication preview    | `src/assets/`        |
+| Portrait, illustration, diagram, or publication preview | `src/assets/`        |
 | Favicon, download, robots file, or stable untouched URL | `public/`            |
 
 ### Example: add an optimized image to Home
