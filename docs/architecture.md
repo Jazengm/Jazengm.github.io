@@ -116,7 +116,9 @@ MDX may import a focused interactive component, but ordinary prose and mathemati
 
 ### Mathematics and syntax highlighting
 
-`astro.config.mjs` sends Markdown and MDX through `remark-math` and `rehype-katex`; `BaseLayout.astro` loads the matching KaTeX stylesheet. Keep the direct `katex` dependency on the same compatible 0.16 series used by `rehype-katex`. Mixing a 0.16 renderer with the renamed sizing selectors in KaTeX 0.18 CSS makes superscripts and root indices incorrectly inherit the full base size.
+`astro.config.mjs` sends Markdown and MDX through `remark-math` and `rehype-katex`; `BaseLayout.astro` loads the matching KaTeX stylesheet. The root dependency is intentionally pinned to `katex: "0.16.47"`, the version used by `rehype-katex@7.0.1`. Keep these versions aligned: mixing a 0.16 renderer with the renamed sizing selectors in KaTeX 0.18 CSS makes superscripts and root indices incorrectly inherit the full base size.
+
+Do not upgrade KaTeX by changing only one dependency. After changing package metadata or on a new machine, run `npm ci` so `node_modules` matches `package-lock.json`. If rendered TeX suddenly has incorrect script or root sizes, verify `npm ls katex rehype-katex` and make sure both resolve to `katex@0.16.47` before changing page styles.
 
 Astro highlights fenced code with Shiki. Shiki calls the Wolfram Language grammar `wolfram`, so the Markdown-friendly `mathematica` name is registered as an alias in `markdown.shikiConfig.langAlias`. Either fence works:
 
