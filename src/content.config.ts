@@ -31,6 +31,7 @@ const publications = defineCollection({
       abstract: z.string().min(1),
       tags: z.array(z.string()).default([]),
       order: z.number().optional(),
+      selected: z.boolean().default(false),
       previewImage: image().optional(),
       previewImageAlt: z.string().optional(),
       links: linksSchema,

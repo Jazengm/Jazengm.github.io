@@ -11,6 +11,7 @@ abstract: "This fictional article demonstrates an older published item, tag filt
 tags:
   - "combinatorics"
   - "optimization"
+selected: true
 placeholder: true
 ---
 

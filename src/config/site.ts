@@ -31,7 +31,11 @@ export type TeachingCourse = {
 };
 
 export const navigation: NavigationItem[] = [
-  { label: "Home", href: "/", description: "Profile and selected paths." },
+  {
+    label: "Home",
+    href: "/",
+    description: "Profile, selected papers, and section map.",
+  },
   {
     label: "Publications",
     href: "/publications",

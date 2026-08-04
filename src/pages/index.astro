@@ -1,12 +1,12 @@
 ---
+import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileLinks from "../components/ProfileLinks.astro";
 import ResearchMap, { type ResearchMapNode } from "../components/ResearchMap";
 import { site } from "../config/site";
 import { withBase } from "../utils/paths";
+import { comparePublications } from "../utils/publications";
 
-// Navigation is declared once in site.ts; Home derives both its cards and atlas from that source.
-const primaryLinks = site.navigation.filter((item) => item.href !== "/");
 const atlasItems = site.navigation.filter(
   (item) => item.href !== "/" && item.href !== "/about",
 );
@@ -14,6 +14,32 @@ const atlasNodes: ResearchMapNode[] = atlasItems.map((item) => ({
   ...item,
   href: withBase(item.href),
 }));
+
+const ownerNames = new Set<string>([site.name, ...site.authorNameMatches]);
+const authorList = new Intl.ListFormat("en", {
+  style: "long",
+  type: "conjunction",
+});
+const selectedPaperCitations = (
+  await getCollection("publications", ({ data }) => data.selected)
+)
+  .sort(comparePublications)
+  .map(({ id, data }) => {
+    const coauthors = data.authors.filter((author) => !ownerNames.has(author));
+    const collaboration =
+      coauthors.length > 0 ? ", with " + authorList.format(coauthors) : "";
+    return {
+      id,
+      text:
+        data.title +
+        collaboration +
+        ". " +
+        (data.venue ?? "Preprint") +
+        " (" +
+        data.year +
+        ").",
+    };
+  });
 ---
 
 <BaseLayout>
@@ -37,21 +63,18 @@ const atlasNodes: ResearchMapNode[] = atlasItems.map((item) => ({
     <ProfileLinks />
   </section>
 
-  <section class="section-block" aria-labelledby="paths-heading">
-    <p class="eyebrow">Paths</p>
-    <h2 class="section-heading" id="paths-heading">Start with a section</h2>
-    <ul class="link-grid">
+  <section class="section-block" aria-labelledby="selected-papers-heading">
+    <p class="eyebrow">Writing and results</p>
+    <h2 class="section-heading" id="selected-papers-heading">
+      Selected papers
+    </h2>
+    <ol class="selected-publications">
       {
-        primaryLinks.map((item) => (
-          <li>
-            <a href={withBase(item.href)}>
-              <strong>{item.label}</strong>
-              <span>{item.description}</span>
-            </a>
-          </li>
+        selectedPaperCitations.map((citation) => (
+          <li data-publication-id={citation.id}>{citation.text}</li>
         ))
       }
-    </ul>
+    </ol>
   </section>
 
   <div class="section-block">
@@ -75,5 +98,18 @@ const atlasNodes: ResearchMapNode[] = atlasItems.map((item) => ({
 
   .home-biography {
     max-width: var(--content-width);
+  }
+
+  .selected-publications {
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+    list-style: none;
+  }
+
+  .selected-publications li {
+    padding-block: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    line-height: 1.55;
   }
 </style>

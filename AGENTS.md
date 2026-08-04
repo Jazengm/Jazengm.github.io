@@ -7,6 +7,7 @@
 - Use Astro components for static structure. Use React only for a genuinely stateful island, prefer `client:visible` for noncritical interactions, and do not add unnecessary site-wide client JavaScript or state.
 - Preserve semantic HTML, skip navigation, visible focus, keyboard and touch equivalents, accurate alt text, `aria-current`, reduced-motion behavior, and the light/dark contrast system. Hover must never be the only way to obtain information.
 - Keep all site-wide colors in the semantic variables in `src/styles/tokens.css`. Blue is primary and orange is secondary; do not reintroduce component-level theme colors or a configuration-driven inline accent. Keep halftone decoration sparse, `aria-hidden`, noninteractive, and absent under reduced motion.
+- Keep the direct KaTeX stylesheet version compatible with the renderer used by `rehype-katex`; verify computed superscript sizing after dependency changes. Preserve the Shiki `mathematica` alias unless all corresponding code fences are migrated.
 - Keep internal routes compatible with GitHub Pages `base`; use `withBase()` for root-relative links passed through code.
 - Explain and justify every new dependency. Prefer platform APIs and small local components over UI, animation, or graphics libraries.
 - After changes run `npm run format:check`, `npm run check`, `npm run build`, and `npm run test`. Fix failures; never skip, weaken, or bypass a failing test to claim completion.

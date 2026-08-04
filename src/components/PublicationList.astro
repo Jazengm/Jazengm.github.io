@@ -6,17 +6,9 @@ import { withBase } from "../utils/paths";
 import PublicationExplorer, {
   type PublicationRecord,
 } from "./PublicationExplorer";
+import { comparePublications } from "../utils/publications";
 
-const publicationYearSortValue = (year: number | "TBA") =>
-  year === "TBA" ? Number.MAX_SAFE_INTEGER : year;
-
-const entries = (await getCollection("publications")).sort(
-  (left, right) =>
-    publicationYearSortValue(right.data.year) -
-      publicationYearSortValue(left.data.year) ||
-    (left.data.order ?? Number.MAX_SAFE_INTEGER) -
-      (right.data.order ?? Number.MAX_SAFE_INTEGER),
-);
+const entries = (await getCollection("publications")).sort(comparePublications);
 
 const publications: PublicationRecord[] = await Promise.all(
   entries.map(async ({ id, data }) => {

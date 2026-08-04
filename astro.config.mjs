@@ -13,6 +13,11 @@ export default defineConfig({
   site: "https://jazengm.github.io",
   base: "/",
   markdown: {
+    shikiConfig: {
+      langAlias: {
+        mathematica: "wolfram",
+      },
+    },
     processor: unified({
       remarkPlugins: [remarkMath],
       rehypePlugins: [rehypeKatex],

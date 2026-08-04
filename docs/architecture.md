@@ -75,6 +75,7 @@ Choose the source according to what the information represents:
 | Name, position, institution, biography, profile links   | `src/config/site.ts`                                       |
 | Navigation labels, descriptions, and order              | `src/config/site.ts`                                       |
 | Home-only wording or section order                      | `src/pages/index.astro`                                    |
+| Papers included in the Home selected list               | `selected` in each publication record                      |
 | Publication, note, illustration, or experiment metadata | A file under `src/content/`                                |
 | Allowed content frontmatter fields                      | `src/content.config.ts`                                    |
 | Shared header, metadata, main container, and footer     | `src/layouts/BaseLayout.astro`                             |
@@ -93,9 +94,11 @@ This separation prevents the same fact from being repeated in multiple component
 
 ### Home and ordinary pages
 
-`src/pages/index.astro` imports `site` and composes the Home sections directly. `BaseLayout` supplies the common document head, header, main container, theme setup, and footer. Pages such as About and Research follow the same pattern.
+`src/pages/index.astro` imports `site`, queries selected publication records, and composes the Home sections directly. `BaseLayout` supplies the common document head, header, main container, theme setup, and footer. Pages such as About and Research follow the same pattern.
 
 Use the page file to change section order or Home-only content. Move a block to `src/components/` when it becomes reusable. Do not add React merely to split markup into a component; an `.astro` component is the default for static structure.
+
+The Home **Selected papers** list is not a manually duplicated array. Add `selected: true` to each publication that should appear there. The page removes `site.name` and every `authorNameMatches` value from the coauthor phrase, uses `venue` as the journal name, and falls back to “Preprint” when no venue is present. All selected records currently appear; changing `selected` does not remove a paper from the full Publications page.
 
 ### Publications
 
@@ -103,11 +106,25 @@ Each Markdown or MDX file under `src/content/publications/` is loaded and valida
 
 The record filename becomes its stable entry ID. Adding a valid record is enough for it to appear in the directory; no publication array should be maintained elsewhere.
 
+Publication sorting is shared by Home and the complete directory through `src/utils/publications.ts`. Keep the `selected` flag in frontmatter rather than adding a separate Home-specific paper list.
+
 ### Notes
 
 The notes index queries all non-draft records. The dynamic `[...id].astro` route generates one static URL per note, renders the Markdown/MDX body, and places it inside `ContentLayout.astro`.
 
 MDX may import a focused interactive component, but ordinary prose and mathematics should remain Markdown.
+
+### Mathematics and syntax highlighting
+
+`astro.config.mjs` sends Markdown and MDX through `remark-math` and `rehype-katex`; `BaseLayout.astro` loads the matching KaTeX stylesheet. Keep the direct `katex` dependency on the same compatible 0.16 series used by `rehype-katex`. Mixing a 0.16 renderer with the renamed sizing selectors in KaTeX 0.18 CSS makes superscripts and root indices incorrectly inherit the full base size.
+
+Astro highlights fenced code with Shiki. Shiki calls the Wolfram Language grammar `wolfram`, so the Markdown-friendly `mathematica` name is registered as an alias in `markdown.shikiConfig.langAlias`. Either fence works:
+
+````markdown
+```mathematica
+Plot[Sin[x], {x, 0, 2 Pi}]
+```
+````
 
 ### Experiments
 

@@ -70,6 +70,28 @@ test("primary navigation links resolve", async ({ page, request }) => {
   }
 });
 
+test("Home lists selected papers as compact citations and spaces the footer", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(
+    page.getByRole("heading", { name: "Selected papers" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Start with a section" }),
+  ).toHaveCount(0);
+
+  const citations = page.locator(".selected-publications li");
+  expect(await citations.count()).toBeGreaterThan(0);
+  for (const citation of await citations.allInnerTexts()) {
+    expect(citation).toMatch(/\.\s.+\s\((?:\d{4}|TBA)\)\.$/);
+  }
+
+  await expect(page.locator("footer")).toContainText(
+    "© " + new Date().getFullYear() + " Xiangru Zeng.",
+  );
+});
+
 test("publication explorer filters and exposes desktop previews", async ({
   page,
 }) => {
@@ -160,6 +182,40 @@ test("illustration names appear on hover and detail pages show full images", asy
   ).toBeVisible();
 });
 
+test("Moorse Mosaic uses compact TeX scripts and highlighted Mathematica", async ({
+  page,
+}) => {
+  await page.goto("/illustration/moorse-mosaic/");
+
+  const mathSizes = await page.evaluate(() => {
+    const base = document.querySelector<HTMLElement>(".katex-html .mathnormal");
+    const superscript = document.querySelector<HTMLElement>(
+      ".katex-html .sizing.size3 .mord",
+    );
+    const rootIndex = document.querySelector<HTMLElement>(
+      ".katex-html .sizing.size1 .mord",
+    );
+    return {
+      base: base ? Number.parseFloat(getComputedStyle(base).fontSize) : 0,
+      superscript: superscript
+        ? Number.parseFloat(getComputedStyle(superscript).fontSize)
+        : 0,
+      rootIndex: rootIndex
+        ? Number.parseFloat(getComputedStyle(rootIndex).fontSize)
+        : 0,
+    };
+  });
+  expect(mathSizes.superscript).toBeLessThan(mathSizes.base * 0.8);
+  expect(mathSizes.rootIndex).toBeLessThan(mathSizes.base * 0.6);
+
+  const tokenColors = await page
+    .locator("pre.astro-code span[style*='color']")
+    .evaluateAll((tokens) =>
+      tokens.map((token) => getComputedStyle(token).color),
+    );
+  expect(new Set(tokenColors).size).toBeGreaterThan(2);
+});
+
 test("fractal mode switches and Reset restores defaults", async ({ page }) => {
   const errors = captureConsoleErrors(page);
   await page.goto("/experiments/fractal/");
@@ -188,7 +244,7 @@ test("theme choice persists and reduced motion is honored", async ({
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
   const transitionMilliseconds = await page
-    .locator(".link-grid a")
+    .locator(".primary-nav a")
     .first()
     .evaluate((element) => {
       const duration = getComputedStyle(element).transitionDuration;

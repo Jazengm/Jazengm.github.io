@@ -13,6 +13,7 @@ tags:
   - "moduli"
   - "curvature"
 order: 1
+selected: true
 previewImage: "../../assets/publications/curvature-moduli.svg"
 previewImageAlt: "Nested curves, tangent lines, and marked points in a geometric diagram"
 placeholder: true

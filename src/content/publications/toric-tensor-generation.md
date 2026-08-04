@@ -13,4 +13,5 @@ tags:
   - "algebraic geometry"
   - "toric varieties"
   - "derived categories"
+selected: true
 ---

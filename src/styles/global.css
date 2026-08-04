@@ -225,55 +225,6 @@ button.button:active {
   translate: 0 1px;
 }
 
-.link-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
-  gap: var(--space-3);
-  margin: var(--space-5) 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.link-grid a {
-  display: block;
-  height: 100%;
-  padding: var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text);
-  background: var(--color-surface);
-  text-decoration: none;
-  transition:
-    border-color var(--transition-fast),
-    background var(--transition-fast),
-    translate var(--transition-fast);
-}
-
-.link-grid a:hover,
-.link-grid a:focus-visible {
-  border-color: var(--color-primary);
-  background: var(--color-primary-soft);
-  translate: 0 -2px;
-}
-
-.link-grid strong::before {
-  margin-right: 0.5rem;
-  color: var(--color-secondary);
-  content: "●";
-  font-size: 0.65em;
-}
-
-.link-grid strong,
-.link-grid span {
-  display: block;
-}
-
-.link-grid span {
-  margin-top: 0.3rem;
-  color: var(--color-text-muted);
-  font-size: 0.9rem;
-}
-
 .placeholder-note {
   padding: var(--space-3);
   border-left: 3px solid var(--color-secondary);
