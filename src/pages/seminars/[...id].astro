@@ -1,0 +1,52 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { withBase } from "../../utils/paths";
+
+export async function getStaticPaths() {
+  const seminars = await getCollection("seminars");
+  return seminars.map((seminar) => ({
+    params: { id: seminar.id },
+    props: { seminar },
+  }));
+}
+
+const { seminar } = Astro.props;
+const { Content } = await render(seminar);
+---
+
+<BaseLayout
+  title={seminar.data.title}
+  description={seminar.data.summary}
+  type="article"
+>
+  <article class="seminar-detail">
+    <a class="back-link" href={withBase("/seminars/")}>
+      <span aria-hidden="true">←</span> All seminars
+    </a>
+
+    <header class="content-column">
+      <p class="eyebrow">{seminar.data.term}</p>
+      <h1 class="page-title">{seminar.data.title}</h1>
+      <p class="page-lede">{seminar.data.summary}</p>
+    </header>
+
+    <div class="prose seminar-description">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .back-link {
+    display: inline-flex;
+    gap: 0.4rem;
+    margin-bottom: var(--space-5);
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .seminar-description {
+    margin-top: var(--space-6);
+  }
+</style>

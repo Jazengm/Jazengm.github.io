@@ -1,6 +1,6 @@
 # Astro academic homepage
 
-A static, accessible academic homepage for Xiangru Zeng. It separates profile data from content, stores publications, illustrations, and experiments in typed Astro Content Collections, and limits React to the publication explorer and fractal experiment.
+A static, accessible academic homepage for Xiangru Zeng. It separates profile data from content, stores publications, illustrations, seminars, and experiments in typed Astro Content Collections, and limits React to the publication explorer and fractal experiment.
 
 Only verified content should be placed in a collection that is published by the site.
 
@@ -9,7 +9,7 @@ Only verified content should be placed in a collection that is published by the 
 Before publishing new content:
 
 1. Edit profile, contact, navigation, and canonical URL values in `src/config/site.ts`.
-2. Add only verified publications, illustrations, and experiments to their content collections.
+2. Add only verified publications, illustrations, seminars, and experiments to their content collections.
 3. Leave unknown optional profile URLs as `null`; their links remain hidden.
 4. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
 5. Run the complete validation commands below before committing.
@@ -50,12 +50,13 @@ For the complete file map, build pipeline, routing rules, styling boundaries, an
 - `src/config/site.ts`: profile, navigation labels, author-name matches, and canonical URL.
 - `src/content/publications/`: one Markdown or MDX file per publication.
 - `src/content/illustrations/`: one Markdown or MDX description per gallery image.
+- `src/content/seminars/`: one Markdown file per seminar; metadata and the complete description stay together.
 - `src/content/experiments/`: experiment directory records.
 - `src/content.config.ts`: all collection schemas. This is the source of truth for permitted frontmatter.
 - `src/assets/`: images imported by content and processed by Astro.
 - `public/`: files copied unchanged, such as `robots.txt`, downloads, and an optional `CNAME`.
 
-Pages read these sources automatically. Adding a publication, illustration, or experiment does not require editing a listing component.
+Pages read these sources automatically. Adding a publication, illustration, seminar, or experiment does not require editing a listing component.
 
 ## Modify the profile and design
 
@@ -111,6 +112,23 @@ Each selected citation is generated as “Title, with coauthors. Journal or Prep
 
 Astro validates the image reference and handles dimensions/output. SVG samples are passed safely through Astro's image pipeline; raster images can use Astro's optimized formats.
 
+## Add a Seminar
+
+Create one Markdown file under `src/content/seminars/`. Its filename becomes the detail URL, while its frontmatter supplies the list label and page metadata:
+
+```yaml
+---
+title: "Seminar title"
+term: "2026 Fall"
+summary: "A concise description used in page metadata."
+order: 1
+---
+Write the complete seminar description here. Markdown headings, lists, links,
+mathematics, and code blocks are supported.
+```
+
+For example, `mixed-hodge-structures.md` generates `/seminars/mixed-hodge-structures/` and appears on the Seminars index as “Mixed Hodge Structures (2026 Fall).” Keep the complete editable description below the frontmatter in that same file; no page component needs to be edited.
+
 ## Add an Experiment
 
 1. Create its implementation under `src/components/` and a route under `src/pages/experiments/`.
@@ -145,7 +163,7 @@ npm run build
 npm run test
 ```
 
-Use `npm run format` to apply formatting. Browser tests cover required and removed routes, navigation, selected-paper citations and footer spacing, desktop and touch publication previews, Illustration hover/focus/detail behavior, KaTeX script sizing, Mathematica highlighting, fractal controls, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
+Use `npm run format` to apply formatting. Browser tests cover required and removed routes, navigation, selected-paper citations and footer spacing, desktop and touch publication previews, Illustrations hover/focus/detail behavior, seminar routing and Markdown content, KaTeX script sizing, Mathematica highlighting, fractal controls, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
 
 ## GitHub Pages deployment
 
@@ -225,7 +243,7 @@ Run `npm run test` for interactive, layout, dependency, or infrastructure change
 
 ## Architecture notes
 
-Astro renders all ordinary content and navigation to static HTML. React is not loaded on About or the Illustration/Experiments indexes. Theme switching is a tiny native script. Semantic CSS variables provide the system-font blue-orange light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`.
+Astro renders all ordinary content and navigation to static HTML. React is not loaded on About or the Illustrations/Seminars/Experiments indexes. Theme switching is a tiny native script. Semantic CSS variables provide the system-font blue-orange light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`.
 
 See [Architecture and page generation](docs/architecture.md) for a maintainer-oriented explanation of file responsibilities and how data becomes a deployed page.
 

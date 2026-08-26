@@ -13,12 +13,12 @@ const illustrations = (await getCollection("illustrations")).sort(
 ---
 
 <BaseLayout
-  title="Illustration"
+  title="Illustrations"
   description="A gallery of mathematical images and visual studies."
 >
   <PageHeader
     eyebrow="Images and visual studies"
-    title="Illustration"
+    title="Illustrations"
     lede="A visual index of mathematical illustrations. Hover or focus an image to reveal its name, then open it for a full-size view and detailed notes."
   />
 
@@ -28,7 +28,7 @@ const illustrations = (await getCollection("illustrations")).sort(
         <li>
           <a
             class="illustration-card"
-            href={withBase("/illustration/" + illustration.id + "/")}
+            href={withBase("/illustrations/" + illustration.id + "/")}
             aria-label={"View " + illustration.data.title}
           >
             <figure>

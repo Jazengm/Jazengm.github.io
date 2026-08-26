@@ -5,8 +5,10 @@ const requiredRoutes = [
   "/publications/",
   "/experiments/",
   "/experiments/fractal/",
-  "/illustration/",
-  "/illustration/moorse-mosaic/",
+  "/illustrations/",
+  "/illustrations/moorse-mosaic/",
+  "/seminars/",
+  "/seminars/mixed-hodge-structures/",
   "/about/",
 ];
 
@@ -15,6 +17,8 @@ const removedRoutes = [
   "/teaching/",
   "/notes/",
   "/notes/sample-math-note/",
+  "/illustration/",
+  "/illustration/moorse-mosaic/",
   "/illustration/blue-field/",
   "/illustration/orange-field/",
 ];
@@ -143,7 +147,8 @@ test("content directory entries resolve and hydrate optional islands", async ({
   const errors = captureConsoleErrors(page);
   const directories = [
     { path: "/experiments/", links: ".experiment-card h2 a" },
-    { path: "/illustration/", links: ".illustration-card" },
+    { path: "/illustrations/", links: ".illustration-card" },
+    { path: "/seminars/", links: ".seminar-list a" },
   ];
 
   for (const directory of directories) {
@@ -171,11 +176,31 @@ test("published pages contain no sample-content warnings", async ({ page }) => {
   }
 });
 
+test("seminar index links to its Markdown-backed description", async ({
+  page,
+}) => {
+  await page.goto("/seminars/");
+  const seminar = page.getByRole("link", {
+    name: "Mixed Hodge Structures (2026 Fall)",
+  });
+  await expect(seminar).toHaveAttribute(
+    "href",
+    "/seminars/mixed-hodge-structures/",
+  );
+  await seminar.click();
+  await expect(
+    page.getByRole("heading", { name: "Mixed Hodge Structures", level: 1 }),
+  ).toBeVisible();
+  await expect(page.locator(".seminar-description")).toContainText(
+    "Tentative topics",
+  );
+});
+
 test("illustration names appear on hover and detail pages show full images", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/illustration/");
+  await page.goto("/illustrations/");
   const first = page.locator(".illustration-card").first();
   const caption = first.locator("figcaption");
 
@@ -196,7 +221,7 @@ test("illustration names appear on hover and detail pages show full images", asy
 test("Moorse Mosaic uses compact TeX scripts and highlighted Mathematica", async ({
   page,
 }) => {
-  await page.goto("/illustration/moorse-mosaic/");
+  await page.goto("/illustrations/moorse-mosaic/");
 
   const mathSizes = await page.evaluate(() => {
     const base = document.querySelector<HTMLElement>(".katex-html .mathnormal");

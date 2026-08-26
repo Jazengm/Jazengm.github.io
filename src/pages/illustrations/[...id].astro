@@ -22,12 +22,12 @@ const { Content } = await render(illustration);
   type="article"
 >
   <article class="illustration-detail">
-    <a class="back-link" href={withBase("/illustration/")}>
+    <a class="back-link" href={withBase("/illustrations/")}>
       <span aria-hidden="true">←</span> All illustrations
     </a>
 
     <header class="illustration-header content-column">
-      <p class="eyebrow">Illustration</p>
+      <p class="eyebrow">Illustrations</p>
       <h1 class="page-title">{illustration.data.title}</h1>
       <p class="page-lede">{illustration.data.summary}</p>
     </header>
