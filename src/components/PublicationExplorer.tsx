@@ -60,7 +60,6 @@ export default function PublicationExplorer({
 }: Props) {
   const [type, setType] = useState("all");
   const [tag, setTag] = useState("all");
-  const [query, setQuery] = useState("");
   const [activeId, setActiveId] = useState(publications[0]?.id ?? "");
   const [expandedId, setExpandedId] = useState("");
 
@@ -81,33 +80,19 @@ export default function PublicationExplorer({
     [publications],
   );
   const filtered = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase();
     return publications.filter((publication) => {
       const matchesType =
         type === "all" || (publication.type ?? "other") === type;
       const matchesTag = tag === "all" || publication.tags.includes(tag);
-      const haystack = [
-        publication.title,
-        publication.abstract,
-        publication.venue,
-        ...publication.authors,
-        ...publication.tags,
-      ]
-        .filter(Boolean)
-        .join(" ")
-        .toLocaleLowerCase();
-      return (
-        matchesType && matchesTag && (!needle || haystack.includes(needle))
-      );
+      return matchesType && matchesTag;
     });
-  }, [publications, query, tag, type]);
+  }, [publications, tag, type]);
   const active =
     filtered.find((publication) => publication.id === activeId) ?? filtered[0];
 
   const resetFilters = () => {
     setType("all");
     setTag("all");
-    setQuery("");
   };
 
   return (
@@ -119,15 +104,6 @@ export default function PublicationExplorer({
         className="publication-filters quiet-card"
         aria-label="Filter publications"
       >
-        <label className="control-field">
-          <span>Keywords</span>
-          <input
-            className="control-input"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </label>
         <label className="control-field">
           <span>Type</span>
           <select

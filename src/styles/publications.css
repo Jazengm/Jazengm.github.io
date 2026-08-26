@@ -1,6 +1,6 @@
 .publication-filters {
   display: grid;
-  grid-template-columns: minmax(12rem, 2fr) repeat(2, minmax(9rem, 1fr)) auto;
+  grid-template-columns: repeat(2, minmax(9rem, 1fr)) auto;
   align-items: end;
   gap: var(--space-3);
   padding: var(--space-3);

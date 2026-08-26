@@ -110,7 +110,7 @@ test("Home lists selected papers as compact citations and spaces the footer", as
   );
 });
 
-test("publication explorer filters and exposes desktop previews", async ({
+test("publication explorer exposes filters and desktop previews", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -125,9 +125,9 @@ test("publication explorer filters and exposes desktop previews", async ({
   await expect(page.locator(".publication-preview h3")).toHaveText(title);
   await first.focus();
   await expect(first).toBeFocused();
-
-  await page.getByLabel("Keywords").fill(title);
-  await expect(items).toHaveCount(1);
+  await expect(page.getByLabel("Keywords")).toHaveCount(0);
+  await expect(page.getByLabel("Type")).toBeVisible();
+  await expect(page.getByLabel("Tag")).toBeVisible();
 });
 
 test("publication preview has a touch-friendly inline alternative", async ({
