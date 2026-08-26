@@ -1,5 +1,6 @@
 # Maintenance rules for agents
 
+- Treat requests to "update my webpage" (or similar wording) as the full publication workflow: make and commit the requested changes on the local `site-development` branch, sync that commit to `main`, push both branches, and finish with `site-development` checked out locally. Treat "refresh local webpage" as a local dev-server restart only; do not perform Git actions for refresh-only requests.
 - Treat `src/config/site.ts` as the single source for profile, navigation, themes, courses, canonical URL, and author-name matching. Keep unknown data as a conspicuous placeholder or `null`; never invent academic facts or identifiers.
 - Keep content out of page/list components. Publications belong in `src/content/publications/`, notes in `src/content/notes/`, illustrations in `src/content/illustrations/`, seminars in `src/content/seminars/`, and experiments in `src/content/experiments/`; schemas live in `src/content.config.ts`.
 - Do not duplicate profile links, page-heading markup, navigation data, content records, or shared form controls. Reuse the focused Astro component or shared primitive that already owns the pattern; avoid speculative generic wrappers.
