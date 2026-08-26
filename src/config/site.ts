@@ -62,6 +62,11 @@ export const site = {
   authorNameMatches: [] as string[],
   defaultLanguage: "en",
   canonicalUrl: "https://jazengm.github.io",
+  analytics: {
+    enabled: true,
+    scriptUrl: "https://cloud.umami.is/script.js",
+    websiteId: "c5b8e416-771a-4bd9-a935-daaf9b9a24ff",
+  },
   navigation,
   education: [
     {
