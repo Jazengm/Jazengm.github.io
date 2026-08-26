@@ -1,25 +1,37 @@
 ---
 title: "Mixed Hodge Structures"
 term: "2026 Fall"
-summary: "A seminar on the foundations, constructions, and applications of mixed Hodge structures."
+summary: "On the fundations of Deligne's mixed Hodge structures"
 order: 1
 ---
 
 ## Description
 
-This seminar studies mixed Hodge structures and the way they extend classical Hodge theory to singular or noncompact complex algebraic varieties. The goal is to develop the basic formalism, examine important constructions, and understand examples that connect the theory with algebraic geometry and topology.
+The goal of this seminar is to cover the basic definitions of mixed Hodge structures as well as its construction on general varieties. If time allows, we could also investigate mixed Hodge structures on degenerations and/or explicit study of mixed Hodge structures on moduli spaces.
 
-## Tentative topics
+Our main reference would be /Mixed Hodge Structures/ by Peters and Steenbrink ([PS]).
 
-- Review of pure Hodge structures and Hodge decomposition
-- Mixed Hodge structures and weight filtrations
-- Deligne's construction for algebraic varieties
-- Functoriality, exact sequences, and spectral sequences
-- Examples and applications in algebraic geometry
+## Tentative Schedule
 
-## Format
+| Week | Topic                                         | Reference                 | Speaker      |
+| ---- | --------------------------------------------- | ------------------------- | ------------ |
+| 2    | Organization and short review on Hodge theory | [PS] Chap 1               | Xiangru Zeng |
+| 3    | Pure Hodge structures                         | 2.1-2.3                   | TBD          |
+| 4    | Mixed Hodge structures                        | 3.1-3.4                   | TBD          |
+| 5    | Mixed Hodge theory for smooth varieties       | 4.1-4.4+some parts of 4.5 | TBD          |
+| 6    | Cohomologial descent                          | 5.1-5.2, also see [Co]    | TBD          |
+| 7    | Mixed Hodge structures for singular varieties | TBD                       |
+| 8    | Skip                                          | N/A                       |
+| 9    |                                               | TBD                       |
+| 10   | Skip                                          | N/A                       |
+| 11   |                                               | TBD                       |
+| 12   |                                               | TBD                       |
+| 13   |                                               | TBD                       |
+| 14   |                                               | TBD                       |
 
-Each meeting may focus on a chapter, paper, or worked example. The description, topic order, references, and meeting details can all be revised directly in this Markdown file.
+## Remark
+
+We prioritize conceptual understanding over mechanical details. Use working examples to replace general arguments is encouraged.
 
 ## References
 
