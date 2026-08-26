@@ -47,22 +47,22 @@ React is reserved for stateful interactions. Components with directives such as 
 
 Files under `src/pages/` define URLs:
 
-| Source file                            | Generated route          | Purpose                      |
-| -------------------------------------- | ------------------------ | ---------------------------- |
-| `src/pages/index.astro`                | `/`                      | Home page                    |
-| `src/pages/about.astro`                | `/about`                 | About page                   |
-| `src/pages/publications.astro`         | `/publications`          | Publication directory        |
-| `src/pages/research.astro`             | `/research`              | Research-theme directory     |
-| `src/pages/teaching.astro`             | `/teaching`              | Course directory             |
-| `src/pages/notes/index.astro`          | `/notes`                 | Note directory               |
-| `src/pages/notes/[...id].astro`        | `/notes/ENTRY-ID`        | One route per non-draft note |
+| Source file                             | Generated route           | Purpose                      |
+| --------------------------------------- | ------------------------- | ---------------------------- |
+| `src/pages/index.astro`                 | `/`                       | Home page                    |
+| `src/pages/about.astro`                 | `/about`                  | About page                   |
+| `src/pages/publications.astro`          | `/publications`           | Publication directory        |
+| `src/pages/research.astro`              | `/research`               | Research-theme directory     |
+| `src/pages/teaching.astro`              | `/teaching`               | Course directory             |
+| `src/pages/notes/index.astro`           | `/notes`                  | Note directory               |
+| `src/pages/notes/[...id].astro`         | `/notes/ENTRY-ID`         | One route per non-draft note |
 | `src/pages/illustrations/index.astro`   | `/illustrations`          | Image-led illustration index |
 | `src/pages/illustrations/[...id].astro` | `/illustrations/ENTRY-ID` | One full-size image detail   |
 | `src/pages/seminars/index.astro`        | `/seminars`               | Seminar directory            |
 | `src/pages/seminars/[...id].astro`      | `/seminars/ENTRY-ID`      | One seminar description      |
-| `src/pages/experiments/index.astro`    | `/experiments`           | Experiment directory         |
-| `src/pages/experiments/fractal.astro`  | `/experiments/fractal`   | One interactive experiment   |
-| `src/pages/404.astro`                  | `/404`                   | Static not-found page        |
+| `src/pages/experiments/index.astro`     | `/experiments`            | Experiment directory         |
+| `src/pages/experiments/fractal.astro`   | `/experiments/fractal`    | One interactive experiment   |
+| `src/pages/404.astro`                   | `/404`                    | Static not-found page        |
 
 `[...id].astro` is a dynamic route template. Its `getStaticPaths()` function reads the corresponding notes or illustrations collection and tells Astro which concrete paths to generate. The result is still a set of static pages.
 
