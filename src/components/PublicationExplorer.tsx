@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { CollectionEntry } from "astro:content";
 import "../styles/publications.css";
 
@@ -58,95 +58,24 @@ export default function PublicationExplorer({
   publications,
   authorMatches,
 }: Props) {
-  const [type, setType] = useState("all");
-  const [tag, setTag] = useState("all");
   const [activeId, setActiveId] = useState(publications[0]?.id ?? "");
   const [expandedId, setExpandedId] = useState("");
-
-  const tags = useMemo(
-    () =>
-      [
-        ...new Set(publications.flatMap((publication) => publication.tags)),
-      ].sort(),
-    [publications],
-  );
-  const types = useMemo(
-    () =>
-      [
-        ...new Set(
-          publications.map((publication) => publication.type ?? "other"),
-        ),
-      ].sort(),
-    [publications],
-  );
-  const filtered = useMemo(() => {
-    return publications.filter((publication) => {
-      const matchesType =
-        type === "all" || (publication.type ?? "other") === type;
-      const matchesTag = tag === "all" || publication.tags.includes(tag);
-      return matchesType && matchesTag;
-    });
-  }, [publications, tag, type]);
   const active =
-    filtered.find((publication) => publication.id === activeId) ?? filtered[0];
-
-  const resetFilters = () => {
-    setType("all");
-    setTag("all");
-  };
+    publications.find((publication) => publication.id === activeId) ??
+    publications[0];
 
   return (
     <section aria-labelledby="publication-list-heading">
       <h2 className="sr-only" id="publication-list-heading">
         Publication list
       </h2>
-      <div
-        className="publication-filters quiet-card"
-        aria-label="Filter publications"
-      >
-        <label className="control-field">
-          <span>Type</span>
-          <select
-            className="control-input"
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-          >
-            <option value="all">All types</option>
-            {types.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="control-field">
-          <span>Tag</span>
-          <select
-            className="control-input"
-            value={tag}
-            onChange={(event) => setTag(event.target.value)}
-          >
-            <option value="all">All tags</option>
-            {tags.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="button" type="button" onClick={resetFilters}>
-          Clear
-        </button>
-      </div>
-
-      <p className="publication-count" role="status">
-        Showing {filtered.length} of {publications.length} publications, newest
-        first.
+      <p className="publication-count">
+        {publications.length} publications, newest first.
       </p>
 
       <div className="publication-layout">
         <ol className="publication-list">
-          {filtered.map((publication) => {
+          {publications.map((publication) => {
             const expanded = expandedId === publication.id;
             return (
               <li key={publication.id}>
@@ -231,18 +160,10 @@ export default function PublicationExplorer({
               <Preview publication={active} />
             </>
           ) : (
-            <p>No publication matches the current filters.</p>
+            <p>No publications available.</p>
           )}
         </aside>
       </div>
-      {filtered.length === 0 && (
-        <div className="empty-state">
-          <p>No publication matches the current filters.</p>
-          <button className="button" type="button" onClick={resetFilters}>
-            Clear filters
-          </button>
-        </div>
-      )}
     </section>
   );
 }

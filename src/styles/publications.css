@@ -1,18 +1,5 @@
-.publication-filters {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(9rem, 1fr)) auto;
-  align-items: end;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  background: var(--color-surface-muted);
-}
-
-.publication-filters label > span {
-  text-transform: uppercase;
-}
-
 .publication-count {
-  margin-block: var(--space-4);
+  margin: 0 0 var(--space-4);
   color: var(--color-text-muted);
   font-size: 0.9rem;
 }
@@ -117,16 +104,7 @@
   display: none;
 }
 
-.empty-state {
-  padding-block: var(--space-5);
-  text-align: center;
-}
-
 @media (max-width: 800px) {
-  .publication-filters {
-    grid-template-columns: 1fr 1fr;
-  }
-
   .publication-layout {
     display: block;
   }
@@ -159,10 +137,6 @@
 }
 
 @media (max-width: 520px) {
-  .publication-filters {
-    grid-template-columns: 1fr;
-  }
-
   .publication-item {
     grid-template-columns: 1fr;
     gap: 0.2rem;
