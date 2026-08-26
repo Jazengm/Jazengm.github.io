@@ -12,7 +12,7 @@ This document explains where to make common changes and how source files become 
 │   ├── assets/                Images imported and processed by Astro
 │   ├── components/            Reusable Astro structure and focused React islands
 │   ├── config/site.ts         Profile, navigation, themes, courses, and site settings
-│   ├── content/               Publication, note, illustration, and experiment records
+│   ├── content/               Publication, note, illustration, seminar, and experiment records
 │   ├── content.config.ts      Build-time schemas for those content records
 │   ├── layouts/               Shared page shells
 │   ├── pages/                 File-based routes; each file becomes a URL
@@ -56,8 +56,10 @@ Files under `src/pages/` define URLs:
 | `src/pages/teaching.astro`             | `/teaching`              | Course directory             |
 | `src/pages/notes/index.astro`          | `/notes`                 | Note directory               |
 | `src/pages/notes/[...id].astro`        | `/notes/ENTRY-ID`        | One route per non-draft note |
-| `src/pages/illustration/index.astro`   | `/illustration`          | Image-led illustration index |
-| `src/pages/illustration/[...id].astro` | `/illustration/ENTRY-ID` | One full-size image detail   |
+| `src/pages/illustrations/index.astro`   | `/illustrations`          | Image-led illustration index |
+| `src/pages/illustrations/[...id].astro` | `/illustrations/ENTRY-ID` | One full-size image detail   |
+| `src/pages/seminars/index.astro`        | `/seminars`               | Seminar directory            |
+| `src/pages/seminars/[...id].astro`      | `/seminars/ENTRY-ID`      | One seminar description      |
 | `src/pages/experiments/index.astro`    | `/experiments`           | Experiment directory         |
 | `src/pages/experiments/fractal.astro`  | `/experiments/fractal`   | One interactive experiment   |
 | `src/pages/404.astro`                  | `/404`                   | Static not-found page        |
@@ -134,14 +136,14 @@ The experiments index gets title, description, tags, and optional thumbnail from
 
 ### Illustrations
 
-Each record in `src/content/illustrations/` supplies a title, short summary, imported image, accurate alternative text, optional metadata, and a Markdown body with the detailed description. The filename becomes the stable entry ID. The static index renders the image grid, while `src/pages/illustration/[...id].astro` generates one full-size detail page per record.
+Each record in `src/content/illustrations/` supplies a title, short summary, imported image, accurate alternative text, optional metadata, and a Markdown body with the detailed description. The filename becomes the stable entry ID. The static index renders the image grid, while `src/pages/illustrations/[...id].astro` generates one full-size detail page per record.
 
 The visible title overlay appears on pointer hover and keyboard focus. On devices without hover it remains visible, so a mouse is never required to identify or open an image.
 
 ### Manually add an illustration
 
 1. Put the original local image in `src/assets/illustrations/`. Prefer a high-quality `jpg`, `png`, `webp`, `avif`, or `svg`; do not commit an unnecessarily large camera original.
-2. Create `src/content/illustrations/my-image.md`. The lowercase filename becomes `/illustration/my-image/`.
+2. Create `src/content/illustrations/my-image.md`. The lowercase filename becomes `/illustrations/my-image/`.
 3. Add frontmatter in this form:
 
 ```yaml

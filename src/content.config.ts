@@ -86,9 +86,20 @@ const illustrations = defineCollection({
     }),
 });
 
+const seminars = defineCollection({
+  loader: glob({ base: "./src/content/seminars", pattern: "**/*.{md,mdx}" }),
+  schema: z.object({
+    title: z.string().min(1),
+    term: z.string().min(1),
+    summary: z.string().min(1),
+    order: z.number().default(0),
+  }),
+});
+
 export const collections = {
   publications,
   notes,
   experiments,
   illustrations,
+  seminars,
 };

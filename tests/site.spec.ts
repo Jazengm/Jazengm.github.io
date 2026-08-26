@@ -8,8 +8,10 @@ const requiredRoutes = [
   "/notes/",
   "/experiments/",
   "/experiments/fractal/",
-  "/illustration/",
-  "/illustration/blue-field/",
+  "/illustrations/",
+  "/illustrations/blue-field/",
+  "/seminars/",
+  "/seminars/mixed-hodge-structures/",
   "/about/",
 ];
 
@@ -141,7 +143,8 @@ test("content directory entries resolve and hydrate optional islands", async ({
   const directories = [
     { path: "/notes/", links: ".note-list h2 a" },
     { path: "/experiments/", links: ".experiment-card h2 a" },
-    { path: "/illustration/", links: ".illustration-card" },
+    { path: "/illustrations/", links: ".illustration-card" },
+    { path: "/seminars/", links: ".seminar-list a" },
   ];
 
   for (const directory of directories) {
@@ -160,11 +163,31 @@ test("content directory entries resolve and hydrate optional islands", async ({
   expect(errors).toEqual([]);
 });
 
+test("seminar index links to its Markdown-backed description", async ({
+  page,
+}) => {
+  await page.goto("/seminars/");
+  const seminar = page.getByRole("link", {
+    name: "Mixed Hodge Structures (2026 Fall)",
+  });
+  await expect(seminar).toHaveAttribute(
+    "href",
+    "/seminars/mixed-hodge-structures/",
+  );
+  await seminar.click();
+  await expect(
+    page.getByRole("heading", { name: "Mixed Hodge Structures", level: 1 }),
+  ).toBeVisible();
+  await expect(page.locator(".seminar-description")).toContainText(
+    "Tentative Schedule",
+  );
+});
+
 test("illustration names appear on hover and detail pages show full images", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
-  await page.goto("/illustration/");
+  await page.goto("/illustrations/");
   const first = page.locator(".illustration-card").first();
   const caption = first.locator("figcaption");
 
@@ -185,7 +208,7 @@ test("illustration names appear on hover and detail pages show full images", asy
 test("Moorse Mosaic uses compact TeX scripts and highlighted Mathematica", async ({
   page,
 }) => {
-  await page.goto("/illustration/moorse-mosaic/");
+  await page.goto("/illustrations/moorse-mosaic/");
 
   const mathSizes = await page.evaluate(() => {
     const base = document.querySelector<HTMLElement>(".katex-html .mathnormal");

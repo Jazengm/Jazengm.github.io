@@ -1,7 +1,7 @@
 # Maintenance rules for agents
 
 - Treat `src/config/site.ts` as the single source for profile, navigation, themes, courses, canonical URL, and author-name matching. Keep unknown data as a conspicuous placeholder or `null`; never invent academic facts or identifiers.
-- Keep content out of page/list components. Publications belong in `src/content/publications/`, notes in `src/content/notes/`, illustrations in `src/content/illustrations/`, and experiments in `src/content/experiments/`; schemas live in `src/content.config.ts`.
+- Keep content out of page/list components. Publications belong in `src/content/publications/`, notes in `src/content/notes/`, illustrations in `src/content/illustrations/`, seminars in `src/content/seminars/`, and experiments in `src/content/experiments/`; schemas live in `src/content.config.ts`.
 - Do not duplicate profile links, page-heading markup, navigation data, content records, or shared form controls. Reuse the focused Astro component or shared primitive that already owns the pattern; avoid speculative generic wrappers.
 - Preserve the distinction between fictional samples (`[Placeholder]` and `placeholder: true`) and verified user content. Never modify or delete real user content without an explicit request.
 - Use Astro components for static structure. Use React only for a genuinely stateful island, prefer `client:visible` for noncritical interactions, and do not add unnecessary site-wide client JavaScript or state.

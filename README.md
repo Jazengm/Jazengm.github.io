@@ -56,12 +56,13 @@ For the complete file map, build pipeline, routing rules, styling boundaries, an
 - `src/content/publications/`: one Markdown or MDX file per publication.
 - `src/content/notes/`: one Markdown or MDX file per note.
 - `src/content/illustrations/`: one Markdown or MDX description per gallery image.
+- `src/content/seminars/`: one Markdown file per seminar program and description.
 - `src/content/experiments/`: experiment directory records.
 - `src/content.config.ts`: all collection schemas. This is the source of truth for permitted frontmatter.
 - `src/assets/`: images imported by content and processed by Astro.
 - `public/`: files copied unchanged, such as `robots.txt`, downloads, and an optional `CNAME`.
 
-Pages read these sources automatically. Adding a publication, note, illustration, or experiment does not require editing a listing component.
+Pages read these sources automatically. Adding a publication, note, illustration, seminar, or experiment does not require editing a listing component.
 
 ## Modify the profile and design
 
