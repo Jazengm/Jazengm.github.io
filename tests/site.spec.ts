@@ -127,7 +127,7 @@ test("publication explorer exposes filters and desktop previews", async ({
   await expect(first).toBeFocused();
   await expect(page.getByLabel("Keywords")).toHaveCount(0);
   await expect(page.getByLabel("Type")).toBeVisible();
-  await expect(page.getByLabel("Tag")).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Tag" })).toBeVisible();
 });
 
 test("publication preview has a touch-friendly inline alternative", async ({
