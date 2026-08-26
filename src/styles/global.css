@@ -225,13 +225,6 @@ button.button:active {
   translate: 0 1px;
 }
 
-.placeholder-note {
-  padding: var(--space-3);
-  border-left: 3px solid var(--color-secondary);
-  color: var(--color-text-muted);
-  background: var(--color-secondary-soft);
-}
-
 .decorated-section {
   position: relative;
   isolation: isolate;

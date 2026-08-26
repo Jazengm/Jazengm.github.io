@@ -1,9 +1,9 @@
 # Maintenance rules for agents
 
-- Treat `src/config/site.ts` as the single source for profile, navigation, themes, courses, canonical URL, and author-name matching. Keep unknown data as a conspicuous placeholder or `null`; never invent academic facts or identifiers.
-- Keep content out of page/list components. Publications belong in `src/content/publications/`, notes in `src/content/notes/`, illustrations in `src/content/illustrations/`, and experiments in `src/content/experiments/`; schemas live in `src/content.config.ts`.
+- Treat `src/config/site.ts` as the single source for profile, navigation, canonical URL, and author-name matching. Keep unknown optional data as `null`; never invent academic facts or identifiers.
+- Keep content out of page/list components. Publications belong in `src/content/publications/`, illustrations in `src/content/illustrations/`, and experiments in `src/content/experiments/`; schemas live in `src/content.config.ts`.
 - Do not duplicate profile links, page-heading markup, navigation data, content records, or shared form controls. Reuse the focused Astro component or shared primitive that already owns the pattern; avoid speculative generic wrappers.
-- Preserve the distinction between fictional samples (`[Placeholder]` and `placeholder: true`) and verified user content. Never modify or delete real user content without an explicit request.
+- Publish only verified user content. Keep unfinished records out of the content collections and never modify or delete real user content without an explicit request.
 - Use Astro components for static structure. Use React only for a genuinely stateful island, prefer `client:visible` for noncritical interactions, and do not add unnecessary site-wide client JavaScript or state.
 - Preserve semantic HTML, skip navigation, visible focus, keyboard and touch equivalents, accurate alt text, `aria-current`, reduced-motion behavior, and the light/dark contrast system. Hover must never be the only way to obtain information.
 - Keep all site-wide colors in the semantic variables in `src/styles/tokens.css`. Blue is primary and orange is secondary; do not reintroduce component-level theme colors or a configuration-driven inline accent. Keep halftone decoration sparse, `aria-hidden`, noninteractive, and absent under reduced motion.

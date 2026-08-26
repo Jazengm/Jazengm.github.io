@@ -7,11 +7,8 @@ medium: "Digital illustration"
 dimensions: "3000 × 3011 px"
 tags: ["topology", "Hopf fibration", "geometry"]
 order: 8
-placeholder: false
 ---
 
 A visualization of the [Hopf fibration](https://en.wikipedia.org/wiki/Hopf_fibration): $S^1\hookrightarrow S^3\xrightarrow {\ p\,} S^2$, where we regard $S^3$ as the one-point compactification of $\mathbb{R}^3$.
 
 This is inspired by [Henry Segerman's T-shirt design](https://www.neatoshop.com/product/Hopf-fibration).
-
-Source code: to be updated.

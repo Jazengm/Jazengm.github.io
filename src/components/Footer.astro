@@ -8,13 +8,6 @@ import { site } from "../config/site";
       © {new Date().getFullYear()}{" "}
       {site.name}. Built as a static, maintainable academic site.
     </p>
-    {
-      site.isPlaceholder && (
-        <p class="placeholder-status">
-          Profile fields are intentionally marked as placeholders.
-        </p>
-      )
-    }
   </div>
 </footer>
 
@@ -35,9 +28,5 @@ import { site } from "../config/site";
 
   .footer-inner p {
     margin: 0;
-  }
-
-  .placeholder-status {
-    color: var(--color-secondary-strong);
   }
 </style>

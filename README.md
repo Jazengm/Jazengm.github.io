@@ -1,23 +1,18 @@
 # Astro academic homepage
 
-A static, accessible academic homepage template for a mathematics researcher. It separates verified profile data from content, stores publications, notes, illustrations, and experiments in typed Astro Content Collections, and limits React to four focused interactions: the site atlas, publication explorer, MDX demonstration, and fractal experiment.
+A static, accessible academic homepage for Xiangru Zeng. It separates profile data from content, stores publications, illustrations, and experiments in typed Astro Content Collections, and limits React to the publication explorer and fractal experiment.
 
-The repository currently contains conspicuous fictional sample records. It does not claim a real identity, institution, paper, DOI, ORCID, or journal affiliation.
+Only verified content should be placed in a collection that is published by the site.
 
-## First customization checklist
+## Content checklist
 
-Before publishing the site as a personal academic record:
+Before publishing new content:
 
-1. Open `src/config/site.ts` and replace every bracketed profile, biography, position, institution, location, research-area, timeline, research-theme, and teaching value.
-2. Add only verified optional URLs or contact fields (`email`, `github`, `orcid`, `googleScholar`, `cvUrl`, and `avatar`). Leave an unknown value as `null`; the corresponding link will remain hidden.
-3. Change `isPlaceholder` to `false` only after all profile fields are checked. This enables Person JSON-LD.
-4. Replace the three files under `src/content/publications/` with real records and remove each placeholder warning only after verification.
-5. Replace or remove the two sample notes and centralized sample course/theme data.
-6. Replace or remove the two placeholder Illustration records and SVG color fields.
-7. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
-8. Replace the favicon and local diagrams if desired, then run the complete validation commands below.
-
-Unknown personal information is deliberately centralized in `src/config/site.ts`. Example academic content lives in its relevant collection because that is where future real content belongs, and every such example has `[Placeholder]` in its title plus `placeholder: true` in frontmatter.
+1. Edit profile, contact, navigation, and canonical URL values in `src/config/site.ts`.
+2. Add only verified publications, illustrations, and experiments to their content collections.
+3. Leave unknown optional profile URLs as `null`; their links remain hidden.
+4. Update `site` and, when needed, `base` in `astro.config.mjs`; update the sitemap URL in `public/robots.txt`.
+5. Run the complete validation commands below before committing.
 
 ## Requirements and installation
 
@@ -52,20 +47,19 @@ npm run preview
 
 For the complete file map, build pipeline, routing rules, styling boundaries, and a Home-page image example, see [Architecture and page generation](docs/architecture.md).
 
-- `src/config/site.ts`: profile, navigation labels, research themes, course metadata, author-name matches, and canonical URL.
+- `src/config/site.ts`: profile, navigation labels, author-name matches, and canonical URL.
 - `src/content/publications/`: one Markdown or MDX file per publication.
-- `src/content/notes/`: one Markdown or MDX file per note.
 - `src/content/illustrations/`: one Markdown or MDX description per gallery image.
 - `src/content/experiments/`: experiment directory records.
 - `src/content.config.ts`: all collection schemas. This is the source of truth for permitted frontmatter.
 - `src/assets/`: images imported by content and processed by Astro.
 - `public/`: files copied unchanged, such as `robots.txt`, downloads, and an optional `CNAME`.
 
-Pages read these sources automatically. Adding a publication, note, illustration, or experiment does not require editing a listing component.
+Pages read these sources automatically. Adding a publication, illustration, or experiment does not require editing a listing component.
 
 ## Modify the profile and design
 
-Edit `src/config/site.ts`. Navigation is defined there once and consumed by both the header and home page. Add, remove, or reorder a `navigation` item there; use a root-relative `href`, and the shared components will preserve the configured GitHub Pages base. Optional profile links are rendered only when their values are non-null.
+Edit `src/config/site.ts`. Navigation is defined there once and consumed by the shared header. Add, remove, or reorder a `navigation` item there; use a root-relative `href`, and the shared components will preserve the configured GitHub Pages base. Optional profile links are rendered only when their values are non-null.
 
 The visual source of truth is `src/styles/tokens.css`. Change the semantic light and dark tokens there rather than placing colors in page components:
 
@@ -74,7 +68,7 @@ The visual source of truth is `src/styles/tokens.css`. Change the semantic light
 - `--color-primary` is academic blue; `--color-secondary` is the restrained orange accent. Their `-soft` and `-strong` forms handle states and links.
 - `--color-focus` and `--color-halftone` control keyboard focus and decorative dots.
 
-The reusable halftone utilities are in `src/styles/global.css`. Their decorative, `aria-hidden` spans currently appear only in the Home introduction, Research theme directory, and Experiments directory. Keep them local and sparse; do not turn the dots into a full-page background. Under reduced motion they are removed, and on small screens they are reduced.
+The reusable halftone utilities are in `src/styles/global.css`. Their decorative, `aria-hidden` spans currently appear only in the Home introduction and Experiments directory. Keep them local and sparse; do not turn the dots into a full-page background. Under reduced motion they are removed, and on small screens they are reduced.
 
 ## Add a publication
 
@@ -94,8 +88,6 @@ selected: true
 ```
 
 The publication year accepts an integer or `"TBA"`; status accepts `published`, `forthcoming`, `preprint`, or `working-paper`. Optional fields include `venue`, `tags`, `order`, `selected`, `previewImage`, `previewImageAlt`, links, and `type`, whose accepted values are `article`, `book`, `chapter`, `thesis`, and `note`.
-
-Fictional samples explicitly use `placeholder: true` and receive a visible label. Verified records should use `placeholder: false` or omit the field, whose schema default is `false`.
 
 Set `authorNameMatches` in `src/config/site.ts` to the exact spellings that should be emphasized. Sorting, filters, author emphasis, desktop hover/focus previews, and mobile click previews are generated by `PublicationList.astro` and `PublicationExplorer.tsx`.
 
@@ -118,33 +110,6 @@ Each selected citation is generated as “Title, with coauthors. Journal or Prep
 3. Always provide meaningful alt text. Omit both fields for the supported text-only preview.
 
 Astro validates the image reference and handles dimensions/output. SVG samples are passed safely through Astro's image pipeline; raster images can use Astro's optimized formats.
-
-## Add a Note
-
-Create `src/content/notes/my-note.mdx` with:
-
-```yaml
----
-title: "My note"
-description: "One useful sentence for lists and metadata."
-publishedDate: 2026-07-30
-tags: ["geometry"]
-draft: false
-placeholder: true
----
-```
-
-Set `placeholder: false` (or omit it) for verified notes. The included samples keep it `true` so their warning remains visible.
-
-Write ordinary Markdown below the frontmatter. Inline math uses `$...$`; display math uses `$$...$$`. See `sample-math-note.mdx`. To embed a focused React island, import a component and add an Astro client directive as demonstrated by `interactive-parameters.mdx`:
-
-```mdx
-import MathDemo from "../../components/MathDemo";
-
-<MathDemo client:visible />
-```
-
-Use an island only when stateful interaction is necessary; ordinary prose should remain static HTML.
 
 ## Add an Experiment
 
@@ -180,7 +145,7 @@ npm run build
 npm run test
 ```
 
-Use `npm run format` to apply formatting. Browser tests cover required routes, navigation, selected-paper citations and footer spacing, desktop and touch publication previews, Illustration hover/focus/detail behavior, KaTeX script sizing, Mathematica highlighting, ResearchMap keyboard access, fractal controls, MDX math/islands, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
+Use `npm run format` to apply formatting. Browser tests cover required and removed routes, navigation, selected-paper citations and footer spacing, desktop and touch publication previews, Illustration hover/focus/detail behavior, KaTeX script sizing, Mathematica highlighting, fractal controls, uncaught console errors, theme and reduced-motion behavior, and horizontal overflow at 360px and 768px.
 
 ## GitHub Pages deployment
 
@@ -206,7 +171,7 @@ Internal links use `withBase()` or Astro asset URLs so the prefix is preserved. 
 
 ### Custom domain
 
-After configuring the domain and DNS in GitHub, add `public/CNAME` containing only the verified domain, for example `math.example.edu`. Then set `site` and `canonicalUrl` to `https://math.example.edu`, use `base: "/"`, and update `robots.txt`. No fictional CNAME is included in this template.
+After configuring the domain and DNS in GitHub, add `public/CNAME` containing only the verified domain, for example `math.example.edu`. Then set `site` and `canonicalUrl` to `https://math.example.edu`, use `base: "/"`, and update `robots.txt`. No example CNAME is committed.
 
 ### Roll back the visual redesign
 
@@ -260,7 +225,7 @@ Run `npm run test` for interactive, layout, dependency, or infrastructure change
 
 ## Architecture notes
 
-Astro renders all ordinary content and navigation to static HTML. React is not loaded on About, Teaching, Research, or the Notes/Experiments indexes. Theme switching is a tiny native script. Semantic CSS variables provide the system-font blue-orange light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`. Placeholder Person JSON-LD is withheld until the centralized profile is verified.
+Astro renders all ordinary content and navigation to static HTML. React is not loaded on About or the Illustration/Experiments indexes. Theme switching is a tiny native script. Semantic CSS variables provide the system-font blue-orange light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`.
 
 See [Architecture and page generation](docs/architecture.md) for a maintainer-oriented explanation of file responsibilities and how data becomes a deployed page.
 

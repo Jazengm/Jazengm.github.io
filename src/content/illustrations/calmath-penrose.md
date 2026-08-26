@@ -7,7 +7,6 @@ medium: "Digital illustration"
 dimensions: "3840 × 2160 px"
 tags: ["tiling", "Penrose", "typography"]
 order: 5
-placeholder: false
 ---
 
 We replace the kites and darts in the Penrose tiling by deformed words "MATH" and "CAL". The colors are [Berkeley Blue and California Gold](https://brand.berkeley.edu/visual-identity/colors/). This is created via `Inkscape` and `Illustrator`.

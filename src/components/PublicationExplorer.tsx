@@ -42,9 +42,6 @@ function Preview({ publication }: { publication: PublicationRecord }) {
         {publication.year} · {publication.status.replace("-", " ")}
         {publication.venue ? ` · ${publication.venue}` : ""}
       </p>
-      {publication.placeholder && (
-        <p className="placeholder-label">Fictional sample record</p>
-      )}
       <p>{publication.abstract}</p>
       <ul className="tag-list" aria-label="Publication tags">
         {publication.tags.map((tag) => (
@@ -128,7 +125,6 @@ export default function PublicationExplorer({
             className="control-input"
             type="search"
             value={query}
-            placeholder="Title, author, or subject"
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
@@ -188,9 +184,6 @@ export default function PublicationExplorer({
                 >
                   <p className="publication-year">{publication.year}</p>
                   <div>
-                    {publication.placeholder && (
-                      <p className="placeholder-label">Fictional sample</p>
-                    )}
                     <h3>{publication.title}</h3>
                     <p className="publication-authors">
                       {publication.authors.map((author, index) => (

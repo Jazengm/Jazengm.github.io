@@ -64,15 +64,6 @@
   font-size: 0.9rem;
 }
 
-.placeholder-label {
-  margin: 0 0 0.2rem;
-  color: var(--color-secondary-strong);
-  font-size: 0.7rem;
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .publication-item h3,
 .publication-preview h3 {
   overflow-wrap: anywhere;

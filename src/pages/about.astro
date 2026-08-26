@@ -34,15 +34,6 @@ import { site } from "../config/site";
     <h2 class="section-heading" id="biography-heading">Biography</h2>
     {site.biography.map((paragraph) => <p>{paragraph}</p>)}
     <p><strong>Research areas:</strong> {site.researchAreas.join(", ")}</p>
-    {
-      site.isPlaceholder && (
-        <p class="placeholder-note">
-          All bracketed profile and timeline fields come from{" "}
-          <code>src/config/site.ts</code> and must be verified before
-          publication.
-        </p>
-      )
-    }
   </section>
 
   <section
@@ -72,10 +63,7 @@ import { site } from "../config/site";
     aria-labelledby="contact-heading"
   >
     <h2 class="section-heading" id="contact-heading">Contact</h2>
-    <ProfileLinks
-      ariaLabel="Contact links"
-      emptyMessage="Contact links are omitted until verified values are added to the site configuration."
-    />
+    <ProfileLinks ariaLabel="Contact links" />
   </section>
 </BaseLayout>
 
