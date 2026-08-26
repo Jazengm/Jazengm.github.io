@@ -19,6 +19,7 @@ const {
 } = Astro.props;
 const fullTitle = title === site.pageTitle ? title : `${title} · ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.canonicalUrl);
+const analyticsEnabled = import.meta.env.PROD && site.analytics.enabled;
 const personJsonLd = !site.isPlaceholder
   ? {
       "@context": "https://schema.org",
@@ -61,6 +62,16 @@ const personJsonLd = !site.isPlaceholder
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={site.pageTitle} />
     <title>{fullTitle}</title>
+    {
+      analyticsEnabled && (
+        <script
+          is:inline
+          defer
+          src={site.analytics.scriptUrl}
+          data-website-id={site.analytics.websiteId}
+        />
+      )
+    }
     <script is:inline>
       (() => {
         try {
