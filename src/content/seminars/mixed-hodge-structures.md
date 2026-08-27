@@ -15,7 +15,7 @@ Our main reference would be
 
 - **[PS]** [_Mixed Hodge Structures_](https://link.springer.com/book/10.1007/978-3-540-77017-6) by Peters and Steenbrink, our main reference for this seminar
 - **[Co]** [_Cohomological Descent_](https://math.stanford.edu/~conrad/papers/hypercover.pdf) by Brian Conrad
-- **[De]** [Théorie de Hodge : III](https://www.numdam.org/item/PMIHES_1974__44__5_0/) by Pierre Deligne
+- **[De]** [_Théorie de Hodge : III_](https://www.numdam.org/item/PMIHES_1974__44__5_0/) by Pierre Deligne
 
 ## Tentative Schedule
 
