@@ -9,8 +9,6 @@ order: 1
 
 The goal of this seminar is to cover the basic definitions of mixed Hodge structures as well as its construction on general varieties. If time allows, we could also investigate mixed Hodge structures on degenerations and/or explicit study of mixed Hodge structures on moduli spaces.
 
-Our main reference would be
-
 ## References
 
 - **[PS]** [_Mixed Hodge Structures_](https://link.springer.com/book/10.1007/978-3-540-77017-6) by Peters and Steenbrink, our main reference for this seminar
