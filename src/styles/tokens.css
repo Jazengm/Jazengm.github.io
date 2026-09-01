@@ -21,6 +21,11 @@
     var(--color-secondary) 12%,
     var(--color-surface)
   );
+  --color-selection: color-mix(
+    in srgb,
+    var(--color-secondary) 42%,
+    var(--color-surface)
+  );
   --color-focus: #c84e1d;
   --color-halftone: color-mix(in srgb, var(--color-primary) 34%, transparent);
   --color-canvas: #142438;
