@@ -49,4 +49,22 @@ const { Content } = await render(seminar);
   .seminar-description {
     margin-top: var(--space-6);
   }
+
+  .seminar-description :global(table) {
+    width: min(calc(100vw - 2rem), var(--wide-width));
+    max-width: none;
+  }
+
+  .seminar-description :global(:is(th, td):nth-child(1)),
+  .seminar-description :global(:is(th, td):nth-child(2)),
+  .seminar-description :global(:is(th, td):nth-child(5)),
+  .seminar-description :global(:is(th, td):nth-child(6)) {
+    white-space: nowrap;
+  }
+
+  @media (max-width: 640px) {
+    .seminar-description :global(table) {
+      width: min(calc(100vw - 1.25rem), var(--wide-width));
+    }
+  }
 </style>

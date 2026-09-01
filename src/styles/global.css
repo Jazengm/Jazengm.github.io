@@ -83,7 +83,7 @@ a:hover {
 
 ::selection {
   color: var(--color-text);
-  background: var(--color-secondary-soft);
+  background: var(--color-selection);
 }
 
 .skip-link {
