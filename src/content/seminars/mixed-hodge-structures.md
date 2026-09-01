@@ -20,9 +20,9 @@ The goal of this seminar is to cover the basic definitions of mixed Hodge struct
 | Week | Date | Topic                                         | Reference                 | Speaker       |
 | ---- | ---- | --------------------------------------------- | ------------------------- | ------------- |
 | 2    | 9/1  | Organization and short review on Hodge theory | Chap 1                    | Xiangru Zeng  |
-| 3    |      | Pure Hodge structures                         | 2.1-2.3                   | Cameron Chang |
-| 4    |      | Mixed Hodge structures                        | 3.1-3.4                   | TBD           |
-| 5    |      | Mixed Hodge theory for smooth varieties       | 4.1-4.4+some parts of 4.5 | TBD           |
+| 3    | 9/11 | Pure Hodge structures                         | 2.1-2.3                   | Cameron Chang |
+| 4    | 9/18 | Mixed Hodge structures                        | 3.1-3.4                   | TBD           |
+| 5    | 9/25 | Mixed Hodge theory for smooth varieties       | 4.1-4.4+some parts of 4.5 | TBD           |
 | 6    |      | Cohomologial descent                          | 5.1-5.2, also see [Co]    | TBD           |
 | 7    |      | Mixed Hodge structures for singular varieties | 5.3-5.5                   | TBD           |
 | 8    |      | Skip                                          |                           |               |
