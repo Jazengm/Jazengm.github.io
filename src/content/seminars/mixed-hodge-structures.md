@@ -17,7 +17,7 @@ The goal of this seminar is to cover the basic definitions of mixed Hodge struct
 
 ## Tentative Schedule
 
-| Week | Date | Topic                                         | Reference                 | Speaker          | Note                                                           |
+| Week | Date | Topic                                         | Reference                 | Speaker          | Notes                                                          |
 | ---- | ---- | --------------------------------------------- | ------------------------- | ---------------- | -------------------------------------------------------------- |
 | 2    | 9/1  | Organization and short review on Hodge theory | Chap 1                    | Xiangru Zeng     | [PDF](/seminars/mixed-hodge-structures/first-talk-concise.pdf) |
 | 3    | 9/11 | Pure Hodge structures                         | 2.1-2.3                   | Cameron Chang    |                                                                |
