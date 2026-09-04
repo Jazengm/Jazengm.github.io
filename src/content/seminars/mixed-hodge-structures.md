@@ -7,7 +7,11 @@ order: 1
 
 ## Description
 
-The goal of this seminar is to cover the basic definitions of mixed Hodge structures as well as its construction on general varieties. If time allows, we could also investigate mixed Hodge structures on degenerations and/or explicit study of mixed Hodge structures on moduli spaces.
+The goal of this seminar is to cover the basic definitions of mixed Hodge structures as well as its construction on general varieties, with an emphasis on concrete examples. If time allows, we could also investigate mixed Hodge structures on degenerations and/or explicit study of mixed Hodge structures on moduli spaces.
+
+## Spacetime
+
+Weekly on Friday 3:30-5:00, Evans 762.
 
 ## References
 
@@ -32,7 +36,3 @@ The goal of this seminar is to cover the basic definitions of mixed Hodge struct
 | 12   |      |                                               |                           | TBD              |                                                                |
 | 13   |      |                                               |                           | TBD              |                                                                |
 | 14   |      |                                               |                           | TBD              |                                                                |
-
-<!-- ## Remark -->
-
-<!-- We prioritize conceptual understanding over mechanical details. Use working examples to replace general arguments is encouraged. -->
