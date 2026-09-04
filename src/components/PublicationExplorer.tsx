@@ -67,10 +67,10 @@ export default function PublicationExplorer({
   return (
     <section aria-labelledby="publication-list-heading">
       <h2 className="sr-only" id="publication-list-heading">
-        Publication list
+        Article list
       </h2>
       <p className="publication-count">
-        {publications.length} publications, newest first.
+        {publications.length} articles, newest first.
       </p>
 
       <div className="publication-layout">
