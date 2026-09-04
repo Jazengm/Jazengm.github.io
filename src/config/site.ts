@@ -37,7 +37,7 @@ export const navigation: NavigationItem[] = [
     description: "Profile, selected papers, and section map.",
   },
   {
-    label: "Publications",
+    label: "Articles",
     href: "/publications",
     description: "Papers, preprints, and supporting material.",
   },

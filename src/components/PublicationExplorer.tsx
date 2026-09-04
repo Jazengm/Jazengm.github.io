@@ -116,11 +116,11 @@ export default function PublicationExplorer({
   return (
     <section aria-labelledby="publication-list-heading">
       <h2 className="sr-only" id="publication-list-heading">
-        Publication list
+        Article list
       </h2>
       <div
         className="publication-filters quiet-card"
-        aria-label="Filter publications"
+        aria-label="Filter articles"
       >
         <label className="control-field">
           <span>Keywords</span>
@@ -168,7 +168,7 @@ export default function PublicationExplorer({
       </div>
 
       <p className="publication-count" role="status">
-        Showing {filtered.length} of {publications.length} publications, newest
+        Showing {filtered.length} of {publications.length} articles, newest
         first.
       </p>
 
