@@ -21,18 +21,18 @@ Weekly on Friday 3:30-5:00, Evans 762.
 
 ## Tentative Schedule
 
-| Week | Date | Topic                                         | Reference                 | Speaker          | Notes                                                          |
-| ---- | ---- | --------------------------------------------- | ------------------------- | ---------------- | -------------------------------------------------------------- |
-| 2    | 9/1  | Organization and short review on Hodge theory | Chap 1                    | Xiangru Zeng     | [PDF](/seminars/mixed-hodge-structures/first-talk-concise.pdf) |
-| 3    | 9/11 | Pure Hodge structures                         | 2.1-2.3                   | Cameron Chang    |                                                                |
-| 4    | 9/18 | Mixed Hodge structures                        | 3.1-3.4                   | Pranav Enugandla |                                                                |
-| 5    | 9/25 | Mixed Hodge theory for smooth varieties       | 4.1-4.4+some parts of 4.5 | TBD              |                                                                |
-| 6    | 10/2 | Cohomologial descent                          | 5.1-5.2, also see [Co]    | Michael R. Zeng  |                                                                |
-| 7    | 10/9 | Mixed Hodge structures for singular varieties | 5.3-5.5                   | Cameron Chang    |                                                                |
-| 8    |      | Skip                                          |                           |                  |                                                                |
-| 9    |      |                                               |                           | TBD              |                                                                |
-| 10   |      | Skip                                          |                           |                  |                                                                |
-| 11   |      |                                               |                           | TBD              |                                                                |
-| 12   |      |                                               |                           | TBD              |                                                                |
-| 13   |      |                                               |                           | TBD              |                                                                |
-| 14   |      |                                               |                           | TBD              |                                                                |
+| Week | Date | Topic                                         | Reference                 | Speaker          | Notes                                                                   |
+| ---- | ---- | --------------------------------------------- | ------------------------- | ---------------- | ----------------------------------------------------------------------- |
+| 2    | 9/1  | Organization and short review on Hodge theory | Chap 1                    | Xiangru Zeng     | [PDF](/seminars/mixed-hodge-structures/first-talk-concise.pdf)          |
+| 3    | 9/11 | Pure Hodge structures                         | 2.1-2.3                   | Cameron Chang    | [PDF](/seminars/mixed-hodge-structures/pure-hodge-structures-notes.pdf) |
+| 4    | 9/18 | Mixed Hodge structures                        | 3.1-3.4                   | Pranav Enugandla |                                                                         |
+| 5    | 9/25 | Mixed Hodge theory for smooth varieties       | 4.1-4.4+some parts of 4.5 | TBD              |                                                                         |
+| 6    | 10/2 | Cohomologial descent                          | 5.1-5.2, also see [Co]    | Michael R. Zeng  |                                                                         |
+| 7    | 10/9 | Mixed Hodge structures for singular varieties | 5.3-5.5                   | Cameron Chang    |                                                                         |
+| 8    |      | Skip                                          |                           |                  |                                                                         |
+| 9    |      |                                               |                           | TBD              |                                                                         |
+| 10   |      | Skip                                          |                           |                  |                                                                         |
+| 11   |      |                                               |                           | TBD              |                                                                         |
+| 12   |      |                                               |                           | TBD              |                                                                         |
+| 13   |      |                                               |                           | TBD              |                                                                         |
+| 14   |      |                                               |                           | TBD              |                                                                         |
