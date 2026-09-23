@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { localize, useLocale } from "../i18n/react";
+import { translate } from "../i18n/catalog";
 import type { CollectionEntry } from "astro:content";
 import "../styles/publications.css";
 
@@ -28,7 +30,8 @@ const linkLabels: Record<string, string> = {
 };
 
 function Preview({ publication }: { publication: PublicationRecord }) {
-  return (
+  const locale = useLocale();
+  return localize(
     <div className="publication-preview-content">
       {publication.preview && (
         <img
@@ -53,7 +56,8 @@ function Preview({ publication }: { publication: PublicationRecord }) {
           </li>
         ))}
       </ul>
-    </div>
+    </div>,
+    locale,
   );
 }
 
@@ -61,6 +65,7 @@ export default function PublicationExplorer({
   publications,
   authorMatches,
 }: Props) {
+  const locale = useLocale();
   const [type, setType] = useState("all");
   const [tag, setTag] = useState("all");
   const [query, setQuery] = useState("");
@@ -97,10 +102,13 @@ export default function PublicationExplorer({
         ...publication.tags,
       ]
         .filter(Boolean)
-        .join(" ")
-        .toLocaleLowerCase();
+        .join(" ");
       return (
-        matchesType && matchesTag && (!needle || haystack.includes(needle))
+        matchesType &&
+        matchesTag &&
+        (!needle ||
+          haystack.toLocaleLowerCase().includes(needle) ||
+          translate(haystack, "zh-CN").toLocaleLowerCase().includes(needle))
       );
     });
   }, [publications, query, tag, type]);
@@ -113,7 +121,7 @@ export default function PublicationExplorer({
     setQuery("");
   };
 
-  return (
+  return localize(
     <section aria-labelledby="publication-list-heading">
       <h2 className="sr-only" id="publication-list-heading">
         Article list
@@ -274,6 +282,7 @@ export default function PublicationExplorer({
           </button>
         </div>
       )}
-    </section>
+    </section>,
+    locale,
   );
 }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { localize, useLocale } from "../i18n/react";
 import "../styles/research-map.css";
 
 export type ResearchMapNode = {
@@ -12,6 +13,7 @@ type Props = {
 };
 
 export default function ResearchMap({ nodes }: Props) {
+  const locale = useLocale();
   const [active, setActive] = useState(nodes[0]?.label ?? "");
   const activeNode = nodes.find((node) => node.label === active) ?? nodes[0];
   const center = { x: 360, y: 155 };
@@ -26,7 +28,7 @@ export default function ResearchMap({ nodes }: Props) {
     };
   });
 
-  return (
+  return localize(
     <section className="research-map" aria-labelledby="research-map-title">
       <div className="research-map-copy">
         <p className="eyebrow">Explore</p>
@@ -92,6 +94,7 @@ export default function ResearchMap({ nodes }: Props) {
           </li>
         ))}
       </ul>
-    </section>
+    </section>,
+    locale,
   );
 }

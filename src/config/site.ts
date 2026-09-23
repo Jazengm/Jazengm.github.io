@@ -84,6 +84,7 @@ export const site = {
   /** Keep true until every bracketed value below has been replaced and verified. */
   isPlaceholder: true,
   name: "Xiangru Zeng",
+  chineseName: "曾相如",
   pageTitle: "Xiangru Zeng · Mathematics",
   tagline: null as string | null,
   biography: [

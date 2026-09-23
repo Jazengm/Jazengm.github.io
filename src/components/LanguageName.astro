@@ -1,0 +1,65 @@
+---
+import { site } from "../config/site";
+---
+
+<button
+  class="language-name"
+  type="button"
+  data-language-toggle
+  data-no-translate
+  aria-label="Switch to Chinese / 切换到中文"
+  aria-pressed="false"
+>
+  <span class="name-english" lang="en" aria-hidden="true">{site.name}</span>
+  <span class="name-chinese" lang="zh-CN" aria-hidden="true"
+    >{site.chineseName}</span
+  >
+</button>
+
+<style>
+  .language-name {
+    position: relative;
+    isolation: isolate;
+    flex: 0 0 12rem;
+    width: 12rem;
+    height: 3.5rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-primary-strong);
+    cursor: pointer;
+    text-align: left;
+  }
+  .language-name span {
+    position: absolute;
+    left: 0;
+    bottom: 0.3rem;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.6;
+    white-space: nowrap;
+    transition:
+      transform var(--transition-standard),
+      opacity var(--transition-standard);
+    pointer-events: none;
+  }
+  .name-english,
+  :global(html[lang="zh-CN"]) .name-chinese {
+    opacity: 1;
+    transform: translate(0, 0);
+    z-index: 2;
+  }
+  .name-chinese,
+  :global(html[lang="zh-CN"]) .name-english {
+    opacity: 0.52;
+    transform: translate(2.4rem, -0.9rem);
+    z-index: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .language-name span {
+      transition: none !important;
+    }
+  }
+</style>

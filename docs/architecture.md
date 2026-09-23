@@ -2,6 +2,12 @@
 
 This document explains where to make common changes and how source files become the static pages deployed to GitHub Pages. The short rule is: keep facts in data sources, keep page composition in `src/pages/`, and keep reusable presentation in components and styles.
 
+## Bilingual rendering
+
+`LanguageName.astro` renders the overlapping name button. `site.ts` owns both names; `src/i18n/catalog.ts` owns the English-to-Chinese phrase catalog. The head bootstrap chooses the language from the URL or stored preference. `locale.ts` exposes a shared language-change event, while `client.ts` translates static Astro text and attributes. React islands are excluded from DOM translation: they subscribe with `useLocale()` and translate their own render trees through `localize()` in `i18n/react.tsx`, preserving hydration and interactive state. KaTeX, code, URLs, and identifiers stay untouched.
+
+See [translations.md](translations.md) for the maintenance procedure, pending translations, browser-only localization limits, and typography checks. This development feature shares existing routes; it does not create a separate Chinese static site or change deployment rules.
+
 ## Project map
 
 ```text

@@ -4,6 +4,12 @@ A static, accessible academic homepage template for a mathematics researcher. It
 
 The repository currently contains conspicuous fictional sample records. It does not claim a real identity, institution, paper, DOI, ORCID, or journal affiliation.
 
+## English / Chinese language switch (development branch)
+
+Click the overlapping **Xiangru Zeng / 曾相如** names at the top left to exchange their positions and switch the page language. The choice persists across pages; `?lang=zh` and `?lang=en` also select a language explicitly. Keyboard users can focus the name button and press Enter or Space.
+
+Translations are maintained in `src/i18n/catalog.ts`; the two names live in `src/config/site.ts`. See [translation maintenance and pending names](docs/translations.md) for coverage, author-name placeholders, typography, and adding translations. This version is confined to `site-development` and has not been published to `main`.
+
 ## First customization checklist
 
 Before publishing the site as a personal academic record:

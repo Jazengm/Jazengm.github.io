@@ -1,5 +1,13 @@
 @import "./tokens.css";
 
+/* Chinese headings need more vertical room than the compact Latin display face. */
+html[lang="zh-CN"]
+  :is(.page-title, .section-heading, .illustration-card figcaption span) {
+  line-height: 1.35;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
 *,
 *::before,
 *::after {

@@ -62,6 +62,23 @@ const personJsonLd = !site.isPlaceholder
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content={site.pageTitle} />
     <title>{fullTitle}</title>
+    <script is:inline>
+      (() => {
+        const query = new URL(location.href).searchParams.get("lang");
+        let stored;
+        try {
+          stored = localStorage.getItem("academic-language");
+        } catch {}
+        document.documentElement.lang =
+          query === "zh" || query === "zh-CN"
+            ? "zh-CN"
+            : query === "en"
+              ? "en"
+              : stored === "zh-CN"
+                ? "zh-CN"
+                : "en";
+      })();
+    </script>
     {
       analyticsEnabled && (
         <script
@@ -101,5 +118,8 @@ const personJsonLd = !site.isPlaceholder
       <slot />
     </main>
     <Footer />
+    <script>
+      import "../i18n/client";
+    </script>
   </body>
 </html>

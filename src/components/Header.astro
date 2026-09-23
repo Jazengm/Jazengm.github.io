@@ -1,6 +1,6 @@
 ---
 import { site } from "../config/site";
-import { withBase } from "../utils/paths";
+import LanguageName from "./LanguageName.astro";
 import Navigation from "./Navigation.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 
@@ -13,9 +13,7 @@ const { currentPath } = Astro.props;
 
 <header class="site-header">
   <div class="site-shell header-inner">
-    <a class="site-name" href={withBase("/")} aria-label={`${site.name}, home`}
-      >{site.name}</a
-    >
+    <LanguageName />
     <Navigation items={site.navigation} currentPath={currentPath} />
     <ThemeToggle />
   </div>
@@ -34,27 +32,6 @@ const { currentPath } = Astro.props;
     gap: var(--space-3);
     min-height: 5rem;
     padding-block: 0.7rem;
-  }
-
-  .site-name {
-    position: relative;
-    flex: 0 0 auto;
-    color: var(--color-primary-strong);
-    font-family: var(--font-serif);
-    font-size: 1.15rem;
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .site-name::after {
-    display: inline-block;
-    width: 0.38rem;
-    height: 0.38rem;
-    margin-left: 0.35rem;
-    border-radius: 50%;
-    background: var(--color-secondary);
-    content: "";
-    vertical-align: 0.1em;
   }
 
   @media (max-width: 760px) {

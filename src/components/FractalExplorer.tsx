@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { localize, useLocale } from "../i18n/react";
 import "../styles/fractal.css";
 
 type Mode = "mandelbrot" | "julia";
@@ -16,6 +17,7 @@ const defaults: Record<Mode, Viewport> = {
 };
 
 export default function FractalExplorer() {
+  const locale = useLocale();
   const [mode, setMode] = useState<Mode>("mandelbrot");
   const [viewport, setViewport] = useState<Viewport>(defaults.mandelbrot);
   const [iterations, setIterations] = useState(140);
@@ -128,7 +130,7 @@ export default function FractalExplorer() {
     link.click();
   };
 
-  return (
+  return localize(
     <section
       className="fractal-explorer"
       aria-labelledby={`${controlId}-title`}
@@ -308,6 +310,7 @@ export default function FractalExplorer() {
           </dd>
         </div>
       </dl>
-    </section>
+    </section>,
+    locale,
   );
 }

@@ -1,12 +1,14 @@
 import { useId, useState } from "react";
+import { localize, useLocale } from "../i18n/react";
 import "../styles/math-demo.css";
 
 export default function MathDemo() {
+  const locale = useLocale();
   const [steps, setSteps] = useState(6);
   const id = useId();
   const sequence = Array.from({ length: steps }, (_, index) => 1 / 2 ** index);
 
-  return (
+  return localize(
     <section className="math-demo quiet-card" aria-labelledby={`${id}-title`}>
       <h2 id={`${id}-title`}>Interactive parameter sample</h2>
       <label htmlFor={`${id}-steps`}>Number of terms: {steps}</label>
@@ -36,6 +38,7 @@ export default function MathDemo() {
           {sequence.reduce((sum, value) => sum + value, 0).toFixed(5)}
         </output>
       </p>
-    </section>
+    </section>,
+    locale,
   );
 }
