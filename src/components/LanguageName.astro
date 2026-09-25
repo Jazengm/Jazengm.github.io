@@ -10,10 +10,12 @@ import { site } from "../config/site";
   aria-label="Switch to Chinese / 切换到中文"
   aria-pressed="false"
 >
-  <span class="name-english" lang="en" aria-hidden="true">{site.name}</span>
-  <span class="name-chinese" lang="zh-CN" aria-hidden="true"
-    >{site.chineseName}</span
-  >
+  <span class="name-stack">
+    <span class="name-english" lang="en" aria-hidden="true">{site.name}</span>
+    <span class="name-chinese" lang="zh-CN" aria-hidden="true"
+      >{site.chineseName}</span
+    >
+  </span>
 </button>
 
 <style>
@@ -31,10 +33,15 @@ import { site } from "../config/site";
     cursor: pointer;
     text-align: left;
   }
-  .language-name span {
-    position: absolute;
-    left: 0;
-    bottom: 0.3rem;
+  .name-stack {
+    position: relative;
+    display: inline-block;
+    margin-top: 0.6rem;
+  }
+  :global(html[lang="zh-CN"]) .name-stack {
+    margin-left: 3rem;
+  }
+  .name-stack > span {
     font-family: var(--font-serif);
     font-size: 1.2rem;
     font-weight: 600;
@@ -47,14 +54,23 @@ import { site } from "../config/site";
   }
   .name-english,
   :global(html[lang="zh-CN"]) .name-chinese {
+    position: relative;
+    display: block;
+    right: auto;
+    top: auto;
+    background: var(--color-header-bg);
     opacity: 1;
     transform: translate(0, 0);
     z-index: 2;
   }
   .name-chinese,
   :global(html[lang="zh-CN"]) .name-english {
+    position: absolute;
+    right: -2rem;
+    top: 0;
+    background: transparent;
     opacity: 0.52;
-    transform: translate(2.4rem, -0.9rem);
+    transform: translateY(-0.45rem);
     z-index: 1;
   }
   @media (prefers-reduced-motion: reduce) {

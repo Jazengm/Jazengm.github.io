@@ -66,8 +66,8 @@ const notes = (await getCollection("notes", ({ data }) => !data.draft)).sort(
   }
   .note-list h2 {
     margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 550;
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
   }
   .note-list h2 + p {
     color: var(--color-text-muted);

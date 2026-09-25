@@ -77,8 +77,8 @@
 .publication-preview h3 {
   overflow-wrap: anywhere;
   margin: 0 0 0.35rem;
-  font-family: var(--font-serif);
-  font-weight: 550;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
   line-height: 1.25;
 }
 

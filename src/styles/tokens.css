@@ -37,6 +37,13 @@
   --font-serif:
     ui-serif, Georgia, Cambria, "Times New Roman", "Songti SC",
     "Noto Serif CJK SC", "Droid Sans Fallback", "SimSun", serif;
+  --font-heading: var(--font-sans);
+  --font-heading-weight: 700;
+  --color-header-bg: color-mix(
+    in srgb,
+    var(--color-surface) 94%,
+    var(--color-bg)
+  );
   --font-mono:
     ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
   --content-width: 72ch;

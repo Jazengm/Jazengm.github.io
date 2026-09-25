@@ -7,8 +7,8 @@
 .prose h3 {
   margin-top: 2.5em;
   margin-bottom: 0.7em;
-  font-family: var(--font-serif);
-  font-weight: 500;
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
   letter-spacing: -0.02em;
   line-height: 1.2;
 }

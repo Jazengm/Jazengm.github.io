@@ -33,6 +33,16 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+}
+
 img,
 svg,
 canvas {
@@ -137,9 +147,9 @@ a:hover {
 .page-title {
   max-width: 18ch;
   margin: 0;
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: clamp(2.35rem, 7vw, 5.2rem);
-  font-weight: 500;
+  font-weight: var(--font-heading-weight);
   letter-spacing: -0.045em;
   line-height: 0.98;
   overflow-wrap: anywhere;
@@ -163,9 +173,9 @@ a:hover {
 
 .section-heading {
   margin: 0 0 var(--space-4);
-  font-family: var(--font-serif);
+  font-family: var(--font-heading);
   font-size: clamp(1.55rem, 3.3vw, 2.35rem);
-  font-weight: 500;
+  font-weight: var(--font-heading-weight);
   letter-spacing: -0.025em;
   line-height: 1.15;
 }

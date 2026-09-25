@@ -13,8 +13,9 @@ test("name switch exchanges position and opacity, supports keyboard, and persist
   await expect(chinese).toHaveCSS("opacity", "0.52");
   const front = await english.boundingBox();
   const back = await chinese.boundingBox();
-  expect(back!.x).toBeGreaterThan(front!.x);
+  expect(back!.x + back!.width).toBeGreaterThan(front!.x + front!.width);
   expect(back!.y).toBeLessThan(front!.y);
+  expect(back!.y + back!.height).toBeGreaterThan(front!.y);
   await chinese.click();
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
   await expect(page.getByRole("heading", { name: "精选论文" })).toBeVisible();
@@ -22,8 +23,11 @@ test("name switch exchanges position and opacity, supports keyboard, and persist
   await expect(chinese).toHaveCSS("opacity", "1");
   const newFront = await chinese.boundingBox();
   const newBack = await english.boundingBox();
-  expect(newBack!.x).toBeGreaterThan(newFront!.x);
+  expect(newBack!.x + newBack!.width).toBeGreaterThan(
+    newFront!.x + newFront!.width,
+  );
   expect(newBack!.y).toBeLessThan(newFront!.y);
+  expect(newBack!.y + newBack!.height).toBeGreaterThan(newFront!.y);
   await page
     .locator(".primary-nav")
     .getByRole("link", { name: "关于", exact: true })
