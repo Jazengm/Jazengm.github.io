@@ -37,7 +37,7 @@
   --font-serif:
     ui-serif, Georgia, Cambria, "Times New Roman", "Songti SC",
     "Noto Serif CJK SC", "Droid Sans Fallback", "SimSun", serif;
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-serif);
   --font-heading-weight: 700;
   --color-header-bg: color-mix(
     in srgb,
@@ -58,6 +58,10 @@
   --space-6: 3.5rem;
   --transition-fast: 160ms ease;
   --transition-standard: 220ms ease;
+}
+
+:root[lang="zh-CN"] {
+  --font-heading: var(--font-sans);
 }
 
 :root[data-theme="dark"] {

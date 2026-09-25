@@ -2,7 +2,7 @@
 
 The two names in the header form a single keyboard-accessible language button. In English, 曾相如 sits slightly north-east of Xiangru Zeng at 52% opacity. Clicking either name (or pressing Enter/Space on the button) exchanges their positions and opacity and changes the page language. The main navigation still includes a Home link.
 
-The back name is anchored to the foreground name's right edge, extending 2rem to its right and 0.45rem above it in either language. The foreground uses the shared opaque header color to mask part of the back name. In Chinese mode the stack reserves extra room on the left for the longer English name. Heading typography is controlled by `--font-heading` (the bilingual sans-serif stack) and `--font-heading-weight` (700), heavier than the normal 400-weight summaries.
+The back name is anchored to the foreground name's right edge, extending 2rem to its right and 0.45rem above it in either language. Both names have transparent backgrounds, so their text overlaps without an opaque rectangular mask. In Chinese mode the stack reserves extra room on the left for the longer English name. Heading typography is controlled by `--font-heading`: English uses the original serif stack, while Chinese uses the sans-serif stack. Both use `--font-heading-weight` (700), heavier than the normal 400-weight summaries.
 
 Language is stored as `academic-language` in local storage. `?lang=zh` and `?lang=en` override that preference and provide shareable links. Internal page links carry the selection, including when storage is unavailable. Code, mathematical markup, URLs, identifiers, downloads, and form values are never translated. Switching does not reset interactive state. With JavaScript disabled, the English static site remains readable.
 
