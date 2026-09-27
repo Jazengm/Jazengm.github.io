@@ -9,7 +9,7 @@ test("inline names select their language, support keyboard, and retain their lay
   await expect(english).toHaveAttribute("aria-pressed", "true");
   await expect(english).toHaveCSS("font-weight", "700");
   await expect(english).toHaveCSS("opacity", "1");
-  await expect(chinese).toHaveCSS("font-weight", "400");
+  await expect(chinese).toHaveCSS("font-weight", "500");
   await expect(chinese).toHaveCSS("opacity", "0.65");
   const initialEnglish = await english.boundingBox();
   const initialChinese = await chinese.boundingBox();
@@ -17,6 +17,13 @@ test("inline names select their language, support keyboard, and retain their lay
     initialEnglish!.x + initialEnglish!.width,
   );
   expect(initialChinese!.y).toBe(initialEnglish!.y);
+  const divider = await page.locator(".name-divider").boundingBox();
+  expect(
+    divider!.x - (initialEnglish!.x + initialEnglish!.width),
+  ).toBeGreaterThanOrEqual(10);
+  expect(
+    initialChinese!.x - (divider!.x + divider!.width),
+  ).toBeGreaterThanOrEqual(10);
   await english.click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   const inactiveColor = await chinese.evaluate(

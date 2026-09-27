@@ -13,8 +13,9 @@ import { site } from "../config/site";
     type="button"
     lang="en"
     data-language="en"
+    data-name={site.name}
     aria-label={`${site.name} — English`}
-    aria-pressed="true">{site.name}</button
+    aria-pressed="true"><span class="name-label">{site.name}</span></button
   >
   <span class="name-divider" aria-hidden="true">|</span>
   <button
@@ -22,8 +23,10 @@ import { site } from "../config/site";
     type="button"
     lang="zh-CN"
     data-language="zh-CN"
+    data-name={site.chineseName}
     aria-label={`${site.chineseName} — 中文`}
-    aria-pressed="false">{site.chineseName}</button
+    aria-pressed="false"
+    ><span class="name-label">{site.chineseName}</span></button
   >
 </div>
 
@@ -32,12 +35,15 @@ import { site } from "../config/site";
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.65rem;
     white-space: nowrap;
   }
   .language-names button {
+    display: inline-grid;
+    flex: 0 0 auto;
+    place-items: center;
     min-height: 2.75rem;
-    padding: 0.2rem 0.1rem;
+    padding: 0.2rem;
     border: 0;
     border-bottom: 2px solid transparent;
     border-radius: var(--radius-sm);
@@ -55,12 +61,20 @@ import { site } from "../config/site";
       border-color var(--transition-fast),
       opacity var(--transition-fast);
   }
-  /* Reserve the bold name's width so switching never moves either label. */
-  .name-english {
-    width: 7.5rem;
+  /* Measure the actual bold text instead of assuming a fixed font width. */
+  .name-label,
+  .language-names button::after {
+    grid-area: 1 / 1;
   }
-  .name-chinese {
-    width: 4rem;
+  .language-names button::after {
+    content: attr(data-name);
+    font-weight: 700;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .language-names .name-chinese {
+    font-family: var(--font-sans);
+    font-weight: 500;
   }
   .name-divider {
     color: var(--color-text-muted);
