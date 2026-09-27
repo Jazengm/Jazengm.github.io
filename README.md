@@ -6,7 +6,7 @@ The repository currently contains conspicuous fictional sample records. It does 
 
 ## English / Chinese language switch (development branch)
 
-Click the overlapping **Xiangru Zeng / 曾相如** names at the top left to exchange their positions and switch the page language. The choice persists across pages; `?lang=zh` and `?lang=en` also select a language explicitly. Keyboard users can focus the name button and press Enter or Space.
+The top left displays **Xiangru Zeng | 曾相如** on one line. Click a name to select its language: the current name is bold and fully opaque; the other is lighter and highlights orange on hover or keyboard focus. The choice persists across pages; `?lang=zh` and `?lang=en` also select a language explicitly. Keyboard users can focus either name button and press Enter or Space.
 
 Translations are maintained in `src/i18n/catalog.ts`; the two names live in `src/config/site.ts`. See [translation maintenance and pending names](docs/translations.md) for coverage, author-name placeholders, typography, and adding translations. This version is confined to `site-development` and has not been published to `main`.
 

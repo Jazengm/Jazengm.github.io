@@ -27,8 +27,8 @@ for (const element of document.querySelectorAll(
   }
 }
 const originalTitle = document.title;
-const button = document.querySelector<HTMLButtonElement>(
-  "[data-language-toggle]",
+const languageButtons = document.querySelectorAll<HTMLButtonElement>(
+  ".language-names button[data-language]",
 );
 const links = [
   ...document.querySelectorAll<HTMLAnchorElement>("a[href]"),
@@ -49,13 +49,12 @@ const update = () => {
   for (const { element, name, original } of attributes)
     element.setAttribute(name, translate(original, locale));
   document.title = translate(originalTitle, locale);
-  button?.setAttribute(
-    "aria-label",
-    locale === "en"
-      ? "Switch to Chinese / 切换到中文"
-      : "Switch to English / 切换到英文",
-  );
-  button?.setAttribute("aria-pressed", String(locale === "zh-CN"));
+  for (const button of languageButtons) {
+    button.setAttribute(
+      "aria-pressed",
+      String(button.dataset.language === locale),
+    );
+  }
   // Carry preference even if storage is blocked; retain hashes and other query parameters.
   for (const link of links) {
     const url = new URL(link.getAttribute("href") ?? "", location.href);
@@ -80,9 +79,13 @@ const update = () => {
       });
   }
 };
-button?.addEventListener("click", () =>
-  setLocale(getLocale() === "en" ? "zh-CN" : "en"),
-);
+for (const button of languageButtons) {
+  button.addEventListener("click", () => {
+    const locale = button.dataset.language;
+    if ((locale === "en" || locale === "zh-CN") && locale !== getLocale())
+      setLocale(locale);
+  });
+}
 subscribeLocale(update);
 update();
 
