@@ -18,6 +18,8 @@ test("inline names select their language, support keyboard, and retain their lay
   );
   expect(initialChinese!.y).toBe(initialEnglish!.y);
   const divider = await page.locator(".name-divider").boundingBox();
+  await expect(page.locator(".name-divider")).toHaveText("|");
+  await expect(page.locator(".name-divider")).toBeVisible();
   const englishTextRight = await english
     .locator(".name-label")
     .evaluate((element) => {
@@ -25,13 +27,14 @@ test("inline names select their language, support keyboard, and retain their lay
       range.selectNodeContents(element);
       return range.getBoundingClientRect().right;
     });
-  expect(divider!.x - englishTextRight).toBeGreaterThanOrEqual(24);
+  expect(divider!.x - englishTextRight).toBeGreaterThanOrEqual(8);
+  expect(divider!.x - englishTextRight).toBeLessThanOrEqual(12);
   expect(
     divider!.x - (initialEnglish!.x + initialEnglish!.width),
-  ).toBeGreaterThanOrEqual(10);
+  ).toBeGreaterThanOrEqual(5);
   expect(
     initialChinese!.x - (divider!.x + divider!.width),
-  ).toBeGreaterThanOrEqual(10);
+  ).toBeGreaterThanOrEqual(5);
   await english.click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   const inactiveColor = await chinese.evaluate(

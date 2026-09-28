@@ -17,7 +17,7 @@ import { site } from "../config/site";
     aria-label={`${site.name} — English`}
     aria-pressed="true"><span class="name-label">{site.name}</span></button
   >
-  <span class="name-divider" aria-hidden="true"></span>
+  <span class="name-divider" aria-hidden="true">|</span>
   <button
     class="name-chinese"
     type="button"
@@ -33,10 +33,10 @@ import { site } from "../config/site";
 <style>
   .language-names {
     display: inline-grid;
-    grid-template-columns: max-content 1px max-content;
+    grid-template-columns: repeat(3, max-content);
     flex: 0 0 auto;
     align-items: center;
-    column-gap: 1rem;
+    column-gap: 0.35rem;
     white-space: nowrap;
   }
   .language-names button {
@@ -79,12 +79,13 @@ import { site } from "../config/site";
   }
   .language-names .name-english {
     font-size: 1.05rem;
-    padding-inline: 0.2rem 0.75rem;
   }
   .name-divider {
-    width: 1px;
-    height: 1.1rem;
-    background: var(--color-text-muted);
+    color: var(--color-primary-strong);
+    font-family: var(--font-sans);
+    font-size: 1.1rem;
+    font-weight: 500;
+    line-height: 1;
   }
   .language-names button[aria-pressed="true"] {
     font-weight: 700;
