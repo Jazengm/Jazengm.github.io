@@ -18,6 +18,14 @@ test("inline names select their language, support keyboard, and retain their lay
   );
   expect(initialChinese!.y).toBe(initialEnglish!.y);
   const divider = await page.locator(".name-divider").boundingBox();
+  const englishTextRight = await english
+    .locator(".name-label")
+    .evaluate((element) => {
+      const range = document.createRange();
+      range.selectNodeContents(element);
+      return range.getBoundingClientRect().right;
+    });
+  expect(divider!.x - englishTextRight).toBeGreaterThanOrEqual(24);
   expect(
     divider!.x - (initialEnglish!.x + initialEnglish!.width),
   ).toBeGreaterThanOrEqual(10);
