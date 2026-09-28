@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("inline names select their language, support keyboard, and retain their layout", async ({
+test("inline names select their language with one compact divider and keyboard feedback", async ({
   page,
 }) => {
   await page.goto("/");
@@ -27,14 +27,22 @@ test("inline names select their language, support keyboard, and retain their lay
       range.selectNodeContents(element);
       return range.getBoundingClientRect().right;
     });
-  expect(divider!.x - englishTextRight).toBeGreaterThanOrEqual(8);
-  expect(divider!.x - englishTextRight).toBeLessThanOrEqual(12);
+  await expect(page.locator(".name-divider")).toHaveCount(1);
+  expect(divider!.x - englishTextRight).toBeGreaterThanOrEqual(4);
+  expect(divider!.x - englishTextRight).toBeLessThanOrEqual(6);
   expect(
     divider!.x - (initialEnglish!.x + initialEnglish!.width),
-  ).toBeGreaterThanOrEqual(5);
+  ).toBeGreaterThanOrEqual(4);
   expect(
     initialChinese!.x - (divider!.x + divider!.width),
-  ).toBeGreaterThanOrEqual(5);
+  ).toBeGreaterThanOrEqual(4);
+  expect(
+    await english.evaluate((el) => getComputedStyle(el, "::after").content),
+  ).toBe("none");
+  await expect(page.locator(".name-divider")).toHaveCSS(
+    "background-color",
+    "rgba(0, 0, 0, 0)",
+  );
   await english.click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   const inactiveColor = await chinese.evaluate(
@@ -53,8 +61,18 @@ test("inline names select their language, support keyboard, and retain their lay
   await expect(english).toHaveCSS("font-weight", "400");
   await expect(chinese).toHaveCSS("opacity", "1");
   await expect(chinese).toHaveCSS("font-weight", "700");
-  expect(await english.boundingBox()).toEqual(initialEnglish);
-  expect(await chinese.boundingBox()).toEqual(initialChinese);
+  const chineseModeGap = await page.evaluate(() => {
+    const range = document.createRange();
+    range.selectNodeContents(
+      document.querySelector(".name-english .name-label")!,
+    );
+    return (
+      document.querySelector(".name-divider")!.getBoundingClientRect().left -
+      range.getBoundingClientRect().right
+    );
+  });
+  expect(chineseModeGap).toBeGreaterThanOrEqual(4);
+  expect(chineseModeGap).toBeLessThanOrEqual(6);
   await page
     .locator(".primary-nav")
     .getByRole("link", { name: "关于", exact: true })
@@ -66,6 +84,8 @@ test("inline names select their language, support keyboard, and retain their lay
     name: "Xiangru Zeng — English",
   });
   await reverse.focus();
+  await expect(reverse).toHaveCSS("outline-style", "none");
+  await expect(reverse).toHaveCSS("text-decoration-line", "underline");
   await expect(reverse).toHaveCSS("opacity", "1");
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: "Education" })).toBeVisible();
