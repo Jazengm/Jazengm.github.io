@@ -85,7 +85,9 @@ test("inline names select their language with one compact divider and keyboard f
   await chinese.click();
   await page.mouse.move(0, 0);
   await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
-  await expect(page.getByRole("heading", { name: "精选论文" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "曾相如", exact: true }),
+  ).toBeVisible();
   await expect(english).toHaveCSS("opacity", "0.65");
   await expect(english).toHaveCSS("font-weight", "400");
   await expect(chinese).toHaveCSS("opacity", "1");
@@ -252,7 +254,7 @@ test("reduced motion removes name animation and no-JS keeps English readable", a
   const plain = await context.newPage();
   await plain.goto("/");
   await expect(
-    plain.getByRole("heading", { name: "Selected papers" }),
+    plain.getByRole("heading", { name: "Xiangru Zeng", exact: true }),
   ).toBeVisible();
   await context.close();
 });

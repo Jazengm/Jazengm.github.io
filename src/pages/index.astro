@@ -1,99 +1,53 @@
 ---
-import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeArtwork from "../components/HomeArtwork.astro";
 import ProfileLinks from "../components/ProfileLinks.astro";
 import { site } from "../config/site";
-import { withBase } from "../utils/paths";
-import { comparePublications } from "../utils/publications";
-import EventList from "../components/EventList.astro";
-import { eventSnapshot } from "../config/events";
-import { partitionEvents } from "../utils/events";
-const { current: upcomingEvents } = partitionEvents(
-  await getCollection("events"),
-  eventSnapshot.reviewedOn,
-);
-
-const ownerNames = new Set<string>([site.name, ...site.authorNameMatches]);
-const authorList = new Intl.ListFormat("en", {
-  style: "long",
-  type: "conjunction",
-});
-const selectedPaperCitations = (
-  await getCollection("publications", ({ data }) => data.selected)
-)
-  .sort(comparePublications)
-  .map(({ id, data }) => {
-    const coauthors = data.authors.filter((author) => !ownerNames.has(author));
-    const collaboration =
-      coauthors.length > 0 ? ", with " + authorList.format(coauthors) : "";
-    return {
-      id,
-      text:
-        data.title +
-        collaboration +
-        ". " +
-        (data.venue ??
-          (data.status === "working-paper" ? "Working paper" : "Preprint")) +
-        " (" +
-        data.year +
-        ").",
-    };
-  });
 ---
 
-<BaseLayout>
-  <section class="home-intro content-column decorated-section">
-    <span class="halftone-dots" aria-hidden="true"></span>
-    <p class="eyebrow">{site.currentPosition} · {site.institution}</p>
-    <h1 class="page-title">{site.name}</h1>
-    {site.tagline && <p class="home-tagline">{site.tagline}</p>}
-    <div class="home-biography">
-      {site.biography.map((paragraph) => <p>{paragraph}</p>)}
+<BaseLayout mainClass="home-main">
+  <div class="home-hero">
+    <HomeArtwork />
+    <div class="home-content site-shell">
+      <section class="home-intro" aria-labelledby="home-name">
+        <p class="eyebrow">{site.currentPosition} · {site.institution}</p>
+        <h1 class="page-title" id="home-name">{site.name}</h1>
+        {site.tagline && <p class="home-tagline">{site.tagline}</p>}
+        <div class="home-biography">
+          {site.biography.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+        <ProfileLinks />
+      </section>
     </div>
-    <ProfileLinks />
-  </section>
-
-  <section class="section-block" aria-labelledby="selected-papers-heading">
-    <p class="eyebrow">Writing and results</p>
-    <h2 class="section-heading" id="selected-papers-heading">
-      Selected papers
-    </h2>
-    <ol class="selected-publications">
-      {
-        selectedPaperCitations.map((citation) => (
-          <li data-publication-id={citation.id}>{citation.text}</li>
-        ))
-      }
-    </ol>
-  </section>
-
-  <section class="section-block" aria-labelledby="home-events-heading">
-    <p class="eyebrow">Academic calendar</p>
-    <h2 class="section-heading" id="home-events-heading">Events</h2>
-    <p>Geometry and combinatorics meetings in China and nearby regions.</p>
-    <p>
-      <span>Last reviewed</span>: <time datetime={eventSnapshot.reviewedOn}
-        >{eventSnapshot.reviewedOn}</time
-      >.
-    </p>
-    {
-      upcomingEvents.length ? (
-        <EventList events={upcomingEvents.slice(0, 3)} />
-      ) : (
-        <p>No upcoming events in this snapshot.</p>
-      )
-    }
-    <a href={withBase("/events/")}>All events and archive →</a>
-  </section>
+  </div>
 </BaseLayout>
 
 <style>
+  :global(.site-main.home-main) {
+    width: 100%;
+    padding: 0;
+  }
+
+  .home-hero {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .home-content {
+    position: relative;
+    min-height: max(32rem, calc(100svh - 13rem));
+    display: flex;
+    align-items: center;
+    padding-block: clamp(4rem, 10vw, 8rem);
+    pointer-events: none;
+  }
+
   .home-intro {
-    padding-top: clamp(1rem, 4vw, 3rem);
+    width: 48%;
+    pointer-events: auto;
   }
 
   .home-tagline {
-    max-width: 56ch;
     margin-block: var(--space-4) var(--space-5);
     color: var(--color-text-muted);
     font-family: var(--font-serif);
@@ -105,16 +59,13 @@ const selectedPaperCitations = (
     max-width: var(--content-width);
   }
 
-  .selected-publications {
-    margin: var(--space-5) 0 0;
-    padding: 0;
-    border-top: 1px solid var(--color-border);
-    list-style: none;
-  }
+  @media (max-width: 640px) {
+    .home-intro {
+      width: 80%;
+    }
 
-  .selected-publications li {
-    padding-block: var(--space-3);
-    border-bottom: 1px solid var(--color-border);
-    line-height: 1.55;
+    .page-title {
+      font-size: clamp(2rem, 8vw, 3.2rem);
+    }
   }
 </style>

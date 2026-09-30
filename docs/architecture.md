@@ -80,7 +80,7 @@ Choose the source according to what the information represents:
 | Name, position, institution, biography, profile links      | `src/config/site.ts`                               |
 | Navigation labels, descriptions, and order                 | `src/config/site.ts`                               |
 | Home-only wording or section order                         | `src/pages/index.astro`                            |
-| Papers included in the Home selected list                  | `selected` in each publication record              |
+| Reserved Home paper selection (currently hidden)           | `selected` in each publication record              |
 | Publication, illustration, seminar, or experiment metadata | A file under `src/content/`                        |
 | Allowed content frontmatter fields                         | `src/content.config.ts`                            |
 | Shared header, metadata, main container, and footer        | `src/layouts/BaseLayout.astro`                     |
@@ -97,11 +97,15 @@ This separation prevents the same fact from being repeated in multiple component
 
 ### Home and ordinary pages
 
-`src/pages/index.astro` imports `site`, queries selected publication records, and composes the Home sections directly. `BaseLayout` supplies the common document head, header, main container, theme setup, and footer. Pages such as About follow the same pattern.
+`src/pages/index.astro` composes the profile and `HomeArtwork.astro`. Its optional `BaseLayout` `mainClass` enables a full-width Home hero without changing other pages. `BaseLayout` supplies the common document head, header, main container, theme setup, and footer. Pages such as About follow the same pattern.
 
 Use the page file to change section order or Home-only content. Move a block to `src/components/` when it becomes reusable. Do not add React merely to split markup into a component; an `.astro` component is the default for static structure.
 
-The Home **Selected papers** list is not a manually duplicated array. Add `selected: true` to each publication that should appear there. The page removes `site.name` and every `authorNameMatches` value from the coauthor phrase, uses `venue` as the journal name, and falls back to “Preprint” when no venue is present. All selected records currently appear; changing `selected` does not remove a paper from the full Publications page.
+Home's Selected papers and Events previews are temporarily removed from the rendering, not from the collections. Publication `selected` flags are preserved for restoration; they currently do not change Home. Full directories and navigation are unaffected.
+
+`HomeArtwork.astro` reads the illustration collection in gallery order (`order`, then title), optimizes images to WebP at up to 1920 pixels wide, and renders the first image as a no-JavaScript fallback. The browser script `src/scripts/home-artwork.ts` selects `floor(Date.now() / 3600000) % count`, schedules the next whole hour, and rechecks on visibility/focus and back-forward-cache restoration. It uses the visitor's clock, not a network service. Only the fallback/current selected image is fetched, not the entire gallery. The selected image is decoded before its source, caption and destination are changed together; a failed load preserves the previous working link and is retried on the next wake/hour check. Pending loads are invalidated and timers/listeners cleared on page exit.
+
+The artwork link is excluded from the static translation walker using `data-no-translate`; it subscribes to the existing locale event to translate its live caption/accessible name and preserve `?lang=zh`. The hero has no animation and remains usable with reduced motion. Its left-to-right theme-color overlay protects the profile, while foreground profile links remain independently clickable. Artwork keyboard focus and a small caption give non-mouse users the same detail-page destination.
 
 ### Publications
 
@@ -109,7 +113,7 @@ Each Markdown or MDX file under `src/content/publications/` is loaded and valida
 
 The record filename becomes its stable entry ID. Adding a valid record is enough for it to appear in the directory; no publication array should be maintained elsewhere.
 
-Publication sorting is shared by Home and the complete directory through `src/utils/publications.ts`. Keep the `selected` flag in frontmatter rather than adding a separate Home-specific paper list.
+The complete directory uses `src/utils/publications.ts` for sorting. Keep the reserved `selected` flag in frontmatter rather than adding a separate Home-specific paper list.
 
 ### Mathematics and syntax highlighting
 
@@ -178,7 +182,11 @@ Prefer `src/assets/` for page images. Importing an image lets Astro validate the
 | Portrait, illustration, diagram, or publication preview | `src/assets/`        |
 | Favicon, download, robots file, or stable untouched URL | `public/`            |
 
-### Example: add an optimized image to Home
+### Home background and an optional portrait
+
+To add a rotating Home background, add a normal Illustration record and local image as described above. No second Home image list is maintained. Use its `order` to place it in the cycle and add its Chinese title to `src/i18n/catalog.ts`. The existing filename/ID supplies the detail URL; do not rename it just to change its display title. A build is required to include new artwork.
+
+The example below is only for an additional portrait, not for the already-implemented rotating background:
 
 Place a file at `src/assets/profile.jpg`, then edit `src/pages/index.astro`:
 
@@ -271,9 +279,9 @@ Imported Astro assets already receive build-aware URLs. Do not prepend `withBase
 - `src/utils/events.ts`: pure date partition/sort; ongoing and final-day events
   remain current. Past events sort newest first. No timezone conversion is needed
   for ISO calendar-date comparisons.
-- `src/components/EventList.astro`: shared semantic list, dates, locations, topic
-  tags and official links. Home renders the nearest three current records;
-  `src/pages/events.astro` renders the complete current list and archive.
+- `src/components/EventList.astro`: semantic list, dates, locations, topic tags
+  and official links. `src/pages/events.astro` renders the complete current list
+  and archive; the Home preview is temporarily hidden.
 - The existing phrase catalog translates titles, locations and headings; no new
   React island or dependency is needed. Chinese event-title translations are
   editorial; unfamiliar personal names retain their official Roman spelling.
