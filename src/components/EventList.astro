@@ -1,0 +1,91 @@
+---
+import type { CollectionEntry } from "astro:content";
+interface Props {
+  events: CollectionEntry<"events">[];
+}
+const { events } = Astro.props;
+---
+
+<ul class="event-list">
+  {
+    events.map(({ id, data }) => (
+      <li data-event-id={id}>
+        <div class="event-dates">
+          <time datetime={data.start}>{data.start}</time>
+          {data.end !== data.start && (
+            <>
+              <span aria-hidden="true"> – </span>
+              <time datetime={data.end}>{data.end}</time>
+            </>
+          )}
+        </div>
+        <div class="event-info">
+          <h3>
+            <a href={data.url}>{data.title}</a>
+          </h3>
+          <p>{data.location}</p>
+          <ul class="event-topics" aria-label="Topics">
+            {data.topics.map((topic) => (
+              <li>{topic}</li>
+            ))}
+          </ul>
+        </div>
+      </li>
+    ))
+  }
+</ul>
+<style>
+  .event-list {
+    list-style: none;
+    padding: 0;
+    margin-block: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+  .event-list > li {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: var(--space-4);
+    padding-block: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .event-dates {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .event-dates time {
+    display: inline-block;
+  }
+  h3 {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: var(--font-heading-weight);
+    font-size: 1.3rem;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+  }
+  p {
+    margin-block: var(--space-2);
+    color: var(--color-text-muted);
+  }
+  .event-topics {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .event-topics li {
+    font-size: 0.8rem;
+    color: var(--color-primary-strong);
+    background: var(--color-primary-soft);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+  }
+  @media (max-width: 600px) {
+    .event-list > li {
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+  }
+</style>

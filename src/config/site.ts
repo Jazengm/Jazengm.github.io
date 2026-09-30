@@ -74,6 +74,12 @@ export const navigation: NavigationItem[] = [
     description: "Seminar programs, descriptions, and materials.",
   },
   {
+    label: "Events",
+    href: "/events",
+    description:
+      "Geometry and combinatorics meetings in China and nearby regions.",
+  },
+  {
     label: "About",
     href: "/about",
     description: "Biography, education, and contact details.",

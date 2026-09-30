@@ -1,0 +1,70 @@
+query:
+  name: regional-geometry-combinatorics-2026-2027
+  topics:
+    [
+      algebraic geometry,
+      arithmetic geometry,
+      derived categories,
+      matroid,
+      matroids,
+      algebraic combinatorics,
+      Schubert calculus,
+      代数几何,
+      拟阵,
+      代数组合,
+    ]
+  subjects: [mathematics]
+  start_date: 2026-01-01
+  end_date: 2027-12-31
+  languages: [en, zh, ja]
+  regions: [China, Japan, Korea, Southeast Asia]
+source_vault:
+  subjects: [mathematics]
+  include_source_ids: [tsimf, scms-fudan, kavli-ipmu]
+sources:
+  - id: reviewed-regional-events
+    name: Official regional conference pages
+    kind: institution
+    entry_urls:
+      - https://combin.nankai.edu.cn/conf/nkwcg2026/
+      - https://scms.fudan.edu.cn/info/1059/12811.htm
+      - https://indico.ipmu.jp/event/515/
+      - https://tsimf.tsinghua.edu.cn/info/1553/1884.htm
+      - https://joint.imi.kyushu-u.ac.jp/post-19066/
+      - https://math.ecnu.edu.cn/xlv/conference2026/AGAG.html
+    allowed_domains:
+      [
+        combin.nankai.edu.cn,
+        scms.fudan.edu.cn,
+        indico.ipmu.jp,
+        tsimf.tsinghua.edu.cn,
+        joint.imi.kyushu-u.ac.jp,
+        math.ecnu.edu.cn,
+      ]
+    max_depth: 0
+    max_pages: 6
+  - id: ymsc-discovery
+    name: YMSC conference directory
+    kind: research_institute
+    listing_urls:
+      [
+        https://ymsc.tsinghua.edu.cn/en/Activities/Conferences/Academic_Conferences.htm,
+      ]
+    allowed_domains: [ymsc.tsinghua.edu.cn]
+    max_depth: 1
+    max_pages: 4
+search:
+  enabled: false
+fetch:
+  timeout_seconds: 15
+  max_retries: 0
+  per_domain_delay_seconds: 1
+  global_max_pages: 30
+  obey_robots_txt: true
+storage:
+  database: data/homepage-regional-events.sqlite3
+  cache_directory: cache/homepage-regional-events
+output:
+  directory: reports/homepage-regional-events
+  flat: true
+  formats: [json, markdown]

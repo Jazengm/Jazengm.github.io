@@ -6,6 +6,13 @@ import ResearchMap, { type ResearchMapNode } from "../components/ResearchMap";
 import { site } from "../config/site";
 import { withBase } from "../utils/paths";
 import { comparePublications } from "../utils/publications";
+import EventList from "../components/EventList.astro";
+import { eventSnapshot } from "../config/events";
+import { partitionEvents } from "../utils/events";
+const { current: upcomingEvents } = partitionEvents(
+  await getCollection("events"),
+  eventSnapshot.reviewedOn,
+);
 
 const atlasItems = site.navigation.filter(
   (item) => item.href !== "/" && item.href !== "/about",
@@ -80,6 +87,24 @@ const selectedPaperCitations = (
   <div class="section-block">
     <ResearchMap nodes={atlasNodes} client:visible />
   </div>
+  <section class="section-block" aria-labelledby="home-events-heading">
+    <p class="eyebrow">Academic calendar</p>
+    <h2 class="section-heading" id="home-events-heading">Events</h2>
+    <p>Geometry and combinatorics meetings in China and nearby regions.</p>
+    <p>
+      <span>Last reviewed</span>: <time datetime={eventSnapshot.reviewedOn}
+        >{eventSnapshot.reviewedOn}</time
+      >.
+    </p>
+    {
+      upcomingEvents.length ? (
+        <EventList events={upcomingEvents.slice(0, 3)} />
+      ) : (
+        <p>No upcoming events in this snapshot.</p>
+      )
+    }
+    <a href={withBase("/events/")}>All events and archive →</a>
+  </section>
 </BaseLayout>
 
 <style>

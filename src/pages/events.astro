@@ -1,0 +1,63 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import EventList from "../components/EventList.astro";
+import { eventSnapshot } from "../config/events";
+import { partitionEvents } from "../utils/events";
+const { current, past } = partitionEvents(
+  await getCollection("events"),
+  eventSnapshot.reviewedOn,
+);
+---
+
+<BaseLayout
+  title="Events"
+  description="Geometry and combinatorics meetings in China and nearby regions."
+>
+  <PageHeader
+    eyebrow="Academic calendar"
+    title="Events"
+    lede="Algebraic geometry, matroids, and algebraic combinatorics in China and nearby regions."
+  />
+  <div class="content-column">
+    <p>
+      <span>Search period</span>: {eventSnapshot.period}. <span
+        >Last reviewed</span
+      >: <time datetime={eventSnapshot.reviewedOn}
+        >{eventSnapshot.reviewedOn}</time
+      >.
+    </p>
+    <p>
+      Coverage includes mainland China, Hong Kong, Macao, Taiwan, Japan, Korea,
+      and Southeast Asia. This is a selected list, not a complete regional
+      calendar.
+    </p>
+    <p>
+      Compiled using Academic Event Radar and manual checks of official
+      announcements. Dates and availability may change; follow each event link
+      for the latest details.
+    </p>
+  </div>
+  <section class="section-block" aria-labelledby="upcoming-events">
+    <h2 class="section-heading" id="upcoming-events">Upcoming and ongoing</h2>
+    <p>Status is relative to the review date above.</p>
+    {
+      current.length ? (
+        <EventList events={current} />
+      ) : (
+        <p>No upcoming events in this snapshot.</p>
+      )
+    }
+  </section>
+  <section class="section-block" aria-labelledby="past-events">
+    <h2 class="section-heading" id="past-events">Past events</h2>
+    {
+      past.length ? (
+        <EventList events={past} />
+      ) : (
+        <p>No past events in this snapshot.</p>
+      )
+    }
+  </section>
+</BaseLayout>

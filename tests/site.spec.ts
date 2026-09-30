@@ -4,6 +4,7 @@ const requiredRoutes = [
   "/",
   "/publications/",
   "/research/",
+  "/events/",
   "/teaching/",
   "/notes/",
   "/experiments/",

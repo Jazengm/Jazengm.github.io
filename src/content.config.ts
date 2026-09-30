@@ -1,5 +1,5 @@
 import { defineCollection } from "astro:content";
-import { glob } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
 
 const linksSchema = z
@@ -96,7 +96,27 @@ const seminars = defineCollection({
   }),
 });
 
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const events = defineCollection({
+  loader: file("src/content/events/events.json"),
+  schema: z
+    .object({
+      title: z.string().min(1),
+      start: isoDate,
+      end: isoDate,
+      location: z.string().min(1),
+      topics: z
+        .array(
+          z.enum(["Algebraic geometry", "Matroids", "Algebraic combinatorics"]),
+        )
+        .min(1),
+      url: z.url().startsWith("https://"),
+    })
+    .refine((event) => event.end >= event.start, "Event end precedes start"),
+});
+
 export const collections = {
+  events,
   publications,
   notes,
   experiments,

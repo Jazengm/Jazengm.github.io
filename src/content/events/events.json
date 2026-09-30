@@ -1,0 +1,101 @@
+[
+  {
+    "id": "scms-ag-2026",
+    "title": "2026 Workshop on Algebraic Geometry",
+    "start": "2026-10-26",
+    "end": "2026-10-30",
+    "location": "SCMS, Fudan University · Shanghai, China",
+    "topics": ["Algebraic geometry"],
+    "url": "https://scms.fudan.edu.cn/info/6203/13162.htm"
+  },
+  {
+    "id": "viasm-galleries-2026",
+    "title": "Winter School: Combinatorics of Galleries and Paths in Representation Theory, Schubert Calculus and Applications",
+    "start": "2026-11-16",
+    "end": "2026-11-19",
+    "location": "VIASM · Hanoi, Vietnam",
+    "topics": ["Algebraic combinatorics"],
+    "url": "https://viasm.edu.vn/hdkh/GAB2026"
+  },
+  {
+    "id": "ipmu-derived-2026",
+    "title": "Derived Categories in Geometry and Representation Theory — in honor of Professor Alexey Bondal's 65th birthday",
+    "start": "2026-11-30",
+    "end": "2026-12-04",
+    "location": "Kavli IPMU, University of Tokyo · Kashiwa, Japan",
+    "topics": ["Algebraic geometry"],
+    "url": "https://indico.ipmu.jp/event/515/"
+  },
+  {
+    "id": "tsimf-schubert-2027",
+    "title": "Representation Theory and Schubert Calculus",
+    "start": "2027-01-04",
+    "end": "2027-01-08",
+    "location": "TSIMF · Sanya, China",
+    "topics": ["Algebraic geometry", "Algebraic combinatorics"],
+    "url": "https://tsimf.tsinghua.edu.cn/info/1553/1884.htm"
+  },
+  {
+    "id": "mcm-beauville-2027",
+    "title": "Algebraic Geometry in Beijing — in honor of Professor Arnaud Beauville's 80th birthday",
+    "start": "2027-04-12",
+    "end": "2027-04-16",
+    "location": "Morningside Center of Mathematics, CAS · Beijing, China",
+    "topics": ["Algebraic geometry"],
+    "url": "https://www.mcm.ac.cn/events/programs/202605/t20260506_1158386.html"
+  },
+  {
+    "id": "oist-affine-2027",
+    "title": "Affine algebras and representation theory",
+    "start": "2027-09-13",
+    "end": "2027-09-17",
+    "location": "OIST Main Campus · Okinawa, Japan",
+    "topics": ["Algebraic combinatorics"],
+    "url": "https://groups.oist.jp/ja/cws/event/affine-algebras-and-representation-theory"
+  },
+  {
+    "id": "ymsc-ag-2026",
+    "title": "Algebraic Geometry Workshop 2026",
+    "start": "2026-04-24",
+    "end": "2026-04-24",
+    "location": "YMSC, Tsinghua University · Beijing, China",
+    "topics": ["Algebraic geometry"],
+    "url": "https://ymsc.tsinghua.edu.cn/en/info/1060/3751.htm"
+  },
+  {
+    "id": "ecnu-agag-2026",
+    "title": "Conference on Algebraic Geometry and Arithmetic Geometry in East China Normal University 2026",
+    "start": "2026-06-04",
+    "end": "2026-06-08",
+    "location": "East China Normal University, Minhang Campus · Shanghai, China",
+    "topics": ["Algebraic geometry"],
+    "url": "https://math.ecnu.edu.cn/xlv/conference2026/AGAG.html"
+  },
+  {
+    "id": "nankai-combinatorics-2026",
+    "title": "Nankai Workshop on Combinatorics and Geometry",
+    "start": "2026-07-13",
+    "end": "2026-07-17",
+    "location": "Nankai University · Tianjin, China",
+    "topics": ["Matroids", "Algebraic combinatorics", "Algebraic geometry"],
+    "url": "https://combin.nankai.edu.cn/conf/nkwcg2026/"
+  },
+  {
+    "id": "fudan-summer-2026",
+    "title": "2026 Fudan International Summer School in Algebraic Geometry",
+    "start": "2026-08-03",
+    "end": "2026-08-14",
+    "location": "SCMS, Fudan University · Shanghai, China",
+    "topics": ["Algebraic geometry"],
+    "url": "https://scms.fudan.edu.cn/info/1059/12811.htm"
+  },
+  {
+    "id": "kyushu-matroids-2026",
+    "title": "The Intersection of Matroid Theory and Cryptography",
+    "start": "2026-08-03",
+    "end": "2026-08-04",
+    "location": "IMI, Kyushu University, Ito Campus · Japan (hybrid)",
+    "topics": ["Matroids"],
+    "url": "https://joint.imi.kyushu-u.ac.jp/post-19066/"
+  }
+]

@@ -267,6 +267,21 @@ Run `npm run test` for interactive, layout, dependency, or infrastructure change
 
 ## Architecture notes
 
+### Events calendar
+
+`/events/` lists reviewed algebraic-geometry, matroid and algebraic-combinatorics
+meetings in China and nearby regions, with separate upcoming and past sections.
+Home previews the nearest three upcoming/ongoing meetings. Navigation and the
+site atlas use the same Events entry in `src/config/site.ts`.
+
+Edit `src/content/events/events.json` to add/remove a meeting (`id`, `title`, ISO
+`start`/`end`, `location`, `topics`, official `url`). Update Chinese display
+translations in `src/i18n/catalog.ts` and the genuine review date in
+`src/config/events.ts`. Status is relative to that explicitly displayed date.
+For the radar commands, regional scope, source limitations and manual corrections,
+see [the events refresh guide](data/events/README.md). No live crawl runs during
+the website build. Events currently remains a dedicated section, not Misc.
+
 Astro renders all ordinary content and navigation to static HTML. React is not loaded on About, Teaching, Research, or the Notes/Experiments indexes. Theme switching is a tiny native script. Semantic CSS variables provide the system-font blue-orange light/dark design; motion stays between 120–250 ms and collapses under `prefers-reduced-motion`. Placeholder Person JSON-LD is withheld until the centralized profile is verified.
 
 See [Architecture and page generation](docs/architecture.md) for a maintainer-oriented explanation of file responsibilities and how data becomes a deployed page.

@@ -266,6 +266,31 @@ Internal links created in TypeScript or component props should pass through `wit
 
 Imported Astro assets already receive build-aware URLs. Do not prepend `withBase()` to an imported `Image` source.
 
+## Events and Academic Event Radar
+
+- `src/content/events/events.json`: reviewed records loaded by Astro's `file()`
+  loader. Required fields are `id`, `title`, `start`, `end`, `location`, `topics`,
+  and `url`. IDs and official URLs must be unique; date ranges must be valid.
+  Topics are `Algebraic geometry`, `Matroids`, or `Algebraic combinatorics`.
+- `src/config/events.ts`: period label and actual editorial review date. Do not
+  advance this date just because the site is rebuilt.
+- `src/utils/events.ts`: pure date partition/sort; ongoing and final-day events
+  remain current. Past events sort newest first. No timezone conversion is needed
+  for ISO calendar-date comparisons.
+- `src/components/EventList.astro`: shared semantic list, dates, locations, topic
+  tags and official links. Home renders the nearest three current records;
+  `src/pages/events.astro` renders the complete current list and archive.
+- The existing phrase catalog translates titles, locations and headings; no new
+  React island or dependency is needed. Chinese event-title translations are
+  editorial; unfamiliar personal names retain their official Roman spelling.
+- `data/events/search.yaml` and its README explain the reproducible sibling-radar
+  workflow. The newer upcoming-search config/results live in the radar repo.
+  Manual review bridges radar exports and website content, excluding false
+  positives and recording corrected dates. Crawling never runs in browser/build/CI.
+
+For a refresh, follow [the events guide](../data/events/README.md), review each
+official URL, update content and translations, and run all checks below.
+
 ## Before committing a structural change
 
 Run the repository checks:

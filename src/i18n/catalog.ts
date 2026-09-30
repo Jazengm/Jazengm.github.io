@@ -2,6 +2,61 @@ import { site } from "../config/site";
 
 /** English source phrases mapped to reviewed Chinese translations. */
 export const chinese: Record<string, string> = {
+  Events: "学术活动",
+  "Academic calendar": "会议与学术日程",
+  "Geometry and combinatorics meetings in China and nearby regions.":
+    "中国及周边地区的几何与组合数学会议。",
+  "Algebraic geometry, matroids, and algebraic combinatorics in China and nearby regions.":
+    "中国及周边地区的代数几何、拟阵与代数组合活动。",
+  "Search period": "搜索时段",
+  "Last reviewed": "最近核对",
+  "Coverage includes mainland China, Hong Kong, Macao, Taiwan, Japan, Korea, and Southeast Asia. This is a selected list, not a complete regional calendar.":
+    "搜索范围包括中国内地、香港、澳门、台湾、日本、韩国及东南亚。本页为精选列表，不代表完整的地区活动日历。",
+  "Compiled using Academic Event Radar and manual checks of official announcements. Dates and availability may change; follow each event link for the latest details.":
+    "结合 Academic Event Radar 与官方公告人工核对整理。日期与报名情况可能变化，请通过会议链接查看最新信息。",
+  "Upcoming and ongoing": "即将举办与进行中的活动",
+  "Past events": "往期活动",
+  "Status is relative to the review date above.":
+    "活动状态以上方的核对日期为准。",
+  "No upcoming events in this snapshot.": "本次快照暂无即将举办的活动。",
+  "No past events in this snapshot.": "本次快照暂无往期活动。",
+  "All events and archive →": "全部活动与往期记录 →",
+  "Algebraic geometry": "代数几何",
+  Matroids: "拟阵",
+  "Algebraic combinatorics": "代数组合",
+  "2026 Workshop on Algebraic Geometry": "2026 代数几何研讨会",
+  "Winter School: Combinatorics of Galleries and Paths in Representation Theory, Schubert Calculus and Applications":
+    "冬季学校：表示论、Schubert 计数及其应用中的廊道与路径组合学",
+  "Derived Categories in Geometry and Representation Theory — in honor of Professor Alexey Bondal's 65th birthday":
+    "几何与表示论中的导出范畴——庆祝 Alexey Bondal 教授 65 岁生日",
+  "Representation Theory and Schubert Calculus": "表示论与 Schubert 计数",
+  "Algebraic Geometry in Beijing — in honor of Professor Arnaud Beauville's 80th birthday":
+    "北京代数几何会议——庆祝 Arnaud Beauville 教授 80 岁生日",
+  "Affine algebras and representation theory": "仿射代数与表示论",
+  "Algebraic Geometry Workshop 2026": "2026 清华代数几何研讨会",
+  "Conference on Algebraic Geometry and Arithmetic Geometry in East China Normal University 2026":
+    "2026 华东师范大学代数几何和算术几何会议",
+  "Nankai Workshop on Combinatorics and Geometry": "南开组合与几何研讨会",
+  "2026 Fudan International Summer School in Algebraic Geometry":
+    "2026 复旦大学代数几何国际暑期学校",
+  "The Intersection of Matroid Theory and Cryptography":
+    "拟阵理论与密码学的交叉",
+  "SCMS, Fudan University · Shanghai, China": "复旦大学上海数学中心 · 中国上海",
+  "VIASM · Hanoi, Vietnam": "越南高等数学研究院 · 越南河内",
+  "Kavli IPMU, University of Tokyo · Kashiwa, Japan":
+    "东京大学 Kavli IPMU · 日本柏市",
+  "TSIMF · Sanya, China": "清华三亚国际数学论坛 · 中国三亚",
+  "Morningside Center of Mathematics, CAS · Beijing, China":
+    "中国科学院晨兴数学中心 · 中国北京",
+  "OIST Main Campus · Okinawa, Japan":
+    "冲绳科学技术大学院大学主校区 · 日本冲绳",
+  "YMSC, Tsinghua University · Beijing, China":
+    "清华大学丘成桐数学科学中心 · 中国北京",
+  "East China Normal University, Minhang Campus · Shanghai, China":
+    "华东师范大学闵行校区 · 中国上海",
+  "Nankai University · Tianjin, China": "南开大学 · 中国天津",
+  "IMI, Kyushu University, Ito Campus · Japan (hybrid)":
+    "九州大学产业数学研究所，伊都校区 · 日本（线上线下混合）",
   "Biography, academic timeline, and contact information.":
     "个人简介、学术经历与联系方式。",
   "Research themes, organizing questions, and links to related publications.":
