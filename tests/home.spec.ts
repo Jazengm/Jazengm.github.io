@@ -7,7 +7,9 @@ const instant = new Date("2026-09-30T12:59:59Z");
 test("Home selects the current hour, rotates at the boundary, and localizes live artwork", async ({
   page,
 }) => {
-  await page.clock.install({ time: instant });
+  // Freeze before navigation: slow image loading must not cross the hour.
+  await page.clock.install({ time: new Date(instant.getTime() - 60_000) });
+  await page.clock.pauseAt(instant);
   await page.goto("/");
   const link = page.locator("[data-home-artwork]");
   const artworks = JSON.parse((await link.getAttribute("data-artworks"))!);
@@ -103,7 +105,8 @@ test("Home has a linked static fallback without JavaScript", async ({
 test("An unavailable next image preserves the working artwork and destination", async ({
   page,
 }) => {
-  await page.clock.install({ time: instant });
+  await page.clock.install({ time: new Date(instant.getTime() - 60_000) });
+  await page.clock.pauseAt(instant);
   await page.goto("/");
   const link = page.locator("[data-home-artwork]");
   const artworks = JSON.parse((await link.getAttribute("data-artworks"))!);
@@ -111,7 +114,11 @@ test("An unavailable next image preserves the working artwork and destination", 
   await expect(link).toHaveAttribute("href", artworks[initial].href);
   const next = artworks[(initial + 1) % artworks.length];
   await page.route("**" + next.src, (route) => route.abort());
+  const failedLoad = page.waitForEvent("requestfailed", {
+    predicate: (request) => request.url().endsWith(next.src),
+  });
   await page.clock.fastForward(1_100);
+  await failedLoad;
   await expect(link).toHaveAttribute("href", artworks[initial].href);
   await expect(link.locator("span")).toHaveText(artworks[initial].title);
   await page.unroute("**" + next.src);
