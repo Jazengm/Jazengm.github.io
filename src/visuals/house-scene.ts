@@ -12,13 +12,13 @@ export class HouseScene {
   private ctx: CanvasRenderingContext2D;
   private bursts: Burst[] = [];
   private frame = 0;
+  private resizeFrame = 0;
   private expiry?: ReturnType<typeof setTimeout>;
   private observer: ResizeObserver;
   private motion = matchMedia("(prefers-reduced-motion: reduce)");
   private gate = new PerformanceGate();
   private colors: string[];
   private background: string;
-  private grid: string;
   private width = 1;
   private height = 1;
   private ratio = 1;
@@ -35,8 +35,15 @@ export class HouseScene {
       style.getPropertyValue("--color-play-" + name).trim(),
     );
     this.background = style.getPropertyValue("--color-play-bg").trim();
-    this.grid = style.getPropertyValue("--color-play-grid").trim();
-    this.observer = new ResizeObserver(() => this.resize());
+    // Writing canvas dimensions inside ResizeObserver can trigger a same-frame
+    // feedback warning during fullscreen transitions. Coalesce into the next frame.
+    this.observer = new ResizeObserver(() => {
+      if (!this.resizeFrame)
+        this.resizeFrame = requestAnimationFrame(() => {
+          this.resizeFrame = 0;
+          if (!this.dead) this.resize();
+        });
+    });
     this.observer.observe(canvas);
     this.motion.addEventListener("change", this.motionChange);
     this.resize();
@@ -52,8 +59,10 @@ export class HouseScene {
       1.75,
       Math.sqrt(2_500_000 / (this.width * this.height)),
     );
-    this.canvas.width = Math.max(1, Math.round(this.width * this.ratio));
-    this.canvas.height = Math.max(1, Math.round(this.height * this.ratio));
+    const pixelWidth = Math.max(1, Math.round(this.width * this.ratio));
+    const pixelHeight = Math.max(1, Math.round(this.height * this.ratio));
+    if (this.canvas.width !== pixelWidth) this.canvas.width = pixelWidth;
+    if (this.canvas.height !== pixelHeight) this.canvas.height = pixelHeight;
     this.paint(performance.now());
   }
   burst(index: number, x: number, y: number) {
@@ -71,7 +80,7 @@ export class HouseScene {
       angle: (++this.serial * 0.618 + index) % (Math.PI * 2),
     };
     this.bursts.push(burst);
-    this.bursts = this.bursts.slice(this.motion.matches ? -2 : -28);
+    this.bursts = this.bursts.slice(this.motion.matches ? -2 : -8);
     if (this.motion.matches) {
       this.paint(performance.now());
       clearTimeout(this.expiry);
@@ -99,139 +108,125 @@ export class HouseScene {
     const c = this.ctx,
       w = this.width,
       h = this.height;
+    const diagonal = Math.hypot(w, h);
     c.setTransform(this.ratio, 0, 0, this.ratio, 0, 0);
     c.globalAlpha = 1;
     c.fillStyle = this.background;
     c.fillRect(0, 0, w, h);
-    c.strokeStyle = this.grid;
-    c.lineWidth = 1;
-    for (let col = 1; col < 8; col++) {
-      c.beginPath();
-      c.moveTo((col * w) / 8, 0);
-      c.lineTo((col * w) / 8, h);
-      c.stroke();
-    }
-    for (let row = 1; row < 4; row++) {
-      c.beginPath();
-      c.moveTo(0, (row * h) / 4);
-      c.lineTo(w, (row * h) / 4);
-      c.stroke();
-    }
-    // Quiet, static orbital mark: the stage never runs an idle animation loop.
-    c.save();
-    c.translate(w / 2, h / 2);
-    c.strokeStyle = this.colors[0];
-    c.globalAlpha = 0.13;
-    for (let i = 0; i < 3; i++) {
-      c.beginPath();
-      c.ellipse(
-        0,
-        0,
-        Math.min(w, h) * 0.32,
-        Math.min(w, h) * (0.09 + i * 0.035),
-        (i * Math.PI) / 3,
-        0,
-        Math.PI * 2,
-      );
-      c.stroke();
-    }
-    c.restore();
+    // Intentionally no grid, ticks or idle ornament. The sound map is invisible.
     for (const burst of this.bursts) {
       const pad = PADS[burst.index];
-      const progress = this.motion.matches
-        ? 0.25
+      const still = this.motion.matches;
+      const progress = still
+        ? 0.3
         : Math.min(1, Math.max(0, (now - burst.born) / 1600));
-      const ease = 1 - (1 - progress) ** 3;
-      const radius = Math.min(w, h) * (0.035 + ease * 0.26);
+      const ease = 1 - (1 - progress) ** 2;
+      const radius = still
+        ? Math.min(w, h) * 0.22
+        : diagonal * (0.06 + ease * 0.92);
+      const span = still ? radius : diagonal;
+      // Compose across the whole stage instead of drawing small stamps in cells.
+      const x = still ? burst.x * w : (0.5 + (burst.x - 0.5) * 0.25) * w;
+      const y = still ? burst.y * h : (0.5 + (burst.y - 0.5) * 0.25) * h;
       c.save();
-      c.translate(burst.x * w, burst.y * h);
+      c.translate(x, y);
       c.rotate(
-        burst.angle +
-          (this.motion.matches ? 0 : progress * (burst.index % 2 ? -1 : 1)),
+        burst.angle * 0.25 +
+          (still ? 0 : ease * (burst.index % 2 ? -0.65 : 0.65)),
       );
       c.strokeStyle = c.fillStyle = this.colors[pad.color];
-      c.globalAlpha = (1 - progress) ** 1.4 * 0.72;
-      c.lineWidth = 1.5 + (1 - progress) * 2;
+      const envelope = still
+        ? 0.55
+        : Math.min(1, progress / 0.09) * (1 - progress) ** 1.25 * 0.85;
+      c.globalAlpha = envelope;
+      c.lineWidth = Math.max(2, Math.min(w, h) * 0.005) * (1 - progress * 0.5);
       switch (pad.motif) {
-        case 0: // Interference rings.
-          for (let i = 1; i <= 4; i++) {
+        case 0: // Ripples sweep from the center all the way through the edges.
+          for (let i = 1; i <= 5; i++) {
             c.beginPath();
-            c.arc(0, 0, (radius * i) / 4, 0, Math.PI * 2);
+            c.arc(0, 0, (radius * i) / 5, 0, Math.PI * 2);
             c.stroke();
           }
           break;
-        case 1: // Rotating nested triangles.
-          for (let i = 0; i < 4; i++)
-            this.polygon(3, radius * (1 - i * 0.19), i * 0.3);
-          break;
-        case 2: // A starburst of broken rays.
-          for (let i = 0; i < 18; i++) {
-            c.rotate(Math.PI / 9);
-            c.beginPath();
-            c.moveTo(radius * 0.45, 0);
-            c.lineTo(radius, 0);
-            c.stroke();
+        case 1: // A rotating triangular portal, with a translucent leading face.
+          for (let i = 0; i < 5; i++) {
+            this.polygon(3, radius * (1 - i * 0.17), i * 0.19 + ease * 0.4);
+            if (i === 0) {
+              c.globalAlpha = envelope * 0.08;
+              c.fill();
+              c.globalAlpha = envelope;
+            }
           }
           break;
-        case 3: // Woven sine ribbons.
-          for (let j = 0; j < 4; j++) {
+        case 2: // Full-stage radial fan with long rays and a growing central halo.
+          for (let i = 0; i < 24; i++) {
+            c.rotate(Math.PI / 12);
             c.beginPath();
-            for (let i = 0; i <= 40; i++) {
-              const x = (i / 20 - 1) * radius;
-              const y =
-                Math.sin(i / 6 + progress * 5 + j) * radius * 0.3 + j * 8;
-              if (!i) c.moveTo(x, y);
-              else c.lineTo(x, y);
+            c.moveTo(radius * 0.12, 0);
+            c.lineTo(span, 0);
+            c.stroke();
+          }
+          this.polygon(12, radius * 0.17);
+          break;
+        case 3: // Wide flowing ribbons crossing the entire stage.
+          for (let j = -3; j <= 3; j++) {
+            c.beginPath();
+            for (let i = 0; i <= 64; i++) {
+              const px = (i / 32 - 1) * span;
+              const py =
+                Math.sin(i / 10 + ease * 6 + j * 0.28) * radius * 0.26 +
+                j * span * 0.045;
+              if (i === 0) c.moveTo(px, py);
+              else c.lineTo(px, py);
             }
             c.stroke();
           }
           break;
-        case 4: // Dotted orbital flower.
-          for (let i = 0; i < 16; i++) {
-            const a = (i / 16) * Math.PI * 2;
+        case 4: // An iris of large sweeping arcs and orbiting satellites.
+          for (let i = 0; i < 6; i++) {
+            const a = (i * Math.PI) / 3 + ease;
+            c.lineWidth = Math.max(3, radius * 0.024);
+            c.beginPath();
+            c.arc(0, 0, radius * 0.55, a, a + 0.7);
+            c.stroke();
             c.beginPath();
             c.arc(
-              Math.cos(a) * radius,
-              Math.sin(a) * radius,
-              2 + (1 - progress) * 5,
+              Math.cos(a) * radius * 0.7,
+              Math.sin(a) * radius * 0.7,
+              Math.max(2, radius * 0.018),
               0,
               Math.PI * 2,
             );
             c.fill();
           }
-          this.polygon(6, radius * 0.65);
           break;
-        case 5: // Offset arcs / a sliced halo.
-          for (let i = 0; i < 5; i++) {
+        case 5: // Broad diagonal bands travel from one edge to the other.
+          for (let i = -2; i <= 2; i++) {
+            const py = (ease * 1.6 - 0.8) * span + i * span * 0.22;
+            c.globalAlpha = envelope * 0.18;
+            c.fillRect(-span, py, span * 2, span * 0.055);
+            c.globalAlpha = envelope;
             c.beginPath();
-            c.arc(
-              0,
-              0,
-              radius * (0.4 + i * 0.15),
-              i * 0.4,
-              Math.PI * 1.45 + i * 0.4,
-            );
+            c.moveTo(-span, py);
+            c.lineTo(span, py);
             c.stroke();
           }
           break;
-        case 6: // Expanding diamond lattice.
-          for (let i = -2; i <= 2; i++)
-            for (let j = -2; j <= 2; j++) {
-              c.save();
-              c.translate(i * radius * 0.4, j * radius * 0.4);
-              this.polygon(4, radius * 0.18);
-              c.restore();
-            }
+        case 6: // Kaleidoscopic diamonds, no lattice or tiled grid.
+          for (let i = 0; i < 7; i++) {
+            this.polygon(4, radius * (1 - i * 0.125), i * 0.13 - ease * 0.3);
+          }
           break;
-        case 7: // Fan of comet trails.
-          for (let i = 0; i < 9; i++) {
-            const y = (i - 4) * 11;
+        case 7: // A widescreen meteor shower, not short local dashes.
+          for (let i = -5; i <= 5; i++) {
+            const py = i * span * 0.09;
+            const head = (((ease * 2 + i * 0.11) % 2) - 1) * span;
             c.beginPath();
-            c.moveTo(-radius * 0.6, y);
-            c.lineTo(radius * (1 - Math.abs(i - 4) * 0.12), y);
+            c.moveTo(head - span * 0.55, py);
+            c.lineTo(head, py);
             c.stroke();
             c.beginPath();
-            c.arc(radius * (1 - Math.abs(i - 4) * 0.12), y, 3, 0, Math.PI * 2);
+            c.arc(head, py, Math.max(2, span * 0.004), 0, Math.PI * 2);
             c.fill();
           }
           break;
@@ -258,6 +253,7 @@ export class HouseScene {
   dispose() {
     this.clear();
     this.dead = true;
+    cancelAnimationFrame(this.resizeFrame);
     this.observer.disconnect();
     this.motion.removeEventListener("change", this.motionChange);
   }

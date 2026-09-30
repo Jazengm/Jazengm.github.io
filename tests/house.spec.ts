@@ -1,6 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
   BPM,
+  DEFAULT_VOLUME,
+  masterGain,
   KEYS,
   PADS,
   PerformanceGate,
@@ -11,6 +13,10 @@ import {
 } from "../src/audio/house-patterns";
 
 test("Performance rules: 32 unique sounds and complete canvas mapping", () => {
+  expect(masterGain(DEFAULT_VOLUME) / 0.5).toBe(4);
+  expect(masterGain(0)).toBe(0);
+  expect(masterGain(-1)).toBe(0);
+  expect(masterGain(10)).toBe(2);
   expect(BPM).toBe(124);
   expect(KEYS.length).toBe(32);
   expect(new Set(KEYS).size).toBe(32);
@@ -53,9 +59,19 @@ async function instrumentAudio(page: Page) {
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
+  // Vite may handle window errors before Playwright sees a pageerror.
+  await page.exposeFunction("__recordHouseWindowError", (message: string) =>
+    errors.push(message),
+  );
   await page.addInitScript(() => {
     const target = window as unknown as Window &
-      typeof globalThis & { __houseContexts: AudioContext[] };
+      typeof globalThis & {
+        __houseContexts: AudioContext[];
+        __recordHouseWindowError: (message: string) => Promise<void>;
+      };
+    target.addEventListener("error", (event) => {
+      void target.__recordHouseWindowError(event.message);
+    });
     target.__houseContexts = [];
     target.AudioContext = new Proxy(target.AudioContext, {
       construct(Original, args) {
@@ -97,6 +113,63 @@ async function startToy(page: Page) {
 }
 const hits = async (page: Page) =>
   Number(await page.locator(".house-toy").getAttribute("data-hits"));
+
+test("Performance canvas has no idle grid and a single hit spans the stage", async ({
+  page,
+}) => {
+  await instrumentAudio(page);
+  await openToy(page);
+  const canvas = page.locator("canvas");
+  await expect(canvas).toHaveAttribute("data-active-shapes", "0");
+  const uniform = await canvas.evaluate((element: HTMLCanvasElement) => {
+    const data = element
+      .getContext("2d")!
+      .getImageData(0, 0, element.width, element.height).data;
+    for (let i = 0; i < data.length; i += 4) {
+      if (
+        data[i] !== data[0] ||
+        data[i + 1] !== data[1] ||
+        data[i + 2] !== data[2]
+      )
+        return false;
+    }
+    return true;
+  });
+  expect(uniform).toBe(true);
+  await startToy(page);
+  await page.keyboard.press("q");
+  await page.waitForTimeout(450);
+  const coverage = await canvas.evaluate((element: HTMLCanvasElement) => {
+    const { width, height } = element;
+    const data = element
+      .getContext("2d")!
+      .getImageData(0, 0, width, height).data;
+    let left = width,
+      right = 0,
+      top = height,
+      bottom = 0;
+    // The stage background is the centralized --color-play-bg (#090f23).
+    for (let y = 0; y < height; y += 2)
+      for (let x = 0; x < width; x += 2) {
+        const i = (y * width + x) * 4;
+        if (
+          Math.abs(data[i] - 9) +
+            Math.abs(data[i + 1] - 15) +
+            Math.abs(data[i + 2] - 35) >
+          25
+        ) {
+          left = Math.min(left, x);
+          right = Math.max(right, x);
+          top = Math.min(top, y);
+          bottom = Math.max(bottom, y);
+        }
+      }
+    return { x: (right - left) / width, y: (bottom - top) / height };
+  });
+  expect(coverage.x).toBeGreaterThan(0.85);
+  expect(coverage.y).toBeGreaterThan(0.85);
+  await page.keyboard.press("Escape");
+});
 
 test("Performance browser: all 32 keys produce real audio and drawn geometry without a backtrack", async ({
   page,
@@ -170,7 +243,7 @@ test("Performance browser: pointer drag, snap, fullscreen, and 1000-hit storm st
   expect((await hits(page)) - before).toBeLessThanOrEqual(12);
   expect(
     Number(await page.locator("canvas").getAttribute("data-active-shapes")),
-  ).toBeLessThanOrEqual(28);
+  ).toBeLessThanOrEqual(8);
   await page.getByRole("button", { name: "Snap to beat", exact: true }).click();
   await surface.focus();
   await page.keyboard.press("q");
@@ -189,12 +262,30 @@ test("Performance browser: pointer drag, snap, fullscreen, and 1000-hit storm st
   const count = await hits(page);
   await page.keyboard.press("q");
   expect(await hits(page)).toBe(count);
-  await page.keyboard.press("ArrowRight");
-  await expect(volume).toHaveValue("51");
+  await page.keyboard.press("ArrowLeft");
+  await expect(volume).toHaveValue("99");
   await page.getByRole("button", { name: "Fullscreen", exact: true }).click();
   await expect
     .poll(() => page.evaluate(() => Boolean(document.fullscreenElement)))
     .toBe(true);
+  await expect(page.locator(".house-toolbar")).toBeHidden();
+  await expect(page.locator(".house-console")).toBeHidden();
+  await expect(page.locator(".house-stage-top")).toBeHidden();
+  await expect(page.locator(".house-stage-bottom")).toBeHidden();
+  await expect(page.locator(".house-keyboard")).toBeHidden();
+  await expect(page.locator(".house-fullscreen-toggle")).toHaveCSS(
+    "opacity",
+    "0",
+  );
+  const fullBox = (await surface.boundingBox())!;
+  const viewport = page.viewportSize()!;
+  expect(fullBox.x).toBe(0);
+  expect(fullBox.y).toBe(0);
+  expect(fullBox.width).toBe(viewport.width);
+  expect(fullBox.height).toBe(viewport.height);
+  await page.keyboard.press("?");
+  await expect(page.locator(".house-toolbar")).toBeVisible();
+  await expect(page.locator(".house-console")).toBeVisible();
   await page
     .getByRole("button", { name: "Exit fullscreen", exact: true })
     .click();
@@ -242,7 +333,7 @@ test("Performance browser: repeated start/stop, mute, reset and canvas cleanup",
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(
     page.getByRole("slider", { name: "Volume", exact: true }),
-  ).toHaveValue("50");
+  ).toHaveValue("100");
   await expect(
     page.getByRole("slider", { name: "Echo", exact: true }),
   ).toHaveValue("50");
@@ -379,6 +470,11 @@ test.describe("Performance touch", () => {
       "data-active-shapes",
       "0",
     );
+    await page.getByRole("button", { name: "全屏", exact: true }).tap();
+    await expect(page.locator(".house-toolbar")).toBeHidden();
+    await page.locator(".house-fullscreen-toggle").tap();
+    await expect(page.locator(".house-toolbar")).toBeVisible();
+    await page.getByRole("button", { name: "退出全屏", exact: true }).tap();
     await page.locator(".house-keyboard summary").tap();
     for (const width of [360, 768, 1280]) {
       await page.setViewportSize({ width, height: 812 });

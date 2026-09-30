@@ -463,6 +463,10 @@ export const chinese: Record<string, string> = {
   Visuals: "图形",
   Fullscreen: "全屏",
   "Exit fullscreen": "退出全屏",
+  "Show controls": "显示控制面板",
+  "Hide controls": "隐藏控制面板",
+  "Fullscreen opens with canvas only. Press ? or tap the bottom-right corner for controls. Escape stops sound and exits fullscreen. The default volume is now louder; lower your device volume first.":
+    "全屏默认只显示画布。按 ? 或点击右下角可开关控制面板；Esc 停止声音并退出全屏。默认音量已提高，请先调低设备音量。",
   "Fullscreen is unavailable in this browser.": "此浏览器暂不支持全屏。",
   Echo: "回声",
   "Sound keys / playing guide": "音效键盘 / 演奏指南",

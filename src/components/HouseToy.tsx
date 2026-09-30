@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { localize, useLocale } from "../i18n/react";
-import { KEYS, PADS, padAt, padPosition } from "../audio/house-patterns";
+import {
+  DEFAULT_VOLUME,
+  KEYS,
+  PADS,
+  padAt,
+  padPosition,
+} from "../audio/house-patterns";
 import { HouseScene } from "../visuals/house-scene";
 import type { HouseEngine } from "../audio/house-engine";
 import "../styles/house.css";
@@ -19,13 +25,14 @@ export default function HouseToy() {
   const [status, setStatus] = useState("Loading audio controls");
   const [playing, setPlaying] = useState(false);
   const [starting, setStarting] = useState(false);
-  const [volume, setVolume] = useState(0.5);
+  const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [color, setColor] = useState(0.5);
   const [groove, setGroove] = useState(true);
   const [snap, setSnap] = useState(false);
   const [visuals, setVisuals] = useState(true);
   const [visualError, setVisualError] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(false);
   const [canFullscreen, setCanFullscreen] = useState(false);
   const [step, setStep] = useState(-1);
   const [level, setLevel] = useState(0);
@@ -67,8 +74,12 @@ export default function HouseToy() {
       if (document.hidden) stop();
     };
     const leave = () => stop();
-    const resized = () =>
-      setFullscreen(document.fullscreenElement === root.current);
+    const resized = () => {
+      const active = document.fullscreenElement === root.current;
+      setFullscreen(active);
+      setControlsVisible(false);
+      if (active) stage.current?.focus({ preventScroll: true });
+    };
     setCanFullscreen(
       Boolean(document.fullscreenEnabled && root.current?.requestFullscreen),
     );
@@ -179,6 +190,7 @@ export default function HouseToy() {
       data-step={step}
       data-level={level}
       data-hits={hits}
+      data-controls-visible={controlsVisible}
       data-last-key={last === null ? "" : PADS[last].key}
       onKeyDown={(event) => {
         if (
@@ -197,6 +209,14 @@ export default function HouseToy() {
           return;
         if (event.key === "Escape") {
           stop();
+          if (document.fullscreenElement === root.current)
+            void document.exitFullscreen().catch(() => {});
+          return;
+        }
+        if (event.key === "?" && fullscreen) {
+          event.preventDefault();
+          setControlsVisible((value) => !value);
+          stage.current?.focus({ preventScroll: true });
           return;
         }
         if (event.key === " " && event.target === stage.current) {
@@ -234,7 +254,7 @@ export default function HouseToy() {
             className="button"
             onClick={() => {
               stop();
-              setVolume(0.5);
+              setVolume(DEFAULT_VOLUME);
               setColor(0.5);
               setGroove(true);
               setSnap(false);
@@ -282,6 +302,20 @@ export default function HouseToy() {
           )}
         </div>
       </div>
+      {fullscreen && (
+        <button
+          className="house-fullscreen-toggle button"
+          type="button"
+          aria-label={controlsVisible ? "Hide controls" : "Show controls"}
+          aria-expanded={controlsVisible}
+          onClick={() => {
+            setControlsVisible((value) => !value);
+            stage.current?.focus({ preventScroll: true });
+          }}
+        >
+          <span aria-hidden="true">☰</span>
+        </button>
+      )}
       <div
         ref={stage}
         className="house-stage"
@@ -341,7 +375,7 @@ export default function HouseToy() {
             aria-label="Volume"
             type="range"
             min="0"
-            max="85"
+            max="100"
             value={Math.round(volume * 100)}
             onChange={(event) => {
               const value = Number(event.target.value) / 100;
@@ -372,6 +406,11 @@ export default function HouseToy() {
         Click or drag across the canvas. Play A–Z and 1–6 while this instrument
         has focus. Space toggles the backtrack on the canvas; Escape stops
         sound. Start quietly.
+      </p>
+      <p className="house-help">
+        Fullscreen opens with canvas only. Press ? or tap the bottom-right
+        corner for controls. Escape stops sound and exits fullscreen. The
+        default volume is now louder; lower your device volume first.
       </p>
       {visualError && (
         <p role="status">

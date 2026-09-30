@@ -8,6 +8,7 @@ import {
   PerformanceGate,
   STEP_SECONDS,
   noteTime,
+  masterGain,
 } from "./house-patterns";
 
 export type AudioFrame = { step: number; level: number };
@@ -72,14 +73,13 @@ export class HouseEngine {
         }),
       );
       const limiter = own(new Tone.Limiter({ context, threshold: -3 }));
-      this.output = own(
-        new Tone.Gain({ context, gain: Math.min(0.85, Math.max(0, volume)) }),
-      );
-      bus.chain(compressor, limiter, this.output, context.destination);
+      this.output = own(new Tone.Gain({ context, gain: masterGain(volume) }));
+      // Gain goes before the final limiter so boosted peaks remain bounded.
+      bus.chain(compressor, this.output, limiter, context.destination);
       this.meter = own(
         new Tone.Meter({ context, normalRange: true, smoothing: 0.4 }),
       );
-      this.output.connect(this.meter);
+      limiter.connect(this.meter);
       this.plucks = own(
         new Tone.PolySynth({
           context,
@@ -328,8 +328,7 @@ export class HouseEngine {
     if (!this.dead) this.backing.gain.rampTo(value ? 1 : 0, 0.03);
   }
   setVolume(value: number) {
-    if (!this.dead)
-      this.output.gain.rampTo(Math.min(0.85, Math.max(0, value)), 0.025);
+    if (!this.dead) this.output.gain.rampTo(masterGain(value), 0.025);
   }
   setColor(value: number) {
     if (!this.dead)
