@@ -73,6 +73,7 @@ test("Home artwork supports touch, themes, reduced motion, and readable foregrou
         (element) => getComputedStyle(element, "::after").backgroundImage,
       );
       expect(overlay).toContain("linear-gradient");
+      await expect(link.locator("img")).toHaveCSS("object-position", "50% 50%");
       const email = page.locator('main a[href^="mailto:"]');
       await email.click({ trial: true });
     }

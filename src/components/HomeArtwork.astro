@@ -58,7 +58,7 @@ const first = artworks[0];
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: right center;
+    object-position: center;
   }
 
   .home-artwork::after {
@@ -67,9 +67,9 @@ const first = artworks[0];
     background: linear-gradient(
       to right,
       var(--color-bg) 0%,
-      var(--color-bg) 30%,
-      color-mix(in srgb, var(--color-bg) 85%, transparent) 48%,
-      transparent 85%
+      var(--color-bg) 15%,
+      color-mix(in srgb, var(--color-bg) 85%, transparent) 42%,
+      transparent 78%
     );
     content: "";
     pointer-events: none;
@@ -105,8 +105,8 @@ const first = artworks[0];
       background: linear-gradient(
         to right,
         var(--color-bg) 0%,
-        color-mix(in srgb, var(--color-bg) 96%, transparent) 42%,
-        color-mix(in srgb, var(--color-bg) 82%, transparent) 65%,
+        color-mix(in srgb, var(--color-bg) 96%, transparent) 28%,
+        color-mix(in srgb, var(--color-bg) 82%, transparent) 62%,
         transparent 100%
       );
     }
