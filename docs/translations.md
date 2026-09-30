@@ -20,12 +20,9 @@ This published implementation shares the existing routes and canonical URLs. Chi
 
 The artwork is titled **Moiré Mosaic**, with the author-confirmed Chinese title **摩尔纹锦砖**. The existing `/illustrations/moorse-mosaic/` route and image filename are retained for link compatibility; the old spelling is not a display title. The description refers to the moiré phenomenon (摩尔纹现象).
 
-## Names and translations awaiting confirmation
+## Personal names
 
-The Chinese edition explicitly marks these entries rather than inventing names:
-
-- **Daigo Ito**, **Michael R. Zeng**, **Cameron Chang**, **Pranav Enugandla**: Chinese personal names are not supplied. Each displays `[中文名待确认：original name]`.
-- **Peters**, **Steenbrink**, **Brian Conrad**, **Henry Segerman**, **mistercorzi**: references retain the original name with an adjacent `中文名待确认` notice.
+Daigo Ito and Michael R. Zeng use the supplied Chinese names 伊藤大悟 and 曾若凡. Other personal names remain in their original spelling in the Chinese edition, including Xiangru Zeng in publication and seminar credits; the header's bilingual name switch remains separate.
 
 The published site excludes fictional records and unfinished course/profile pages. The seminar time is translated as written; no AM/PM or timezone is inferred.
 
