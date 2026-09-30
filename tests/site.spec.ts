@@ -89,23 +89,21 @@ test("primary navigation links resolve", async ({ page, request }) => {
   }
 });
 
-test("Home lists selected papers as compact citations and spaces the footer", async ({
+test("Home keeps the profile and footer without paper or event previews", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("heading", { name: "Selected papers" }),
+    page.getByRole("heading", { name: "Xiangru Zeng", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("heading", { name: "Start with a section" }),
   ).toHaveCount(0);
   await expect(page.getByText("Explore", { exact: true })).toHaveCount(0);
 
-  const citations = page.locator(".selected-publications li");
-  expect(await citations.count()).toBeGreaterThan(0);
-  for (const citation of await citations.allInnerTexts()) {
-    expect(citation).toMatch(/\.\s.+\s\((?:\d{4}|TBA)\)\.$/);
-  }
+  await expect(page.locator(".selected-publications")).toHaveCount(0);
+  await expect(page.locator("#home-events-heading")).toHaveCount(0);
+  await expect(page.locator("[data-home-artwork]")).toBeVisible();
 
   await expect(page.locator("footer")).toContainText(
     "© " + new Date().getFullYear() + " Xiangru Zeng.",

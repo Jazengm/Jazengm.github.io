@@ -55,7 +55,7 @@ test("Events shows current meetings, a separate archive, and Chinese translation
   await expect(page.locator("main h1")).toHaveText("Events");
 });
 
-test("Home previews current events; Events fits mobile and desktop in both themes", async ({
+test("Events remains in navigation and fits mobile and desktop in both themes", async ({
   page,
 }) => {
   await page.goto("/");
@@ -63,9 +63,9 @@ test("Home previews current events; Events fits mobile and desktop in both theme
     page.locator(
       'section[aria-labelledby="home-events-heading"] [data-event-id]',
     ),
-  ).toHaveCount(3);
-  await page.getByRole("link", { name: "All events and archive →" }).click();
-  await expect(page).toHaveURL(/\/events\//);
+  ).toHaveCount(0);
+  await page.getByRole("link", { name: "Events", exact: true }).click();
+  await expect(page).toHaveURL(/\/events\/?$/);
   for (const width of [375, 768, 1280]) {
     await page.setViewportSize({ width, height: 900 });
     for (const theme of ["light", "dark"]) {

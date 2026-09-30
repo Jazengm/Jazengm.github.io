@@ -1,0 +1,114 @@
+---
+import { getImage } from "astro:assets";
+import { getCollection } from "astro:content";
+import { withBase } from "../utils/paths";
+
+const entries = (await getCollection("illustrations")).sort(
+  (a, b) =>
+    a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+const artworks = await Promise.all(
+  entries.map(async ({ id, data }) => {
+    const image = await getImage({
+      src: data.image,
+      width: Math.min(1920, data.image.width),
+      format: "webp",
+      quality: 85,
+    });
+    return {
+      title: data.title,
+      src: image.src,
+      href: withBase(`/illustrations/${id}/`),
+    };
+  }),
+);
+const first = artworks[0];
+---
+
+{
+  first && (
+    <a
+      class="home-artwork"
+      href={first.href}
+      aria-label={`View ${first.title}`}
+      data-home-artwork
+      data-artworks={JSON.stringify(artworks)}
+      data-no-translate
+    >
+      <img src={first.src} alt="" decoding="async" fetchpriority="high" />
+      <span class="home-artwork-caption">{first.title}</span>
+    </a>
+  )
+}
+
+<script>
+  import "../scripts/home-artwork";
+</script>
+
+<style>
+  .home-artwork {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .home-artwork img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right center;
+  }
+
+  .home-artwork::after {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      var(--color-bg) 0%,
+      var(--color-bg) 30%,
+      color-mix(in srgb, var(--color-bg) 85%, transparent) 48%,
+      transparent 85%
+    );
+    content: "";
+    pointer-events: none;
+  }
+
+  .home-artwork-caption {
+    position: absolute;
+    right: max(1rem, calc((100% - var(--wide-width)) / 2));
+    bottom: 1rem;
+    z-index: 1;
+    max-width: calc(100% - 2rem);
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    text-align: right;
+  }
+
+  .home-artwork:hover .home-artwork-caption,
+  .home-artwork:focus-visible .home-artwork-caption {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .home-artwork:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: -3px;
+  }
+
+  @media (max-width: 640px) {
+    .home-artwork::after {
+      background: linear-gradient(
+        to right,
+        var(--color-bg) 0%,
+        color-mix(in srgb, var(--color-bg) 96%, transparent) 42%,
+        color-mix(in srgb, var(--color-bg) 82%, transparent) 65%,
+        transparent 100%
+      );
+    }
+  }
+</style>

@@ -10,12 +10,14 @@ interface Props {
   title?: string;
   description?: string;
   type?: "website" | "article";
+  mainClass?: string;
 }
 
 const {
   title = site.pageTitle,
   description = site.tagline ?? site.pageTitle,
   type = "website",
+  mainClass,
 } = Astro.props;
 const fullTitle = title === site.pageTitle ? title : `${title} · ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.canonicalUrl);
@@ -108,7 +110,7 @@ const personJsonLd = {
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <Header currentPath={Astro.url.pathname} />
-    <main id="main-content" class="site-main site-shell">
+    <main id="main-content" class:list={["site-main site-shell", mainClass]}>
       <slot />
     </main>
     <Footer />
