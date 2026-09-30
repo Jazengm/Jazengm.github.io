@@ -16,11 +16,14 @@ The catalog covers navigation, profile information, headings, content summaries 
 
 This published implementation shares the existing routes and canonical URLs. Chinese is a browser preference, not a separate server-rendered `/zh/` edition; search engines and social previews receive the English HTML. A future separately indexed Chinese edition would require localized routes and metadata at build time.
 
+## Confirmed artwork name
+
+The artwork is titled **Moiré Mosaic**, with the author-confirmed Chinese title **摩尔纹锦砖**. The existing `/illustrations/moorse-mosaic/` route and image filename are retained for link compatibility; the old spelling is not a display title. The description refers to the moiré phenomenon (摩尔纹现象).
+
 ## Names and translations awaiting confirmation
 
 The Chinese edition explicitly marks these entries rather than inventing names:
 
-- **Moorse Mosaic** and “moorse strip phenomenon”: intended spelling/meaning is unclear. The title displays `[中文标题待确认：Moorse Mosaic]`. Please confirm whether “Moorse” is intentional before choosing the Chinese title.
 - **Daigo Ito**, **Michael R. Zeng**, **Cameron Chang**, **Pranav Enugandla**: Chinese personal names are not supplied. Each displays `[中文名待确认：original name]`.
 - **Peters**, **Steenbrink**, **Brian Conrad**, **Henry Segerman**, **mistercorzi**: references retain the original name with an adjacent `中文名待确认` notice.
 

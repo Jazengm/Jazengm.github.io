@@ -1,5 +1,5 @@
 ---
-title: "Moorse Mosaic"
+title: "Moiré Mosaic"
 summary: "A monochrome hexagonal mosaic."
 tags: ["mathematica", "monochrome"]
 image: "../../assets/illustrations/moorse-mosaic.png"
@@ -9,7 +9,7 @@ order: 3
 
 Colored via the function $(x,y)\mapsto \sqrt[3]{x^2+y^2}$.
 
-Reference for the moorse strip phenomenon https://mathematica.stackexchange.com/a/181933/79389.
+Reference for the moiré phenomenon https://mathematica.stackexchange.com/a/181933/79389.
 
 Source code:
 
