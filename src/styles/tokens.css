@@ -31,6 +31,14 @@
   --color-canvas: #142438;
   --color-canvas-overlay: rgb(10 19 31 / 82%);
   --color-on-dark: #f6f9fc;
+  /* Performance canvas palette: fixed dark stage in either site theme. */
+  --color-play-bg: #090f23;
+  --color-play-grid: #18223c;
+  --color-play-blue: #82b6ff;
+  --color-play-orange: #ff936b;
+  --color-play-cyan: #6ee6d5;
+  --color-play-violet: #b7a0ff;
+  --color-play-gold: #f8d57d;
   --font-sans:
     ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Microsoft YaHei", "Noto Sans CJK SC", "Droid Sans Fallback", sans-serif;

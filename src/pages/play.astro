@@ -8,11 +8,13 @@ import HouseToy from "../components/HouseToy";
   title="Pocket House"
   description="A small, playful House music instrument. No musical experience needed."
 >
-  <PageHeader
-    eyebrow="A little room for sound"
-    title="Pocket House"
-    lede="A small, playful House music instrument. No musical experience needed."
-  />
+  <div class="play-intro">
+    <PageHeader
+      eyebrow="An audiovisual instrument"
+      title="Pocket House"
+      lede="Play a sound. Draw a small universe."
+    />
+  </div>
   <HouseToy client:visible />
   <noscript
     ><p>
@@ -21,3 +23,16 @@ import HouseToy from "../components/HouseToy";
     </p></noscript
   >
 </BaseLayout>
+
+<style>
+  .play-intro :global(.page-header) {
+    margin-bottom: 1.5rem;
+  }
+  .play-intro :global(.page-title) {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+  }
+  .play-intro :global(.page-lede) {
+    font-size: 1rem;
+    margin-top: 0.6rem;
+  }
+</style>
