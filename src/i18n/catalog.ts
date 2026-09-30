@@ -1,5 +1,3 @@
-import { site } from "../config/site";
-
 /** English source phrases mapped to reviewed Chinese translations. */
 export const chinese: Record<string, string> = {
   "A collection of papers, preprints, and supporting material.":
@@ -94,7 +92,6 @@ export const chinese: Record<string, string> = {
     "带等高线条带的单色曼德勃罗集轮廓",
   "Nested curves, tangent lines, and marked points in a geometric diagram":
     "由嵌套曲线、切线与标记点组成的几何图示",
-  [site.name]: site.chineseName,
   Home: "首页",
   Articles: "论文",
   Research: "研究",
@@ -240,10 +237,8 @@ export const chinese: Record<string, string> = {
     "此虚构示例讨论曲率条件对形式模问题的潜在约束，仅用于展示带图像预览的多作者已发表论文记录。",
   "This fictional article demonstrates an older published item, tag filtering, and a multi-author citation without inventing real identifiers or external links.":
     "此虚构文章用于展示较早的已发表论文、标签筛选和多作者引用，不使用虚构的真实标识符或外部链接。",
-  "Daigo Ito": "[中文名待确认：Daigo Ito]",
-  "Michael R. Zeng": "[中文名待确认：Michael R. Zeng]",
-  "Cameron Chang": "[中文名待确认：Cameron Chang]",
-  "Pranav Enugandla": "[中文名待确认：Pranav Enugandla]",
+  "Daigo Ito": "伊藤大悟",
+  "Michael R. Zeng": "曾若凡",
   ", with ": "，与 ",
   " and ": "、",
   "MDX collection": "MDX 笔记集",
@@ -318,16 +313,14 @@ export const chinese: Record<string, string> = {
   ". This is created via": "。制作工具为",
   and: "与",
   "You can also follow": "您也可以参考",
-  "Youtube video by mistercorzi":
-    "mistercorzi 的 YouTube 视频（作者中文名待确认）",
+  "Youtube video by mistercorzi": "mistercorzi 的 YouTube 视频",
   "and build your own Penrose tiling.": "，制作自己的彭罗斯铺砌。",
   "A visualization of the": "以下对象的可视化：",
   "Hopf fibration": "霍普夫纤维化",
   ", where we regard": "，其中",
   "as the one-point compactification of": "视为下列空间的单点紧化：",
   "This is inspired by": "灵感来自",
-  "Henry Segerman’s T-shirt design":
-    "Henry Segerman 的 T 恤设计（作者中文名待确认）",
+  "Henry Segerman’s T-shirt design": "Henry Segerman 的 T 恤设计",
   Medium: "媒介",
   Dimensions: "尺寸",
   "Digital illustration": "数字绘图",
@@ -402,7 +395,7 @@ export const chinese: Record<string, string> = {
   "Mixed Hodge Structures": "混合霍奇结构",
   "2026 Fall": "2026 年秋季",
   "On the fundations of Deligne's mixed Hodge structures":
-    "德利涅混合霍奇结构的基础",
+    "Deligne 混合霍奇结构的基础",
   Description: "介绍",
   Spacetime: "时间与地点",
   References: "参考文献",
@@ -411,11 +404,11 @@ export const chinese: Record<string, string> = {
   "Weekly on Friday 3:30-5:00, Evans 762.":
     "每周五 3:30–5:00，Evans Hall 762 室。",
   "by Peters and Steenbrink, our main reference for this seminar":
-    "作者 Peters 与 Steenbrink（中文名待确认），为本讨论班主要参考书",
+    "作者 Peters 与 Steenbrink，为本讨论班主要参考书",
   "Cohomological Descent": "上同调下降",
-  "by Brian Conrad": "作者 Brian Conrad（中文名待确认）",
+  "by Brian Conrad": "作者 Brian Conrad",
   "Théorie de Hodge : III": "霍奇理论 III",
-  "by Pierre Deligne": "作者皮埃尔·德利涅",
+  "by Pierre Deligne": "作者 Pierre Deligne",
   "Tentative Schedule": "暂定日程",
   Week: "周次",
   Date: "日期",
