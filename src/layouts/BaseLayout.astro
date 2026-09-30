@@ -20,17 +20,15 @@ const {
 const fullTitle = title === site.pageTitle ? title : `${title} · ${site.name}`;
 const canonical = new URL(Astro.url.pathname, Astro.site ?? site.canonicalUrl);
 const analyticsEnabled = import.meta.env.PROD && site.analytics.enabled;
-const personJsonLd = !site.isPlaceholder
-  ? {
-      "@context": "https://schema.org",
-      "@type": "Person",
-      name: site.name,
-      url: site.canonicalUrl,
-      jobTitle: site.currentPosition,
-      affiliation: { "@type": "Organization", name: site.institution },
-      sameAs: [site.github, site.orcid, site.googleScholar].filter(Boolean),
-    }
-  : null;
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  url: site.canonicalUrl,
+  jobTitle: site.currentPosition,
+  affiliation: { "@type": "Organization", name: site.institution },
+  sameAs: [site.github, site.orcid, site.googleScholar].filter(Boolean),
+};
 ---
 
 <!doctype html>
@@ -101,15 +99,11 @@ const personJsonLd = !site.isPlaceholder
         }
       })();
     </script>
-    {
-      personJsonLd && (
-        <script
-          is:inline
-          type="application/ld+json"
-          set:html={JSON.stringify(personJsonLd)}
-        />
-      )
-    }
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(personJsonLd)}
+    />
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>

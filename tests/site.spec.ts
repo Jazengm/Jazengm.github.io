@@ -2,18 +2,26 @@ import { expect, test, type Page } from "@playwright/test";
 
 const requiredRoutes = [
   "/",
-  "/publications/",
-  "/research/",
   "/events/",
-  "/teaching/",
-  "/notes/",
+  "/publications/",
   "/experiments/",
   "/experiments/fractal/",
   "/illustrations/",
-  "/illustrations/blue-field/",
+  "/illustrations/moorse-mosaic/",
   "/seminars/",
   "/seminars/mixed-hodge-structures/",
   "/about/",
+];
+
+const removedRoutes = [
+  "/research/",
+  "/teaching/",
+  "/notes/",
+  "/notes/sample-math-note/",
+  "/illustration/",
+  "/illustration/moorse-mosaic/",
+  "/illustration/blue-field/",
+  "/illustration/orange-field/",
 ];
 
 function captureConsoleErrors(page: Page) {
@@ -60,6 +68,13 @@ test("required routes render without browser errors", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test("removed draft routes return not found", async ({ request }) => {
+  for (const route of removedRoutes) {
+    const response = await request.get(route);
+    expect(response.status(), route).toBe(404);
+  }
+});
+
 test("primary navigation links resolve", async ({ page, request }) => {
   await page.goto("/");
   const routes = await getInternalLinks(
@@ -83,6 +98,7 @@ test("Home lists selected papers as compact citations and spaces the footer", as
   await expect(
     page.getByRole("heading", { name: "Start with a section" }),
   ).toHaveCount(0);
+  await expect(page.getByText("Explore", { exact: true })).toHaveCount(0);
 
   const citations = page.locator(".selected-publications li");
   expect(await citations.count()).toBeGreaterThan(0);
@@ -95,7 +111,7 @@ test("Home lists selected papers as compact citations and spaces the footer", as
   );
 });
 
-test("publication explorer filters and exposes desktop previews", async ({
+test("publication explorer omits filters and exposes desktop previews", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
@@ -110,9 +126,9 @@ test("publication explorer filters and exposes desktop previews", async ({
   await expect(page.locator(".publication-preview h3")).toHaveText(title);
   await first.focus();
   await expect(first).toBeFocused();
-
-  await page.getByLabel("Keywords").fill(title);
-  await expect(items).toHaveCount(1);
+  await expect(page.getByLabel("Keywords")).toHaveCount(0);
+  await expect(page.getByLabel("Type")).toHaveCount(0);
+  await expect(page.getByRole("combobox", { name: "Tag" })).toHaveCount(0);
 });
 
 test("publication preview has a touch-friendly inline alternative", async ({
@@ -126,23 +142,11 @@ test("publication preview has a touch-friendly inline alternative", async ({
   await expect(first.locator(".publication-inline-preview")).toBeVisible();
 });
 
-test("ResearchMap nodes respond to keyboard focus", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/");
-  await waitForIslands(page);
-  const map = page.locator(".research-map");
-  const node = map.locator("svg a[data-map-node]").nth(1);
-  await node.focus();
-  await expect(node).toBeFocused();
-  await expect(map.locator("#research-map-detail")).not.toBeEmpty();
-});
-
 test("content directory entries resolve and hydrate optional islands", async ({
   page,
 }) => {
   const errors = captureConsoleErrors(page);
   const directories = [
-    { path: "/notes/", links: ".note-list h2 a" },
     { path: "/experiments/", links: ".experiment-card h2 a" },
     { path: "/illustrations/", links: ".illustration-card" },
     { path: "/seminars/", links: ".seminar-list a" },
@@ -162,6 +166,15 @@ test("content directory entries resolve and hydrate optional islands", async ({
     }
   }
   expect(errors).toEqual([]);
+});
+
+test("published pages contain no sample-content warnings", async ({ page }) => {
+  for (const route of requiredRoutes) {
+    await page.goto(route);
+    await expect(page.locator("body")).not.toContainText(
+      /placeholder|fictional sample/i,
+    );
+  }
 });
 
 test("seminar index links to its Markdown-backed description", async ({

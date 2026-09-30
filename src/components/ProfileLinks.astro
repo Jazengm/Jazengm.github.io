@@ -8,7 +8,7 @@ interface Props {
 
 const { ariaLabel = "Profile links", emptyMessage } = Astro.props;
 const links = [
-  site.email && { label: "Email", href: `mailto:${site.email}` },
+  site.email && { label: site.email, href: `mailto:${site.email}` },
   site.cvUrl && { label: "Curriculum vitae", href: site.cvUrl },
   site.github && { label: "GitHub", href: site.github },
   site.orcid && { label: "ORCID", href: site.orcid },

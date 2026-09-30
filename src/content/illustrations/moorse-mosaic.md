@@ -5,7 +5,6 @@ tags: ["mathematica", "monochrome"]
 image: "../../assets/illustrations/moorse-mosaic.png"
 imageAlt: "A black, white, and gray hexagonal mosaic forming concentric bands around a pale central hexagon"
 order: 3
-placeholder: false
 ---
 
 Colored via the function $(x,y)\mapsto \sqrt[3]{x^2+y^2}$.

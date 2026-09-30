@@ -35,21 +35,7 @@ const publications = defineCollection({
       previewImage: image().optional(),
       previewImageAlt: z.string().optional(),
       links: linksSchema,
-      placeholder: z.boolean().default(false),
     }),
-});
-
-const notes = defineCollection({
-  loader: glob({ base: "./src/content/notes", pattern: "**/*.{md,mdx}" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    publishedDate: z.coerce.date(),
-    updatedDate: z.coerce.date().optional(),
-    tags: z.array(z.string()).default([]),
-    draft: z.boolean().default(false),
-    placeholder: z.boolean().default(false),
-  }),
 });
 
 const experiments = defineCollection({
@@ -62,7 +48,6 @@ const experiments = defineCollection({
       tags: z.array(z.string()).default([]),
       thumbnail: image().optional(),
       thumbnailAlt: z.string().optional(),
-      placeholder: z.boolean().default(false),
     }),
 });
 
@@ -82,7 +67,6 @@ const illustrations = defineCollection({
       dimensions: z.string().optional(),
       tags: z.array(z.string()).default([]),
       order: z.number().default(0),
-      placeholder: z.boolean().default(false),
     }),
 });
 
@@ -114,11 +98,9 @@ const events = defineCollection({
     })
     .refine((event) => event.end >= event.start, "Event end precedes start"),
 });
-
 export const collections = {
   events,
   publications,
-  notes,
   experiments,
   illustrations,
   seminars,

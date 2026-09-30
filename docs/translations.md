@@ -14,7 +14,7 @@ The catalog covers navigation, profile information, headings, content summaries 
 
 `src/i18n/client.ts` translates static Astro text nodes and accessible attributes without replacing their elements. It excludes React islands, code, KaTeX, and `translate="no"` / `data-no-translate` regions. `src/i18n/react.tsx` uses React's external-store subscription and translates React-owned text during rendering. New interactive components should call `useLocale()` and return `localize(tree, locale)`; nested custom components do the same themselves. Keys, event handlers, state, and option values remain unchanged. Keep conditional translations out of server/client initial renders: the server snapshot is English, then React adopts the current language after hydration.
 
-This development implementation shares the existing routes and canonical URLs. Chinese is a browser preference, not a separate server-rendered `/zh/` edition; search engines and social previews receive the English HTML. A future separately indexed Chinese edition would require localized routes and metadata at build time.
+This published implementation shares the existing routes and canonical URLs. Chinese is a browser preference, not a separate server-rendered `/zh/` edition; search engines and social previews receive the English HTML. A future separately indexed Chinese edition would require localized routes and metadata at build time.
 
 ## Names and translations awaiting confirmation
 
@@ -24,12 +24,12 @@ The Chinese edition explicitly marks these entries rather than inventing names:
 - **Daigo Ito**, **Michael R. Zeng**, **Cameron Chang**, **Pranav Enugandla**: Chinese personal names are not supplied. Each displays `[中文名待确认：original name]`.
 - **Peters**, **Steenbrink**, **Brian Conrad**, **Henry Segerman**, **mistercorzi**: references retain the original name with an adjacent `中文名待确认` notice.
 
-Existing fictional author/course/profile placeholders remain explicitly fictional. The seminar time is translated as written; no AM/PM or timezone is inferred.
+The published site excludes fictional records and unfinished course/profile pages. The seminar time is translated as written; no AM/PM or timezone is inferred.
 
 ## Typography and verification
 
 Chinese font fallbacks include PingFang SC / Microsoft YaHei / Noto Sans CJK SC and Songti SC / Noto Serif CJK SC, with Droid Sans Fallback before the final system fallback to avoid the uneven legacy serif rendering seen on this server. Actual glyph appearance depends on the visitor's installed fonts; no webfont is downloaded. Chinese display headings use a 1.35 line height because the original compact Latin line height crowded Chinese glyphs. Long pending-name labels wrap naturally. Seminar tables and code retain their own horizontal scrolling on narrow screens; illustration descriptions have `min-width: 0` so a wide code block cannot expand the page. Names animate only when reduced motion is not requested.
 
-Run the standard checks from README. `tests/language.spec.ts` additionally checks the non-overlapping name positions, selected weight/opacity, hover and keyboard feedback, persistence, storage-blocked navigation, React hydration/filter state, unchanged KaTeX/code, reduced motion, and Chinese layouts at 360/768/1280px. Review the name row visually after changing fonts or spacing.
+Run the standard checks from README. `tests/language.spec.ts` additionally checks the non-overlapping name positions, selected weight/opacity, hover and keyboard feedback, persistence, storage-blocked navigation, React hydration/preview state, unchanged KaTeX/code, reduced motion, and Chinese layouts at 360/768/1280px. Review the name row visually after changing fonts or spacing.
 
-This feature is developed on `site-development` only. Do not merge or cherry-pick it to `main` until explicitly requested.
+The bilingual switch and Events are published on `main`. Develop and validate updates on `site-development` before syncing to the production branch.

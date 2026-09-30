@@ -30,14 +30,6 @@ const { Content } = await render(illustration);
       <p class="eyebrow">Illustrations</p>
       <h1 class="page-title">{illustration.data.title}</h1>
       <p class="page-lede">{illustration.data.summary}</p>
-      {
-        illustration.data.placeholder && (
-          <p class="placeholder-note">
-            This image and description are explicit placeholder content. Replace
-            them before treating this gallery as a portfolio.
-          </p>
-        )
-      }
     </header>
 
     <figure class="full-image">
@@ -112,10 +104,6 @@ const { Content } = await render(illustration);
     margin-bottom: var(--space-5);
   }
 
-  .placeholder-note {
-    margin-top: var(--space-4);
-  }
-
   .full-image {
     margin: 0;
     overflow: hidden;
@@ -156,6 +144,7 @@ const { Content } = await render(illustration);
   }
 
   .illustration-description {
+    min-width: 0;
     width: 100%;
     min-width: 0;
   }
@@ -170,7 +159,7 @@ const { Content } = await render(illustration);
 
   @media (max-width: 700px) {
     .illustration-information {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       gap: var(--space-4);
     }
   }

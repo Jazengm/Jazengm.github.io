@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProfileLinks from "../components/ProfileLinks.astro";
-import ResearchMap, { type ResearchMapNode } from "../components/ResearchMap";
 import { site } from "../config/site";
 import { withBase } from "../utils/paths";
 import { comparePublications } from "../utils/publications";
@@ -13,14 +12,6 @@ const { current: upcomingEvents } = partitionEvents(
   await getCollection("events"),
   eventSnapshot.reviewedOn,
 );
-
-const atlasItems = site.navigation.filter(
-  (item) => item.href !== "/" && item.href !== "/about",
-);
-const atlasNodes: ResearchMapNode[] = atlasItems.map((item) => ({
-  ...item,
-  href: withBase(item.href),
-}));
 
 const ownerNames = new Set<string>([site.name, ...site.authorNameMatches]);
 const authorList = new Intl.ListFormat("en", {
@@ -41,7 +32,8 @@ const selectedPaperCitations = (
         data.title +
         collaboration +
         ". " +
-        (data.venue ?? "Preprint") +
+        (data.venue ??
+          (data.status === "working-paper" ? "Working paper" : "Preprint")) +
         " (" +
         data.year +
         ").",
@@ -58,15 +50,6 @@ const selectedPaperCitations = (
     <div class="home-biography">
       {site.biography.map((paragraph) => <p>{paragraph}</p>)}
     </div>
-    {
-      site.isPlaceholder && (
-        <p class="placeholder-note">
-          This profile intentionally contains centralized placeholders. See the
-          README customization checklist before publishing it as a personal
-          record.
-        </p>
-      )
-    }
     <ProfileLinks />
   </section>
 
@@ -84,9 +67,6 @@ const selectedPaperCitations = (
     </ol>
   </section>
 
-  <div class="section-block">
-    <ResearchMap nodes={atlasNodes} client:visible />
-  </div>
   <section class="section-block" aria-labelledby="home-events-heading">
     <p class="eyebrow">Academic calendar</p>
     <h2 class="section-heading" id="home-events-heading">Events</h2>

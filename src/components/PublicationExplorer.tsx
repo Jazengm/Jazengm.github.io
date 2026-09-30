@@ -1,6 +1,5 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { localize, useLocale } from "../i18n/react";
-import { translate } from "../i18n/catalog";
 import type { CollectionEntry } from "astro:content";
 import "../styles/publications.css";
 
@@ -45,9 +44,6 @@ function Preview({ publication }: { publication: PublicationRecord }) {
         {publication.year} · {publication.status.replace("-", " ")}
         {publication.venue ? ` · ${publication.venue}` : ""}
       </p>
-      {publication.placeholder && (
-        <p className="placeholder-label">Fictional sample record</p>
-      )}
       <p>{publication.abstract}</p>
       <ul className="tag-list" aria-label="Publication tags">
         {publication.tags.map((tag) => (
@@ -66,123 +62,24 @@ export default function PublicationExplorer({
   authorMatches,
 }: Props) {
   const locale = useLocale();
-  const [type, setType] = useState("all");
-  const [tag, setTag] = useState("all");
-  const [query, setQuery] = useState("");
   const [activeId, setActiveId] = useState(publications[0]?.id ?? "");
   const [expandedId, setExpandedId] = useState("");
-
-  const tags = useMemo(
-    () =>
-      [
-        ...new Set(publications.flatMap((publication) => publication.tags)),
-      ].sort(),
-    [publications],
-  );
-  const types = useMemo(
-    () =>
-      [
-        ...new Set(
-          publications.map((publication) => publication.type ?? "other"),
-        ),
-      ].sort(),
-    [publications],
-  );
-  const filtered = useMemo(() => {
-    const needle = query.trim().toLocaleLowerCase();
-    return publications.filter((publication) => {
-      const matchesType =
-        type === "all" || (publication.type ?? "other") === type;
-      const matchesTag = tag === "all" || publication.tags.includes(tag);
-      const haystack = [
-        publication.title,
-        publication.abstract,
-        publication.venue,
-        ...publication.authors,
-        ...publication.tags,
-      ]
-        .filter(Boolean)
-        .join(" ");
-      return (
-        matchesType &&
-        matchesTag &&
-        (!needle ||
-          haystack.toLocaleLowerCase().includes(needle) ||
-          translate(haystack, "zh-CN").toLocaleLowerCase().includes(needle))
-      );
-    });
-  }, [publications, query, tag, type]);
   const active =
-    filtered.find((publication) => publication.id === activeId) ?? filtered[0];
-
-  const resetFilters = () => {
-    setType("all");
-    setTag("all");
-    setQuery("");
-  };
+    publications.find((publication) => publication.id === activeId) ??
+    publications[0];
 
   return localize(
     <section aria-labelledby="publication-list-heading">
       <h2 className="sr-only" id="publication-list-heading">
         Article list
       </h2>
-      <div
-        className="publication-filters quiet-card"
-        aria-label="Filter articles"
-      >
-        <label className="control-field">
-          <span>Keywords</span>
-          <input
-            className="control-input"
-            type="search"
-            value={query}
-            placeholder="Title, author, or subject"
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </label>
-        <label className="control-field">
-          <span>Type</span>
-          <select
-            className="control-input"
-            value={type}
-            onChange={(event) => setType(event.target.value)}
-          >
-            <option value="all">All types</option>
-            {types.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="control-field">
-          <span>Tag</span>
-          <select
-            className="control-input"
-            value={tag}
-            onChange={(event) => setTag(event.target.value)}
-          >
-            <option value="all">All tags</option>
-            {tags.map((value) => (
-              <option key={value} value={value}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button className="button" type="button" onClick={resetFilters}>
-          Clear
-        </button>
-      </div>
-
-      <p className="publication-count" role="status">
-        Showing {filtered.length} of {publications.length} articles, newest
-        first.
+      <p className="publication-count">
+        {publications.length} articles, newest first.
       </p>
 
       <div className="publication-layout">
         <ol className="publication-list">
-          {filtered.map((publication) => {
+          {publications.map((publication) => {
             const expanded = expandedId === publication.id;
             return (
               <li key={publication.id}>
@@ -196,9 +93,6 @@ export default function PublicationExplorer({
                 >
                   <p className="publication-year">{publication.year}</p>
                   <div>
-                    {publication.placeholder && (
-                      <p className="placeholder-label">Fictional sample</p>
-                    )}
                     <h3>{publication.title}</h3>
                     <p className="publication-authors">
                       {publication.authors.map((author, index) => (
@@ -270,18 +164,10 @@ export default function PublicationExplorer({
               <Preview publication={active} />
             </>
           ) : (
-            <p>No publication matches the current filters.</p>
+            <p>No publications available.</p>
           )}
         </aside>
       </div>
-      {filtered.length === 0 && (
-        <div className="empty-state">
-          <p>No publication matches the current filters.</p>
-          <button className="button" type="button" onClick={resetFilters}>
-            Clear filters
-          </button>
-        </div>
-      )}
     </section>,
     locale,
   );

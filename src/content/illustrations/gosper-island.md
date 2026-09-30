@@ -7,9 +7,6 @@ medium: "Digital illustration"
 dimensions: "3000 × 3384 px"
 tags: ["fractal", "Gosper island", "hexagonal geometry"]
 order: 7
-placeholder: false
 ---
 
 https://en.wikipedia.org/wiki/Gosper_curve
-
-Source code: to be updated.

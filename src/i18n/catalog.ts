@@ -2,6 +2,11 @@ import { site } from "../config/site";
 
 /** English source phrases mapped to reviewed Chinese translations. */
 export const chinese: Record<string, string> = {
+  "A collection of papers, preprints, and supporting material.":
+    "论文、预印本及相关资料。",
+  "Browse the complete collection of publications.": "浏览全部论文。",
+  "Profile and selected papers.": "个人简介与精选论文。",
+  "No publications available.": "暂无论文。",
   Events: "学术活动",
   "Academic calendar": "会议与学术日程",
   "Geometry and combinatorics meetings in China and nearby regions.":
@@ -480,6 +485,8 @@ export function translate(text: string, locale: Locale): string {
   const normalized = text.replace(/\s+/g, " ").trim();
   const powers = normalized.match(/^First (\d+) powers of one half$/);
   if (powers) return `二分之一的前 ${powers[1]} 个幂`;
+  const count = normalized.match(/^(\d+) articles, newest first\.$/);
+  if (count) return `共 ${count[1]} 篇论文，按时间倒序排列。`;
   if (normalized.startsWith("View "))
     return `查看 ${translate(normalized.slice(5), locale)}`;
   const exact = chinese[normalized];

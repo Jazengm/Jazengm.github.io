@@ -7,9 +7,6 @@ medium: "Digital illustration"
 dimensions: "3840 × 2160 px"
 tags: ["fractal", "circle geometry", "monochrome"]
 order: 4
-placeholder: false
 ---
 
 This illustration visualizes certain Fuchsian group.
-
-Source code: to be updated.

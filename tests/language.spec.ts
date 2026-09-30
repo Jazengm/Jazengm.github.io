@@ -92,7 +92,7 @@ test("inline names select their language with one compact divider and keyboard f
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
 });
 
-test("Chinese survives hydration and filtering without resetting React state", async ({
+test("Chinese survives hydration and language changes preserve publication preview state", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -100,20 +100,31 @@ test("Chinese survives hydration and filtering without resetting React state", a
   page.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
+  // Inline previews are the touch/mobile UI; desktop uses hover/focus instead.
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/publications/?lang=zh");
-  await expect(page.getByPlaceholder("标题、作者或主题")).toBeVisible();
-  await page.getByPlaceholder("标题、作者或主题").fill("环簇上的张量生成线丛");
+  await expect(
+    page.getByRole("heading", { name: "论文", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator("[data-publication-item]")).toHaveCount(1);
+  const item = page.locator("[data-publication-item]").first();
+  await item.scrollIntoViewIfNeeded();
+  await expect(page.locator("astro-island")).not.toHaveAttribute("ssr", "");
+  await expect(item.locator("h3")).toContainText("环簇上的张量生成线丛");
+  const preview = item.locator(".publication-expand");
+  await preview.click();
+  await expect(preview).toHaveAttribute("aria-expanded", "true");
+  await expect(item.locator(".publication-inline-preview")).toBeVisible();
+  await expect(item.locator("h3")).toContainText("环簇上的张量生成线丛");
+  await page.locator('button[data-language][aria-pressed="false"]').click();
+  await expect(preview).toHaveText("Hide preview");
+  await expect(preview).toHaveAttribute("aria-expanded", "true");
   await expect(page.locator("[data-publication-item]")).toHaveCount(1);
   await page.locator('button[data-language][aria-pressed="false"]').click();
-  await expect(page.getByPlaceholder("Title, author, or subject")).toHaveValue(
-    "环簇上的张量生成线丛",
-  );
-  await expect(page.locator("[data-publication-item]")).toHaveCount(1);
-  await page.getByRole("button", { name: "Clear", exact: true }).click();
-  await expect(page.locator("[data-publication-item]")).toHaveCount(3);
-  await page.locator('button[data-language][aria-pressed="false"]').click();
-  await page.getByRole("combobox", { name: "标签" }).selectOption("geometry");
-  await expect(page.locator("[data-publication-item]")).toHaveCount(1);
+  await expect(preview).toHaveAttribute("aria-expanded", "true");
+  await preview.click();
+  await expect(item.locator(".publication-inline-preview")).toBeHidden();
+  await expect(page.locator(".publication-filters")).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 
@@ -176,17 +187,15 @@ test("Chinese pages fit mobile and desktop, including long names and tables", as
     for (const route of [
       "/",
       "/publications/",
-      "/research/",
-      "/teaching/",
+      "/events/",
       "/about/",
-      "/notes/sample-math-note/",
-      "/notes/interactive-parameters/",
       "/illustrations/",
       "/illustrations/moorse-mosaic/",
       "/seminars/mixed-hodge-structures/",
       "/experiments/fractal/",
     ]) {
-      await page.goto(route + "?lang=zh");
+      const response = await page.goto(route + "?lang=zh");
+      expect(response?.ok(), `${route} must load successfully`).toBeTruthy();
       await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
       await expect(page.locator(".primary-nav")).toContainText("首页");
       expect(
