@@ -1,6 +1,6 @@
 # Astro academic homepage
 
-A static, accessible academic homepage for Xiangru Zeng. It separates profile data from content, stores publications, illustrations, seminars, and experiments in typed Astro Content Collections, and limits React to the publication explorer and fractal experiment.
+A static, accessible academic homepage for Xiangru Zeng. It separates profile data from content, stores publications, illustrations, seminars, and experiments in typed Astro Content Collections, and reserves React for interactive islands such as the fractal experiment and Pocket House music toy.
 
 Only verified content should be placed in a collection that is published by the site.
 
@@ -48,6 +48,18 @@ Open the URL printed by Astro (normally `http://localhost:4321`). Build and insp
 npm run build
 npm run preview
 ```
+
+## Pocket House music toy
+
+Open `/play/` on the local server, turn down your device volume, and click **Start**. Everything runs in the browser: no backend, microphone, AI service, or audio sample downloads. The first version uses Tone.js 15.1.22 (MIT) for precise Web Audio scheduling and synthesis; this is the only new direct dependency. Original synthesized sounds and presets are in `src/audio/`; no Mikutap, Patatap, or third-party music assets are included. The distributed [Tone.js license](public/licenses/tone-MIT.txt) is retained.
+
+- **Q / W / E:** three drum patterns; **A / S:** two bass patterns; **D / F:** two chord patterns.
+- **J / K:** rising/falling chord-tone melodies; **L:** a short drum fill; **Z:** a new combination of layers.
+- Click or tap the large buttons, or use their keys while the toy has focus. **Escape** stops playback. Volume and Color / echo sliders also accept arrow keys.
+- At 124 BPM in 4/4, layer selections take effect at the next bar. Melody input is coalesced onto the next scheduled sixteenth note, with a maximum of four notes per bar. Harmony cycles Am7 → Fmaj7 → Cmaj7 → G6; bass follows the roots and melody follows the current chord.
+- Stop releases the session and its effects; Start creates a fresh session. Reset also restores volume and color. Hiding the tab or leaving the page stops playback; returning does not auto-play. No sound or AudioContext is created merely by visiting the page.
+
+This is a synthesized sketch, not a finished sample-pack production. The noise clap/hat, bass weight on phone speakers, chord warmth, and lead/echo balance deserve further listening and tuning. Automated tests check scheduling, bounded rapid input, actual browser audio output, repeated start/stop, navigation cleanup, touch, and bilingual layouts; they cannot judge musical taste or substitute for headphone/speaker listening. See [the audio architecture](docs/architecture.md#pocket-house-audio-island) before editing the presets.
 
 ## Where content lives
 

@@ -3,6 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 const requiredRoutes = [
   "/",
   "/events/",
+  "/play/",
   "/publications/",
   "/experiments/",
   "/experiments/fractal/",

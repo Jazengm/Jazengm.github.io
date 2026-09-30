@@ -285,6 +285,20 @@ Imported Astro assets already receive build-aware URLs. Do not prepend `withBase
 For a refresh, follow [the events guide](../data/events/README.md), review each
 official URL, update content and translations, and run all checks below.
 
+## Pocket House audio island
+
+`src/pages/play.astro` provides the normal site layout and a `HouseToy` React island with `client:visible`. Navigation stays in `src/config/site.ts`; UI translations stay in the existing phrase catalog. The music engine is dynamically imported only by this island and never executes during server rendering or on unrelated pages.
+
+- `src/audio/house-patterns.ts`: pure, deterministic musical rules, 11 pad definitions, four-bar harmony, and a bounded input mailbox. Change drum/bass/chord step lists here. A bar has 16 steps; `tick()` commits layer choices only at step 0. The latest melody click replaces earlier unplayed clicks, with one note per tick and at most four per bar. Fills occupy only the last four steps; repeated requests cannot multiply scheduled jobs. Keep bass roots and melody notes tied to the same harmony record when editing the progression.
+- `src/audio/house-engine.ts`: one owned Tone context/transport per Start session. A single `16n` callback passes Tone's audio time to every instrument; `context.draw` schedules the visual beat. Kick, noise percussion, triangle bass/chords and FM lead are synthesized, with ducking, echo, compression, a limiter and a bounded master gain. No sample files or external audio URLs are used. Tune envelopes, levels and voicings here; test at low device volume first.
+- `src/components/HouseToy.tsx`: browser-only loading, gesture-based context resume, Start/Stop/Reset, sliders, scoped keyboard shortcuts, semantic touch-friendly buttons, and immediate flash feedback. A generation token prevents a late asynchronous Start from resurrecting stopped audio. Effect cleanup, `pagehide`, and hidden-tab handling cancel scheduling, dispose all nodes and close the audio context. A new Start never reuses disposed nodes. The live output RMS is exposed as `data-level` for integration tests, not as a loudness/safety guarantee.
+- `src/styles/house.css`: local layout and motion using existing semantic theme colors, reduced-motion rules, and a two-column mobile pad grid.
+- `tests/house.spec.ts`: deterministic rule tests plus real Chromium Web Audio lifecycle and interaction tests. Tone is not mocked. Hardware sound quality and Safari/iOS timing still need manual listening/device checks.
+
+Tone.js is pinned to 15.1.22. Its public barrel eagerly exposes legacy singleton contexts, so this engine uses the side-effect-free `tone/build/esm/classes.js` entry and explicitly sets the owned context before creating nodes. This prevents unused contexts on load or restart. These deep imports must be rechecked on upgrades; the browser test asserts zero contexts before Start, exactly one per session, and closure after Stop. `context.resume()` is called directly in the Start gesture (the owned-context equivalent of `Tone.start()`).
+
+Asset provenance: every oscillator/noise patch and preset in this project is original code for this toy. Tone.js is an MIT-licensed software dependency, not a music sample source; its upstream notice is copied unchanged into `public/licenses/tone-MIT.txt`. If adding samples later, record each source URL, author, exact license and redistribution permission before shipping the file. Do not assume public availability permits browser redistribution.
+
 ## Before committing a structural change
 
 Run the repository checks:

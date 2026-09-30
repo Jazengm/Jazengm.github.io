@@ -44,6 +44,11 @@ export const navigation: NavigationItem[] = [
       "Geometry and combinatorics meetings in China and nearby regions.",
   },
   {
+    label: "Play",
+    href: "/play",
+    description: "A small House music toy for curious ears.",
+  },
+  {
     label: "About",
     href: "/about",
     description: "Biography, education, and contact details.",

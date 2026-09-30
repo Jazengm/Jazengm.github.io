@@ -454,6 +454,61 @@ export const chinese: Record<string, string> = {
   "The path may have changed, or the requested page may not exist.":
     "链接可能已更改，或所请求的页面不存在。",
   "Return home": "返回首页",
+  Play: "音乐玩具",
+  "Pocket House": "口袋 House",
+  "POCKET HOUSE": "口袋 HOUSE",
+  "A little room for sound": "一间声音小屋",
+  "A small House music toy for curious ears.":
+    "给好奇耳朵的 House 音乐小玩具。",
+  "A small, playful House music instrument. No musical experience needed.":
+    "随手点出 House 律动，无需音乐基础。",
+  "House music toy": "House 音乐玩具",
+  Start: "开始",
+  Stop: "停止",
+  Volume: "音量",
+  "Color / echo": "音色 / 回声",
+  "Loading audio controls": "正在加载音频控件",
+  "Ready · start quietly": "准备就绪 · 请先调低设备音量",
+  "Starting audio": "正在启动音频",
+  "Playing · make it yours": "播放中 · 随手玩出你的律动",
+  "Stopped · press Start to play": "已停止 · 点击开始即可播放",
+  "Audio could not load. Reload the page to retry.":
+    "音频加载失败，请刷新页面重试。",
+  "Audio is unavailable. Try Start again or use another browser.":
+    "音频不可用，请再次点击开始或换用其他浏览器。",
+  "Queued · next bar": "已排队 · 下一小节生效",
+  "All layers in sync": "所有声部已同步",
+  "Next bar": "下一小节",
+  Foundation: "基石",
+  "Steady drums": "稳定鼓点",
+  Shuffle: "跳动",
+  "Skippy hats": "轻跳踩镲",
+  Air: "留白",
+  "Open-space drums": "疏朗鼓点",
+  Round: "圆润",
+  "Offbeat bass": "反拍贝斯",
+  Bounce: "弹跳",
+  "Syncopated bass": "切分贝斯",
+  Velvet: "丝绒",
+  "Warm chords": "温暖和弦",
+  Prism: "棱镜",
+  "Short chord stabs": "短促和弦",
+  Spark: "火花",
+  "Rising melody": "上行旋律",
+  Glow: "微光",
+  "Falling melody": "下行旋律",
+  Fill: "过门",
+  "A little drum turn": "鼓点小花样",
+  "New feeling": "换个感觉",
+  "Remix the layers": "重新搭配声部",
+  "Start first, then tap freely. Layer changes wait for the next bar. J / K melodies snap to the beat; up to four notes per bar.":
+    "先点击开始，再随意点按。声部切换在下一小节生效；J / K 旋律自动对齐十六分音符，每小节最多四个音。",
+  "Use the printed keys while this toy has focus. Escape stops playback. Sliders also work with arrow keys. Switching tabs stops the music; returning never auto-plays.":
+    "聚焦玩具后可使用按钮上标出的键盘快捷键，Esc 停止播放。滑块支持方向键。切换标签页会停止音乐，返回时不会自动播放。",
+  "All sounds are synthesized here. No microphone, downloads, samples, or AI service. Keep your device volume low when starting.":
+    "所有声音均在浏览器内合成，无需麦克风、音频素材下载、采样或 AI 服务。开始前请调低设备音量。",
+  "This instrument needs JavaScript and a browser with Web Audio support. No sound plays automatically.":
+    "此乐器需要 JavaScript 和支持 Web Audio 的浏览器，不会自动播放声音。",
 };
 
 // These short fragments are only safe when they occupy a whole text node.

@@ -1,0 +1,23 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import HouseToy from "../components/HouseToy";
+---
+
+<BaseLayout
+  title="Pocket House"
+  description="A small, playful House music instrument. No musical experience needed."
+>
+  <PageHeader
+    eyebrow="A little room for sound"
+    title="Pocket House"
+    lede="A small, playful House music instrument. No musical experience needed."
+  />
+  <HouseToy client:visible />
+  <noscript
+    ><p>
+      This instrument needs JavaScript and a browser with Web Audio support. No
+      sound plays automatically.
+    </p></noscript
+  >
+</BaseLayout>
