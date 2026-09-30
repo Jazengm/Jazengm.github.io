@@ -219,7 +219,7 @@ test("illustration names appear on hover and detail pages show full images", asy
   ).toBeVisible();
 });
 
-test("Moorse Mosaic uses compact TeX scripts and highlighted Mathematica", async ({
+test("Moiré Mosaic uses compact TeX scripts and highlighted Mathematica", async ({
   page,
 }) => {
   await page.goto("/illustrations/moorse-mosaic/");

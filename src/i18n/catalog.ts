@@ -291,7 +291,7 @@ export const chinese: Record<string, string> = {
   View: "查看",
   "[Placeholder] Blue Field": "[占位] 蓝色色域",
   "[Placeholder] Orange Field": "[占位] 橙色色域",
-  "Moorse Mosaic": "[中文标题待确认：Moorse Mosaic]",
+  "Moiré Mosaic": "摩尔纹锦砖",
   "Apollonian Gasket": "阿波罗尼奥斯垫片",
   "Penrose math and cal": "彭罗斯铺砌：MATH 与 CAL",
   "Gosper Island Boundary": "高斯帕岛的边界",
@@ -311,8 +311,7 @@ export const chinese: Record<string, string> = {
   "Source code: to be updated.": "源代码：待更新。",
   "Source code:": "源代码：",
   "Colored via the function": "使用下列函数着色：",
-  "Reference for the moorse strip phenomenon":
-    "条纹现象参考资料（moorse 的名称待确认）：",
+  "Reference for the moiré phenomenon": "摩尔纹现象参考资料",
   "We replace the kites and darts in the Penrose tiling by deformed words “MATH” and “CAL”. The colors are":
     "将彭罗斯铺砌中的风筝与飞镖替换为变形的 MATH 和 CAL 字样。配色采用",
   "Berkeley Blue and California Gold": "伯克利蓝与加州金",

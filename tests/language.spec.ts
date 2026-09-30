@@ -137,7 +137,7 @@ test("language changes preserve mathematics and code exactly", async ({
   await page.locator('button[data-language][aria-pressed="false"]').click();
   await expect(
     page.getByRole("heading", {
-      name: "[中文标题待确认：Moorse Mosaic]",
+      name: "摩尔纹锦砖",
       exact: true,
     }),
   ).toBeVisible();
@@ -146,7 +146,7 @@ test("language changes preserve mathematics and code exactly", async ({
   expect(await page.locator(".katex").innerHTML()).toBe(math);
   await page.locator('button[data-language][aria-pressed="false"]').click();
   await expect(
-    page.getByRole("heading", { name: "Moorse Mosaic", exact: true }),
+    page.getByRole("heading", { name: "Moiré Mosaic", exact: true }),
   ).toBeVisible();
   expect(await page.locator("pre").innerHTML()).toBe(code);
 });
