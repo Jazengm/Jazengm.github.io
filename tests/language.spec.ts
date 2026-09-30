@@ -1,5 +1,34 @@
 import { expect, test } from "@playwright/test";
 
+test("Chinese translates the owner's name in content, credits and titles, preserving the English switch", async ({
+  page,
+}) => {
+  for (const route of [
+    "/",
+    "/about/",
+    "/publications/",
+    "/seminars/mixed-hodge-structures/",
+  ]) {
+    await page.goto(`${route}?lang=zh`);
+    await expect(page.locator("html")).toHaveAttribute("lang", "zh-CN");
+    await expect(page.locator("footer")).toContainText("曾相如");
+    await expect(page).toHaveTitle(/曾相如/);
+    await expect(page.locator("main")).not.toContainText("Xiangru Zeng");
+    await expect(page.locator(".name-english")).toContainText("Xiangru Zeng");
+    if (route === "/publications/") {
+      await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
+      await expect(page.locator(".publication-authors")).toContainText(
+        "曾相如",
+      );
+    }
+    if (route.includes("mixed-hodge"))
+      await expect(page.locator("table")).toContainText("曾相如");
+    await page.locator(".name-english").click();
+    await expect(page.locator("footer")).toContainText("Xiangru Zeng");
+    await expect(page).toHaveTitle(/Xiangru Zeng/);
+  }
+});
+
 test("inline names select their language with one compact divider and keyboard feedback", async ({
   page,
 }) => {

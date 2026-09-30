@@ -1,5 +1,8 @@
+import { site } from "../config/site";
+
 /** English source phrases mapped to reviewed Chinese translations. */
 export const chinese: Record<string, string> = {
+  [site.name]: site.chineseName,
   "A collection of papers, preprints, and supporting material.":
     "论文、预印本及相关资料。",
   "Browse the complete collection of publications.": "浏览全部论文。",
