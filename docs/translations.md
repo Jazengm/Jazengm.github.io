@@ -8,6 +8,8 @@ Language is stored as `academic-language` in local storage. `?lang=zh` and `?lan
 
 ## Maintaining translations
 
+The owner's name is mapped from `site.name` to `site.chineseName` in the shared phrase catalog, including seminar tables, React publication authors, credits and browser titles. The bilingual header intentionally retains both names as language selectors. Source bibliographic records, code, linked documents and JSON-LD remain unchanged.
+
 `src/config/site.ts` owns both personal names. `src/i18n/catalog.ts` owns the Chinese translations of English phrases. Edit the English source content as usual, then update the corresponding catalog entry. Prefer complete sentences; add fragments only where Markdown, links, formulas, or React split a sentence across text nodes. Exact matching normalizes whitespace; compound citations use longest-first, word-boundary phrase matching. Translations are applied once to the English original, so switching back restores the original rather than reverse-translating Chinese. Unknown future text stays in English until a translation is added; this is not an automatic translation service.
 
 The catalog covers navigation, profile information, headings, content summaries and prose, seminar schedules, and interactive labels. Product names (React, Mathematica, Inkscape, Illustrator), acronyms (PDF, MGSA, USTC), URLs, and artwork lettering (MATH/CAL) intentionally retain their original spelling. Linked PDFs and text embedded in images are original-language artifacts. Chinese publication titles are explanatory translations; the English record remains the bibliographic source.
