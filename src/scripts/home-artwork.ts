@@ -10,9 +10,8 @@ interface Artwork {
 const hour = 60 * 60 * 1000;
 const link = document.querySelector<HTMLAnchorElement>("[data-home-artwork]");
 const image = link?.querySelector("img");
-const caption = link?.querySelector("span");
 
-if (link && image && caption) {
+if (link && image) {
   const artworks: Artwork[] = JSON.parse(link.dataset.artworks ?? "[]");
   let current = 0;
   let requested = 0;
@@ -22,7 +21,6 @@ if (link && image && caption) {
   const label = () => {
     const artwork = artworks[current];
     const locale = getLocale();
-    caption.textContent = translate(artwork.title, locale);
     link.setAttribute("aria-label", translate(`View ${artwork.title}`, locale));
     link.href = artwork.href + (locale === "zh-CN" ? "?lang=zh" : "");
   };
@@ -36,7 +34,7 @@ if (link && image && caption) {
       const token = ++generation;
       const next = new Image();
       next.src = artworks[index].src;
-      // Keep a working image/title/link together if loading fails or races.
+      // Keep the image, accessible name, and link together if loading fails.
       next.decode().then(
         () => {
           if (token !== generation) return;
