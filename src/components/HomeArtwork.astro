@@ -36,7 +36,6 @@ const first = artworks[0];
       data-no-translate
     >
       <img src={first.src} alt="" decoding="async" fetchpriority="high" />
-      <span class="home-artwork-caption">{first.title}</span>
     </a>
   )
 }
@@ -73,26 +72,6 @@ const first = artworks[0];
     );
     content: "";
     pointer-events: none;
-  }
-
-  .home-artwork-caption {
-    position: absolute;
-    right: max(1rem, calc((100% - var(--wide-width)) / 2));
-    bottom: 1rem;
-    z-index: 1;
-    max-width: calc(100% - 2rem);
-    padding: 0.25rem 0.65rem;
-    border-radius: var(--radius-sm);
-    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
-    font-size: 0.75rem;
-    line-height: 1.5;
-    text-align: right;
-  }
-
-  .home-artwork:hover .home-artwork-caption,
-  .home-artwork:focus-visible .home-artwork-caption {
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
   }
 
   .home-artwork:focus-visible {

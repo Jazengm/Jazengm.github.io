@@ -19,14 +19,15 @@ test("Home selects the current hour, rotates at the boundary, and localizes live
     "src",
     artworks[initial].src,
   );
-  await expect(link.locator("span")).toHaveText(artworks[initial].title);
+  await expect(link).toHaveAccessibleName("View " + artworks[initial].title);
+  await expect(link.locator("span")).toHaveCount(0);
+  await expect(link).toHaveText("");
   await page.clock.fastForward(1_100);
   const next = artworks[(initial + 1) % artworks.length];
   await expect(link).toHaveAttribute("href", next.href);
   await expect(link.locator("img")).toHaveAttribute("src", next.src);
-  await expect(link.locator("span")).toHaveText(next.title);
+  await expect(link).toHaveAccessibleName("View " + next.title);
   await page.locator('[data-language="zh-CN"]').click();
-  await expect(link.locator("span")).toHaveText(translate(next.title, "zh-CN"));
   await expect(link).toHaveAttribute("href", next.href + "?lang=zh");
   await expect(link).toHaveAttribute(
     "aria-label",
@@ -41,8 +42,8 @@ test("Home selects the current hour, rotates at the boundary, and localizes live
   const resumed =
     artworks[Math.floor(later.getTime() / hour) % artworks.length];
   await expect(link).toHaveAttribute("href", resumed.href + "?lang=zh");
-  await expect(link.locator("span")).toHaveText(
-    translate(resumed.title, "zh-CN"),
+  await expect(link).toHaveAccessibleName(
+    translate("View " + resumed.title, "zh-CN"),
   );
   await page.locator('[data-language="en"]').click();
   await expect(link).toHaveAttribute("href", resumed.href);
@@ -65,7 +66,9 @@ test("Home artwork supports touch, themes, reduced motion, and readable foregrou
         document.documentElement.dataset.theme = theme;
       }, theme);
       await expect(page.locator("#home-name")).toBeVisible();
-      await expect(link.locator("span")).toBeVisible();
+      await expect(link).toBeVisible();
+      await expect(link).toHaveAccessibleName(/^查看 .+/);
+      await expect(link).toHaveText("");
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth <= innerWidth,
@@ -82,7 +85,7 @@ test("Home artwork supports touch, themes, reduced motion, and readable foregrou
   }
   await page.setViewportSize({ width: 375, height: 900 });
   const href = await link.getAttribute("href");
-  // Click the exposed image, not only its caption.
+  // The image itself remains clickable without a visible caption.
   const box = (await link.boundingBox())!;
   await page.mouse.click(box.x + box.width - 15, box.y + box.height / 2);
   await expect(page).toHaveURL(new RegExp(href!.replace("?", "\\?") + "$"));
@@ -95,9 +98,11 @@ test("Home has a linked static fallback without JavaScript", async ({
   const page = await context.newPage();
   await page.goto("/");
   const link = page.locator("[data-home-artwork]");
-  await expect(link.locator("span")).not.toBeEmpty();
+  await expect(link).toHaveAccessibleName(/^View .+/);
+  await expect(link).toHaveText("");
   await expect(link.locator("img")).toBeVisible();
-  await link.locator("span").click();
+  await link.focus();
+  await page.keyboard.press("Enter");
   await expect(page).toHaveURL(/\/illustrations\/.+\//);
   await context.close();
 });
@@ -120,7 +125,7 @@ test("An unavailable next image preserves the working artwork and destination", 
   await page.clock.fastForward(1_100);
   await failedLoad;
   await expect(link).toHaveAttribute("href", artworks[initial].href);
-  await expect(link.locator("span")).toHaveText(artworks[initial].title);
+  await expect(link).toHaveAccessibleName("View " + artworks[initial].title);
   await page.unroute("**" + next.src);
   await page.evaluate(() => window.dispatchEvent(new Event("focus")));
   await expect(link).toHaveAttribute("href", next.href);
