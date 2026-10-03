@@ -134,11 +134,15 @@ export class PerformanceGate {
   }
 }
 
-export function noteTime(now: number, origin: number, snap: boolean) {
+export function noteTime(
+  now: number,
+  origin: number,
+  snap: boolean,
+  stepSeconds = STEP_SECONDS,
+) {
   const earliest = now + 0.012;
   return snap
     ? origin +
-        Math.max(0, Math.ceil((earliest - origin) / STEP_SECONDS)) *
-          STEP_SECONDS
+        Math.max(0, Math.ceil((earliest - origin) / stepSeconds)) * stepSeconds
     : earliest;
 }

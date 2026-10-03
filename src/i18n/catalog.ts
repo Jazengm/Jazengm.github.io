@@ -459,6 +459,19 @@ export const chinese: Record<string, string> = {
   "Click, drag, or play A–Z / 1–6": "点击、拖动，或按 A–Z / 1–6 演奏",
   "32 sounds · one canvas": "32 种声音 · 一块画布",
   Backtrack: "伴奏",
+  Style: "曲风",
+  "Auto motion": "自动背景",
+  "Switching at the next bar.": "将在下一小节切换。",
+  "Four-on-the-floor drums, bright plucks, expanding geometry.":
+    "四拍底鼓、明亮拨弦与扩张的几何图案。",
+  "Deep kicks, filtered chord echoes, slow concentric orbits.":
+    "深沉底鼓、滤波和弦回声与缓慢的同心轨道。",
+  "Soft percussion, syncopated seventh chords, warm swaying arcs.":
+    "轻柔打击乐、切分七和弦与暖色摇曳弧线。",
+  "Rolling breakbeats, soft sustained chords, cool flowing ribbons.":
+    "滚动碎拍、柔和长音和弦与冷色流动丝带。",
+  "Choose a style before starting or switch at the next bar while playing. Auto motion follows the backing drums after Start; turn it off to draw only with your hands. Reduced motion disables automatic background animation.":
+    "开始前可选择曲风；播放中切换会在下一小节生效。点击开始后，自动背景随伴奏鼓点变化；关闭它可只保留手动图形。系统开启减少动态效果时，自动背景动画将停用。",
   "Snap to beat": "节拍对齐",
   Visuals: "图形",
   Fullscreen: "全屏",

@@ -13,6 +13,21 @@
   justify-content: space-between;
   margin-bottom: 0.8rem;
 }
+.house-genre {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+}
+.house-genre select {
+  width: auto;
+  min-width: 8.5rem;
+  max-width: 100%;
+  padding: 0.45rem 1.4rem 0.45rem 0.6rem;
+}
+.house-genre-description {
+  min-height: 1.7em;
+}
 .house-toolbar .button {
   font-size: 0.82rem;
   padding: 0.45rem 0.7rem;

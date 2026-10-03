@@ -1,4 +1,10 @@
 import { PADS, PerformanceGate } from "../audio/house-patterns";
+import {
+  DEFAULT_GENRE,
+  GENRES,
+  type GenreId,
+  type BeatAccent,
+} from "../audio/house-genres";
 
 type Burst = {
   index: number;
@@ -25,6 +31,39 @@ export class HouseScene {
   private dead = false;
   private enabled = true;
   private serial = 0;
+  private genre: GenreId = DEFAULT_GENRE;
+  private auto = true;
+  private pulses: { born: number; accent: BeatAccent; phase: number }[] = [];
+
+  setGenre(genre: GenreId) {
+    if (genre === this.genre) return;
+    this.genre = genre;
+    this.clear();
+  }
+  setAuto(enabled: boolean) {
+    this.auto = enabled;
+    if (!enabled) {
+      this.pulses = [];
+      this.paint(performance.now());
+    }
+  }
+  beat(step: number, accent: BeatAccent) {
+    // No automatic motion under reduced motion, mute/disabled backing, or Stop.
+    if (
+      this.dead ||
+      !this.enabled ||
+      !this.auto ||
+      this.motion.matches ||
+      !accent
+    )
+      return;
+    this.pulses.push({ born: performance.now(), accent, phase: step / 16 });
+    this.pulses = this.pulses.slice(-2);
+    this.canvas.dataset.autoBeats = String(
+      Number(this.canvas.dataset.autoBeats ?? 0) + 1,
+    );
+    if (!this.frame) this.frame = requestAnimationFrame(this.animate);
+  }
 
   constructor(private canvas: HTMLCanvasElement) {
     const context = canvas.getContext("2d", { alpha: false });
@@ -91,9 +130,80 @@ export class HouseScene {
     this.frame = 0;
     if (this.dead) return;
     this.bursts = this.bursts.filter((burst) => now - burst.born < 1600);
+    this.pulses = this.pulses.filter(
+      (pulse) => now - pulse.born < this.pulseDuration(),
+    );
     this.paint(now);
-    if (this.bursts.length) this.frame = requestAnimationFrame(this.animate);
+    if (this.bursts.length || this.pulses.length)
+      this.frame = requestAnimationFrame(this.animate);
   };
+  private pulseDuration() {
+    return this.genre === "dub-techno"
+      ? 2400
+      : this.genre === "liquid-funk"
+        ? 1000
+        : 1500;
+  }
+  private paintBacking(now: number) {
+    const c = this.ctx,
+      w = this.width,
+      h = this.height;
+    for (const pulse of this.pulses) {
+      const progress = Math.min(1, (now - pulse.born) / this.pulseDuration());
+      const ease = 1 - (1 - progress) ** 2;
+      c.save();
+      c.translate(w * 0.5, h * 0.5);
+      c.globalAlpha = Math.sin(progress * Math.PI) * 0.2;
+      c.strokeStyle =
+        this.colors[
+          GENRES[this.genre].colors[pulse.accent === "snare" ? 1 : 0]
+        ];
+      c.lineWidth = Math.max(1.5, Math.min(w, h) * 0.003);
+      if (this.genre === "bossa-nova") {
+        c.rotate(Math.sin(ease * 2 + pulse.phase * Math.PI) * 0.14);
+        for (let i = 1; i <= 4; i++) {
+          c.beginPath();
+          c.ellipse(
+            0,
+            h * 0.12 * Math.sin(ease * 3),
+            (w * (0.15 + ease * 0.6) * i) / 4,
+            (h * (0.12 + ease * 0.38) * i) / 4,
+            0,
+            0,
+            Math.PI * 2,
+          );
+          c.stroke();
+        }
+      } else if (this.genre === "liquid-funk") {
+        for (let row = -2; row <= 2; row++) {
+          c.beginPath();
+          for (let i = 0; i <= 64; i++) {
+            const x = (i / 64 - 0.5) * w;
+            const y =
+              Math.sin(i / 12 + ease * 5 + pulse.phase * 3) * h * 0.2 +
+              row * h * 0.12;
+            if (!i) c.moveTo(x, y);
+            else c.lineTo(x, y);
+          }
+          c.stroke();
+        }
+      } else {
+        const radius = Math.hypot(w, h) * (0.12 + ease * 0.5);
+        for (let i = 1; i <= 4; i++) {
+          c.beginPath();
+          c.arc(
+            0,
+            0,
+            (radius * i) / 4,
+            pulse.phase,
+            pulse.phase + Math.PI * (this.genre === "dub-techno" ? 1.7 : 2),
+          );
+          c.stroke();
+        }
+      }
+      c.restore();
+    }
+  }
   private polygon(sides: number, radius: number, angle = 0) {
     const c = this.ctx;
     c.beginPath();
@@ -113,6 +223,7 @@ export class HouseScene {
     c.globalAlpha = 1;
     c.fillStyle = this.background;
     c.fillRect(0, 0, w, h);
+    this.paintBacking(now);
     // Intentionally no grid, ticks or idle ornament. The sound map is invisible.
     for (const burst of this.bursts) {
       const pad = PADS[burst.index];
@@ -132,9 +243,18 @@ export class HouseScene {
       c.translate(x, y);
       c.rotate(
         burst.angle * 0.25 +
-          (still ? 0 : ease * (burst.index % 2 ? -0.65 : 0.65)),
+          (still
+            ? 0
+            : ease *
+              (burst.index % 2 ? -1 : 1) *
+              (this.genre === "bossa-nova"
+                ? 0.3
+                : this.genre === "dub-techno"
+                  ? 0.4
+                  : 0.65)),
       );
-      c.strokeStyle = c.fillStyle = this.colors[pad.color];
+      c.strokeStyle = c.fillStyle =
+        this.colors[GENRES[this.genre].colors[pad.color]];
       const envelope = still
         ? 0.55
         : Math.min(1, progress / 0.09) * (1 - progress) ** 1.25 * 0.85;
@@ -234,6 +354,8 @@ export class HouseScene {
       c.restore();
     }
     this.canvas.dataset.activeShapes = String(this.bursts.length);
+    this.canvas.dataset.ambientShapes = String(this.pulses.length);
+    this.canvas.dataset.genre = this.genre;
     this.canvas.dataset.frames = String(
       Number(this.canvas.dataset.frames ?? 0) + 1,
     );
@@ -248,6 +370,7 @@ export class HouseScene {
     this.frame = 0;
     clearTimeout(this.expiry);
     this.bursts = [];
+    this.pulses = [];
     if (!this.dead) this.paint(performance.now());
   }
   dispose() {

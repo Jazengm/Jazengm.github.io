@@ -9,6 +9,12 @@ import {
 } from "../audio/house-patterns";
 import { HouseScene } from "../visuals/house-scene";
 import type { HouseEngine } from "../audio/house-engine";
+import {
+  GENRES,
+  DEFAULT_GENRE,
+  isGenre,
+  type GenreId,
+} from "../audio/house-genres";
 import "../styles/house.css";
 
 export default function HouseToy() {
@@ -38,6 +44,10 @@ export default function HouseToy() {
   const [level, setLevel] = useState(0);
   const [last, setLast] = useState<number | null>(null);
   const [hits, setHits] = useState(0);
+  const [genre, setGenre] = useState<GenreId>(DEFAULT_GENRE);
+  const [activeGenre, setActiveGenre] = useState<GenreId>(DEFAULT_GENRE);
+  const [autoMotion, setAutoMotion] = useState(true);
+  const audible = useRef(volume > 0);
 
   function stop() {
     generation.current++;
@@ -110,8 +120,12 @@ export default function HouseToy() {
         if (generation.current !== session) return;
         setStep(frame.step);
         setLevel(Number.isFinite(frame.level) ? frame.level : 0);
+        setActiveGenre(frame.genre);
+        scene.current?.setGenre(frame.genre);
+        if (audible.current) scene.current?.beat(frame.step, frame.accent);
       });
       engine.current = next;
+      next.setGenre(genre);
       next.setColor(color);
       next.setGroove(groove);
       await next.start();
@@ -170,6 +184,16 @@ export default function HouseToy() {
     const next = !groove;
     setGroove(next);
     engine.current?.setGroove(next);
+    if (!next) scene.current?.clear();
+  }
+  function chooseGenre(value: string) {
+    if (!isGenre(value)) return;
+    setGenre(value);
+    engine.current?.setGenre(value);
+    if (!playing) {
+      setActiveGenre(value);
+      scene.current?.setGenre(value);
+    }
   }
   async function toggleFullscreen() {
     try {
@@ -190,6 +214,8 @@ export default function HouseToy() {
       data-step={step}
       data-level={level}
       data-hits={hits}
+      data-genre={activeGenre}
+      data-pending-genre={playing && genre !== activeGenre ? genre : ""}
       data-controls-visible={controlsVisible}
       data-last-key={last === null ? "" : PADS[last].key}
       onKeyDown={(event) => {
@@ -255,11 +281,17 @@ export default function HouseToy() {
             onClick={() => {
               stop();
               setVolume(DEFAULT_VOLUME);
+              audible.current = true;
               setColor(0.5);
               setGroove(true);
               setSnap(false);
               setVisuals(true);
               scene.current?.setEnabled(true);
+              setGenre(DEFAULT_GENRE);
+              setActiveGenre(DEFAULT_GENRE);
+              scene.current?.setGenre(DEFAULT_GENRE);
+              setAutoMotion(true);
+              scene.current?.setAuto(true);
               setHits(0);
             }}
           >
@@ -267,6 +299,22 @@ export default function HouseToy() {
           </button>
         </div>
         <div className="house-options">
+          <label className="house-genre">
+            <span>Style</span>
+            <select
+              className="control-input"
+              aria-label="Style"
+              value={genre}
+              disabled={starting}
+              onChange={(event) => chooseGenre(event.target.value)}
+            >
+              {Object.values(GENRES).map((preset) => (
+                <option key={preset.id} value={preset.id}>
+                  {preset.label}
+                </option>
+              ))}
+            </select>
+          </label>
           <button
             type="button"
             className="button"
@@ -294,6 +342,18 @@ export default function HouseToy() {
             }}
           >
             Visuals
+          </button>
+          <button
+            type="button"
+            className="button"
+            aria-pressed={autoMotion}
+            disabled={visualError}
+            onClick={() => {
+              setAutoMotion(!autoMotion);
+              scene.current?.setAuto(!autoMotion);
+            }}
+          >
+            Auto motion
           </button>
           {canFullscreen && (
             <button type="button" className="button" onClick={toggleFullscreen}>
@@ -334,7 +394,10 @@ export default function HouseToy() {
         <canvas ref={canvas} aria-hidden="true" />
         <div className="house-stage-top" aria-hidden="true">
           <span>POCKET / HOUSE</span>
-          <span translate="no">124 BPM · A MINOR</span>
+          <span translate="no">
+            {GENRES[playing ? activeGenre : genre].label} ·{" "}
+            {GENRES[playing ? activeGenre : genre].bpm} BPM · A MINOR
+          </span>
         </div>
         {!playing && (
           <div className="house-invite">
@@ -342,7 +405,7 @@ export default function HouseToy() {
             <span>Press Start. Then make a little chaos.</span>
           </div>
         )}
-        {playing && last === null && (
+        {playing && last === null && !(groove && autoMotion && visuals) && (
           <div className="house-invite house-invite-playing">
             <p>Your hands. Your universe.</p>
             <span>Click, drag, or play A–Z / 1–6</span>
@@ -380,6 +443,8 @@ export default function HouseToy() {
             onChange={(event) => {
               const value = Number(event.target.value) / 100;
               setVolume(value);
+              audible.current = value > 0;
+              if (value === 0) scene.current?.clear();
               engine.current?.setVolume(value);
             }}
           />
@@ -402,6 +467,18 @@ export default function HouseToy() {
           <output>{Math.round(color * 100)}%</output>
         </label>
       </div>
+      <p className="house-help house-genre-description" aria-live="polite">
+        {GENRES[genre].description}
+        {playing && genre !== activeGenre && (
+          <span> Switching at the next bar.</span>
+        )}
+      </p>
+      <p className="house-help">
+        Choose a style before starting or switch at the next bar while playing.
+        Auto motion follows the backing drums after Start; turn it off to draw
+        only with your hands. Reduced motion disables automatic background
+        animation.
+      </p>
       <p id="house-help" className="house-help">
         Click or drag across the canvas. Play A–Z and 1–6 while this instrument
         has focus. Space toggles the backtrack on the canvas; Escape stops

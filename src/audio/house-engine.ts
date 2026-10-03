@@ -3,15 +3,27 @@ import * as Tone from "tone/build/esm/classes.js";
 import { setContext } from "tone/build/esm/core/Global.js";
 import {
   BPM,
-  CHORDS,
   PADS,
   PerformanceGate,
   STEP_SECONDS,
   noteTime,
   masterGain,
 } from "./house-patterns";
+import {
+  GENRES,
+  DEFAULT_GENRE,
+  backingAt,
+  stepSeconds,
+  type GenreId,
+  type BeatAccent,
+} from "./house-genres";
 
-export type AudioFrame = { step: number; level: number };
+export type AudioFrame = {
+  step: number;
+  level: number;
+  genre: GenreId;
+  accent: BeatAccent;
+};
 export class HouseEngine {
   private context: Tone.Context;
   private nodes: { dispose(): unknown }[] = [];
@@ -33,6 +45,9 @@ export class HouseEngine {
   private repeat?: number;
   private origin = 0;
   private groove = true;
+  private genre: GenreId = DEFAULT_GENRE;
+  private pendingGenre: GenreId | null = null;
+  private color = 0.5;
   private gate = new PerformanceGate();
   private scheduled = new Map<string, number>();
   private backing!: Tone.Gain;
@@ -41,6 +56,11 @@ export class HouseEngine {
   private backingKick!: Tone.MembraneSynth;
   private backingHat!: Tone.NoiseSynth;
   private backingBass!: Tone.Synth;
+  private backingSnare!: Tone.NoiseSynth;
+  private backingRim!: Tone.Synth;
+  private backingChords!: Tone.PolySynth<Tone.Synth>;
+  private backingDelay!: Tone.FeedbackDelay;
+  private chordFilter!: Tone.Filter;
 
   constructor(volume: number, onFrame: (frame: AudioFrame) => void) {
     const context = (this.context = new Tone.Context({
@@ -227,29 +247,115 @@ export class HouseEngine {
           envelope: { attack: 0.004, decay: 0.1, sustain: 0.1, release: 0.05 },
         }),
       ).connect(this.backing);
+      this.backingSnare = own(
+        new Tone.NoiseSynth({
+          context,
+          volume: -27,
+          noise: { type: "pink" },
+          envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.02 },
+        }),
+      ).connect(this.backing);
+      this.backingRim = own(
+        new Tone.Synth({
+          context,
+          volume: -28,
+          oscillator: { type: "triangle" },
+          envelope: { attack: 0.001, decay: 0.025, sustain: 0, release: 0.015 },
+        }),
+      ).connect(this.backing);
+      this.chordFilter = own(
+        new Tone.Filter({ context, type: "lowpass", frequency: 2600 }),
+      ).connect(this.backing);
+      this.backingDelay = own(
+        new Tone.FeedbackDelay({
+          context,
+          delayTime: STEP_SECONDS * 3,
+          feedback: 0.22,
+          wet: 0.2,
+        }),
+      ).connect(this.chordFilter);
+      this.backingChords = own(
+        new Tone.PolySynth({
+          context,
+          voice: Tone.Synth,
+          maxPolyphony: 16,
+          volume: -30,
+          options: {
+            oscillator: { type: "triangle" },
+            envelope: {
+              attack: 0.012,
+              decay: 0.16,
+              sustain: 0.15,
+              release: 0.16,
+            },
+          },
+        }),
+      ).connect(this.backingDelay);
       context.transport.bpm.value = BPM;
       context.transport.timeSignature = 4;
       let step = 0;
       this.repeat = context.transport.scheduleRepeat(
         (time) => {
-          const current = step++ % 16;
           if (this.dead) return;
-          if (this.groove) {
-            if (current % 4 === 0)
-              this.backingKick.triggerAttackRelease("C1", 0.09, time, 0.7);
-            if (current % 4 === 2) {
-              this.backingHat.triggerAttackRelease(0.018, time, 0.5);
-              this.backingBass.triggerAttackRelease(
-                current === 14 ? "E2" : "A1",
-                0.085,
-                time,
-                0.7,
-              );
-            }
+          const absoluteStep = step++;
+          const current = absoluteStep % 16;
+          if (current === 0 && this.pendingGenre) {
+            this.applyGenre(this.pendingGenre, time);
+            this.pendingGenre = null;
+            this.origin = time;
           }
+          const genre = this.genre;
+          const pattern = backingAt(genre, absoluteStep);
+          const bossa = genre === "bossa-nova";
+          const liquid = genre === "liquid-funk";
+          if (this.groove) {
+            if (pattern.kick)
+              this.backingKick.triggerAttackRelease(
+                "C1",
+                0.09,
+                time,
+                bossa ? 0.42 : 0.7,
+              );
+            if (pattern.hat)
+              this.backingHat.triggerAttackRelease(
+                0.018,
+                time,
+                bossa ? 0.28 : absoluteStep % 2 ? 0.23 : 0.45,
+              );
+            if (pattern.snare || pattern.ghost) {
+              if (bossa)
+                this.backingRim.triggerAttackRelease("E5", 0.025, time, 0.6);
+              else
+                this.backingSnare.triggerAttackRelease(
+                  0.04,
+                  time,
+                  pattern.ghost ? 0.22 : liquid ? 0.85 : 0.5,
+                );
+            }
+            if (pattern.bass)
+              this.backingBass.triggerAttackRelease(
+                pattern.bass,
+                liquid ? 0.19 : bossa ? 0.14 : 0.1,
+                time,
+                0.65,
+              );
+            if (pattern.chord)
+              this.backingChords.triggerAttackRelease(
+                pattern.chord,
+                liquid ? stepSeconds(genre) * 10 : bossa ? 0.1 : 0.15,
+                time,
+                0.6,
+              );
+          }
+          const accent = this.groove ? pattern.accent : null;
           context.draw.schedule(() => {
             if (!this.dead)
-              onFrame({ step: current, level: Number(this.meter.getValue()) });
+              onFrame({
+                step: current,
+                level: Number(this.meter.getValue()),
+                genre,
+                accent: this.groove ? accent : null,
+              });
           }, time);
         },
         "16n",
@@ -274,7 +380,7 @@ export class HouseEngine {
     const now = this.context.immediate();
     if (!this.gate.accept(index, now)) return false;
     const pad = PADS[index];
-    const time = noteTime(now, this.origin, snap);
+    const time = noteTime(now, this.origin, snap, stepSeconds(this.genre));
     // Drop duplicate quantized hits rather than queueing a storm into the future.
     const slot =
       pad.voice +
@@ -293,7 +399,12 @@ export class HouseEngine {
         this.bass.triggerAttackRelease(pad.note, 0.09, time, 0.65);
         break;
       case "chord":
-        this.chords.triggerAttackRelease(CHORDS[index - 20], 0.16, time, 0.55);
+        this.chords.triggerAttackRelease(
+          GENRES[this.genre].chords[index - 20],
+          0.16,
+          time,
+          0.55,
+        );
         break;
       case "kick":
         this.kick.triggerAttackRelease("C1", 0.09, time, 0.85);
@@ -327,12 +438,55 @@ export class HouseEngine {
     this.groove = value;
     if (!this.dead) this.backing.gain.rampTo(value ? 1 : 0, 0.03);
   }
+  setGenre(value: GenreId) {
+    if (this.dead) return;
+    if (!this.started) this.applyGenre(value, this.context.now());
+    else this.pendingGenre = value === this.genre ? null : value;
+  }
+  private applyGenre(value: GenreId, time: number) {
+    this.genre = value;
+    const preset = GENRES[value];
+    this.context.transport.bpm.setValueAtTime(preset.bpm, time);
+    this.chordFilter.frequency.rampTo(preset.cutoff, 0.08, time);
+    for (const delay of [this.delay, this.backingDelay]) {
+      delay.delayTime.rampTo(stepSeconds(value) * 3, 0.08, time);
+      delay.feedback.rampTo(preset.feedback, 0.08, time);
+      delay.wet.rampTo(
+        Math.min(0.55, this.color * 2 * preset.echo),
+        0.08,
+        time,
+      );
+    }
+    const soft = value === "bossa-nova";
+    const liquid = value === "liquid-funk";
+    this.backingBass.set({
+      oscillator: { type: soft || liquid ? "sine" : "triangle" },
+    });
+    for (const voice of [this.chords, this.backingChords])
+      voice.set({
+        oscillator: { type: soft ? "triangle" : "sine" },
+        envelope: {
+          attack: liquid ? 0.08 : 0.006,
+          decay: soft ? 0.2 : 0.12,
+          sustain: liquid ? 0.45 : 0.12,
+          release: preset.release,
+        },
+      });
+    this.plucks.set({
+      envelope: { decay: soft ? 0.28 : value === "dub-techno" ? 0.24 : 0.16 },
+    });
+  }
   setVolume(value: number) {
     if (!this.dead) this.output.gain.rampTo(masterGain(value), 0.025);
   }
   setColor(value: number) {
+    this.color = Math.min(1, Math.max(0, value));
     if (!this.dead)
-      this.delay.wet.rampTo(Math.min(0.4, Math.max(0, value * 0.4)), 0.04);
+      for (const delay of [this.delay, this.backingDelay])
+        delay.wet.rampTo(
+          Math.min(0.55, this.color * 2 * GENRES[this.genre].echo),
+          0.04,
+        );
   }
   dispose() {
     if (this.dead) return;

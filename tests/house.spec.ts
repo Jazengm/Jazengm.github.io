@@ -1,5 +1,11 @@
 import { expect, test, type Page } from "@playwright/test";
 import {
+  GENRES,
+  backingAt,
+  stepSeconds,
+  isGenre,
+} from "../src/audio/house-genres";
+import {
   BPM,
   DEFAULT_VOLUME,
   masterGain,
@@ -114,6 +120,171 @@ async function startToy(page: Page) {
 const hits = async (page: Page) =>
   Number(await page.locator(".house-toy").getAttribute("data-hits"));
 
+test("Genre presets have distinct two-bar patterns and tempo-correct snapping", () => {
+  expect(isGenre("constructor")).toBe(false);
+  expect(isGenre("unknown")).toBe(false);
+  expect(Object.keys(GENRES)).toEqual([
+    "house",
+    "dub-techno",
+    "bossa-nova",
+    "liquid-funk",
+  ]);
+  const signatures = new Set();
+  for (const preset of Object.values(GENRES)) {
+    expect(preset.chords).toHaveLength(4);
+    for (const lane of [
+      preset.kick,
+      preset.hat,
+      preset.snare,
+      preset.bass,
+      preset.stab,
+      preset.ghost,
+    ]) {
+      expect(new Set(lane).size).toBe(lane.length);
+      for (const step of lane)
+        expect(Number.isInteger(step) && step >= 0 && step < 32).toBe(true);
+    }
+    signatures.add(JSON.stringify([preset.kick, preset.snare, preset.stab]));
+    for (let i = 0; i < 64; i++) {
+      const pattern = backingAt(preset.id, i);
+      if (pattern.chord)
+        expect(pattern.chord).toEqual(preset.chords[Math.floor(i / 16) % 4]);
+      if (pattern.bass)
+        expect([...preset.roots, ...preset.fifths]).toContain(pattern.bass);
+      const now = 1 + i * 0.017;
+      const time = noteTime(now, 1, true, stepSeconds(preset.id));
+      expect(time).toBeGreaterThanOrEqual(now + 0.012 - 1e-10);
+      expect(time - now).toBeLessThanOrEqual(
+        stepSeconds(preset.id) + 0.012 + 1e-10,
+      );
+      expect((time - 1) / stepSeconds(preset.id)).toBeCloseTo(
+        Math.round((time - 1) / stepSeconds(preset.id)),
+      );
+    }
+  }
+  expect(signatures.size).toBe(4);
+});
+
+test("Genres switch at a bar without new contexts and automatically draw with audible backing", async ({
+  page,
+}) => {
+  const errors = await instrumentAudio(page);
+  await openToy(page);
+  const selector = page.getByRole("combobox", { name: "Style", exact: true });
+  const toy = page.locator(".house-toy");
+  const canvas = page.locator("canvas");
+  await selector.selectOption("dub-techno");
+  await expect.poll(() => contextStates(page)).toEqual([]);
+  await startToy(page);
+  for (const genre of ["dub-techno", "bossa-nova", "liquid-funk"] as const) {
+    await selector.selectOption(genre);
+    await expect(toy).toHaveAttribute("data-genre", genre, { timeout: 7000 });
+    await expect(toy).toHaveAttribute("data-pending-genre", "");
+    await expect(canvas).toHaveAttribute("data-genre", genre);
+    await expect(page.locator(".house-stage-top")).toContainText(
+      String(GENRES[genre].bpm),
+    );
+    await expect
+      .poll(async () => Number(await toy.getAttribute("data-level")))
+      .toBeGreaterThan(0.00001);
+    const beats = Number((await canvas.getAttribute("data-auto-beats")) ?? 0);
+    await expect
+      .poll(async () => Number(await canvas.getAttribute("data-auto-beats")))
+      .toBeGreaterThan(beats);
+    expect(
+      Number(await canvas.getAttribute("data-ambient-shapes")),
+    ).toBeLessThanOrEqual(2);
+    expect(await hits(page)).toBe(0);
+    await expect
+      .poll(() =>
+        canvas.evaluate((element: HTMLCanvasElement) => {
+          const pixels = element
+            .getContext("2d")!
+            .getImageData(0, 0, element.width, element.height).data;
+          const background = [9, 15, 35];
+          return pixels.some(
+            (value, index) =>
+              index % 4 < 3 && Math.abs(value - background[index % 4]) > 8,
+          );
+        }),
+      )
+      .toBe(true);
+    await expect.poll(() => contextStates(page)).toEqual(["running"]);
+  }
+  // Latest requested genre wins; no context churn or scheduled backlog.
+  await selector.selectOption("house");
+  await selector.selectOption("bossa-nova");
+  await selector.selectOption("dub-techno");
+  await expect(toy).toHaveAttribute("data-genre", "dub-techno", {
+    timeout: 7000,
+  });
+  await page.getByRole("button", { name: "Auto motion", exact: true }).click();
+  await expect(canvas).toHaveAttribute("data-ambient-shapes", "0");
+  const beats = await canvas.getAttribute("data-auto-beats");
+  await page.waitForTimeout(600);
+  await expect(canvas).toHaveAttribute("data-auto-beats", beats!);
+  await page.locator(".house-stage").focus();
+  await page.keyboard.press("q");
+  expect(await hits(page)).toBe(1);
+  await page.getByRole("button", { name: "Auto motion", exact: true }).click();
+  await page.getByRole("button", { name: "Backtrack", exact: true }).click();
+  await expect(canvas).toHaveAttribute("data-ambient-shapes", "0");
+  const muted = await canvas.getAttribute("data-auto-beats");
+  await page.waitForTimeout(600);
+  await expect(canvas).toHaveAttribute("data-auto-beats", muted!);
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(selector).toHaveValue("house");
+  await expect(
+    page.getByRole("button", { name: "Auto motion", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(canvas).toHaveAttribute("data-ambient-shapes", "0");
+  await expect.poll(() => contextStates(page)).toEqual(["closed"]);
+  expect(errors).toEqual([]);
+});
+
+test("Auto motion respects reduced motion and localized genre controls", async ({
+  page,
+}) => {
+  const errors = await instrumentAudio(page);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await openToy(page);
+  await page
+    .getByRole("combobox", { name: "Style", exact: true })
+    .selectOption("liquid-funk");
+  await startToy(page);
+  await page.waitForTimeout(700);
+  await expect(page.locator("canvas")).toHaveAttribute(
+    "data-ambient-shapes",
+    "0",
+  );
+  await page.locator('[data-language="zh-CN"]').click();
+  await expect(
+    page.getByRole("combobox", { name: "曲风", exact: true }),
+  ).toHaveValue("liquid-funk");
+  await expect(
+    page.getByRole("button", { name: "自动背景", exact: true }),
+  ).toBeVisible();
+  await expect(page.locator(".house-genre-description")).toContainText(
+    "滚动碎拍",
+  );
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect
+    .poll(async () =>
+      Number(
+        (await page.locator("canvas").getAttribute("data-auto-beats")) ?? 0,
+      ),
+    )
+    .toBeGreaterThan(0);
+  await page.getByRole("button", { name: "图形", exact: true }).click();
+  await expect(page.locator("canvas")).toHaveAttribute(
+    "data-ambient-shapes",
+    "0",
+  );
+  await page.getByRole("button", { name: "停止", exact: true }).click();
+  await expect.poll(() => contextStates(page)).toEqual(["closed"]);
+  expect(errors).toEqual([]);
+});
+
 test("Performance canvas has no idle grid and a single hit spans the stage", async ({
   page,
 }) => {
@@ -136,6 +307,8 @@ test("Performance canvas has no idle grid and a single hit spans the stage", asy
     return true;
   });
   expect(uniform).toBe(true);
+  // Isolate the manual hit from the newly added automatic backing animation.
+  await page.getByRole("button", { name: "Auto motion", exact: true }).click();
   await startToy(page);
   await page.keyboard.press("q");
   await page.waitForTimeout(450);
