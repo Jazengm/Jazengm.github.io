@@ -1,10 +1,17 @@
 /** Original instrument bank. Pitched sounds share A minor / C major. */
 export const BPM = 124;
 export const DEFAULT_VOLUME = 1;
-// Double the previous default gain of 2 to 4 (+6.02 dB before limiting).
+// Double the previous default gain of 4 to 8 (+6.02 dB before limiting).
 // This is signal gain, not a promise of perceived loudness or device safety.
 export const masterGain = (volume: number) =>
-  Math.min(1, Math.max(0, volume)) * 4;
+  Math.min(1, Math.max(0, volume)) * 8;
+// Compressor-based limiters have attack-time overshoot. A final soft knee
+// preserves samples below 0.8 and catches transients before the device clips.
+export const protectPeak = (sample: number) =>
+  Math.abs(sample) <= 0.8
+    ? sample
+    : Math.sign(sample) *
+      (0.8 + 0.15 * Math.tanh((Math.abs(sample) - 0.8) / 0.15));
 export const STEP_SECONDS = 60 / BPM / 4;
 export const KEYS = "qwertyuiopasdfghjklzxcvbnm123456";
 export type Voice =
@@ -95,8 +102,6 @@ export const PADS = [...KEYS].map((key, index) => {
     label: names[index],
     voice,
     note,
-    motif: index % 8,
-    color: index % 5,
   };
 });
 export type Pad = (typeof PADS)[number];

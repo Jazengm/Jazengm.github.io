@@ -497,6 +497,11 @@ export default function HouseToy() {
       <details className="house-keyboard">
         <summary>Sound keys / playing guide</summary>
         <p className="house-help">
+          Each style changes the sound of your keys and its shape palette. Try
+          repeating a key: colors, spin and scale vary, while the background
+          slowly changes. Reduced motion keeps the background still.
+        </p>
+        <p className="house-help">
           The canvas has 8 columns and 4 rows, in the same order as these keys.
           Notes sound immediately by default; Snap to beat aligns them to the
           next sixteenth note. Backtrack is optional.

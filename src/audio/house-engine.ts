@@ -1,6 +1,7 @@
 // This pinned entry does not create Tone's legacy global AudioContext on import.
 import * as Tone from "tone/build/esm/classes.js";
 import { setContext } from "tone/build/esm/core/Global.js";
+import { TIMBRES } from "./house-timbres";
 import {
   BPM,
   PADS,
@@ -8,6 +9,7 @@ import {
   STEP_SECONDS,
   noteTime,
   masterGain,
+  protectPeak,
 } from "./house-patterns";
 import {
   GENRES,
@@ -40,6 +42,9 @@ export class HouseEngine {
   private openhat!: Tone.NoiseSynth;
   private laser!: Tone.Synth;
   private meter!: Tone.Meter;
+  private leadFilter!: Tone.Filter;
+  private bassFilter!: Tone.Filter;
+  private hatFilter!: Tone.Filter;
   private dead = false;
   private started = false;
   private repeat?: number;
@@ -93,13 +98,25 @@ export class HouseEngine {
         }),
       );
       const limiter = own(new Tone.Limiter({ context, threshold: -3 }));
+      const peakGuard = own(
+        new Tone.WaveShaper({ context, mapping: protectPeak, length: 4097 }),
+      );
       this.output = own(new Tone.Gain({ context, gain: masterGain(volume) }));
-      // Gain goes before the final limiter so boosted peaks remain bounded.
-      bus.chain(compressor, this.output, limiter, context.destination);
+      // The limiter compresses sustained peaks; the soft knee catches its overshoot.
+      bus.chain(
+        compressor,
+        this.output,
+        limiter,
+        peakGuard,
+        context.destination,
+      );
       this.meter = own(
         new Tone.Meter({ context, normalRange: true, smoothing: 0.4 }),
       );
-      limiter.connect(this.meter);
+      peakGuard.connect(this.meter);
+      this.leadFilter = own(
+        new Tone.Filter({ context, frequency: 6500, type: "lowpass" }),
+      ).connect(this.delay);
       this.plucks = own(
         new Tone.PolySynth({
           context,
@@ -111,7 +128,7 @@ export class HouseEngine {
             envelope: { attack: 0.003, decay: 0.16, sustain: 0, release: 0.09 },
           },
         }),
-      ).connect(this.delay);
+      ).connect(this.leadFilter);
       this.bells = own(
         new Tone.PolySynth({
           context,
@@ -130,7 +147,7 @@ export class HouseEngine {
             },
           },
         }),
-      ).connect(this.delay);
+      ).connect(this.leadFilter);
       this.chords = own(
         new Tone.PolySynth({
           context,
@@ -147,7 +164,7 @@ export class HouseEngine {
             },
           },
         }),
-      ).connect(this.delay);
+      ).connect(this.leadFilter);
       this.bass = own(
         new Tone.PolySynth({
           context,
@@ -160,9 +177,9 @@ export class HouseEngine {
           },
         }),
       );
-      const lowpass = own(
+      const lowpass = (this.bassFilter = own(
         new Tone.Filter({ context, frequency: 520, type: "lowpass" }),
-      ).connect(bus);
+      ).connect(bus));
       this.bass.connect(lowpass);
       this.kick = own(
         new Tone.MembraneSynth({
@@ -190,9 +207,9 @@ export class HouseEngine {
           envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.02 },
         }),
       ).connect(bus);
-      const highpass = own(
+      const highpass = (this.hatFilter = own(
         new Tone.Filter({ context, frequency: 6800, type: "highpass" }),
-      ).connect(bus);
+      ).connect(bus));
       this.hat = own(
         new Tone.NoiseSynth({
           context,
@@ -388,20 +405,21 @@ export class HouseEngine {
       (pad.voice === "pluck" || pad.voice === "bell" ? pad.note : "");
     if (time <= (this.scheduled.get(slot) ?? -Infinity) + 0.001) return false;
     this.scheduled.set(slot, time);
+    const timbre = TIMBRES[this.genre];
     switch (pad.voice) {
       case "pluck":
-        this.plucks.triggerAttackRelease(pad.note, 0.08, time, 0.8);
+        this.plucks.triggerAttackRelease(pad.note, timbre.length, time, 0.8);
         break;
       case "bell":
-        this.bells.triggerAttackRelease(pad.note, 0.11, time, 0.65);
+        this.bells.triggerAttackRelease(pad.note, timbre.length, time, 0.65);
         break;
       case "bass":
-        this.bass.triggerAttackRelease(pad.note, 0.09, time, 0.65);
+        this.bass.triggerAttackRelease(pad.note, timbre.length, time, 0.65);
         break;
       case "chord":
         this.chords.triggerAttackRelease(
           GENRES[this.genre].chords[index - 20],
-          0.16,
+          timbre.length,
           time,
           0.55,
         );
@@ -419,14 +437,17 @@ export class HouseEngine {
         this.openhat.triggerAttackRelease(0.13, time, 0.6);
         break;
       case "tom":
-        this.tom.triggerAttackRelease("A2", 0.09, time, 0.7);
+        this.tom.triggerAttackRelease(timbre.tom, timbre.length, time, 0.7);
         break;
       case "rim":
         this.plucks.triggerAttackRelease("E6", 0.015, time, 0.45);
         break;
       case "laser":
         this.laser.triggerAttackRelease("A5", 0.14, time, 0.6);
-        this.laser.frequency.exponentialRampToValueAtTime(110, time + 0.15);
+        this.laser.frequency.exponentialRampToValueAtTime(
+          timbre.laserEnd,
+          time + 0.15,
+        );
         break;
       case "shimmer":
         this.bells.triggerAttackRelease(["A5", "E6"], 0.16, time, 0.45);
@@ -472,9 +493,38 @@ export class HouseEngine {
           release: preset.release,
         },
       });
+    const timbre = TIMBRES[value];
+    this.leadFilter.frequency.rampTo(timbre.cutoff, 0.08, time);
+    this.bassFilter.frequency.rampTo(timbre.bassCutoff, 0.08, time);
+    this.hatFilter.frequency.rampTo(timbre.hatCutoff, 0.08, time);
     this.plucks.set({
-      envelope: { decay: soft ? 0.28 : value === "dub-techno" ? 0.24 : 0.16 },
+      oscillator: { type: timbre.lead },
+      envelope: { decay: timbre.decay, release: timbre.decay * 0.6 },
     });
+    this.bells.set({
+      harmonicity: timbre.harmonicity,
+      modulationIndex: timbre.modulation,
+      envelope: { decay: timbre.decay, release: timbre.decay },
+    });
+    this.bass.set({
+      oscillator: { type: timbre.bass },
+      envelope: { decay: timbre.decay, release: timbre.decay * 0.3 },
+    });
+    this.kick.set({
+      octaves: timbre.kickOctaves,
+      pitchDecay: soft ? 0.015 : 0.04,
+    });
+    this.tom.set({
+      octaves: soft ? 1 : 2.5,
+      envelope: { decay: timbre.decay },
+    });
+    this.clap.set({
+      noise: { type: timbre.noise },
+      envelope: { decay: timbre.percussionDecay },
+    });
+    this.hat.set({ envelope: { decay: timbre.percussionDecay * 0.3 } });
+    this.openhat.set({ envelope: { decay: timbre.percussionDecay * 1.5 } });
+    this.laser.set({ oscillator: { type: soft ? "sine" : timbre.lead } });
   }
   setVolume(value: number) {
     if (!this.dead) this.output.gain.rampTo(masterGain(value), 0.025);

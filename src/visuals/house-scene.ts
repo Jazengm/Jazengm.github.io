@@ -1,4 +1,5 @@
-import { PADS, PerformanceGate } from "../audio/house-patterns";
+import { PerformanceGate } from "../audio/house-patterns";
+import { MOTION, chooseMotion } from "./house-motion";
 import {
   DEFAULT_GENRE,
   GENRES,
@@ -11,8 +12,7 @@ type Burst = {
   x: number;
   y: number;
   born: number;
-  angle: number;
-};
+} & ReturnType<typeof chooseMotion>;
 /** Original Canvas 2D geometry; no image assets or per-hit DOM nodes. */
 export class HouseScene {
   private ctx: CanvasRenderingContext2D;
@@ -25,6 +25,11 @@ export class HouseScene {
   private gate = new PerformanceGate();
   private colors: string[];
   private background: string;
+  private washes: string[];
+  private washFrom: string;
+  private washTo: string;
+  private washBorn = -Infinity;
+  private washIndex = -1;
   private width = 1;
   private height = 1;
   private ratio = 1;
@@ -57,7 +62,13 @@ export class HouseScene {
       !accent
     )
       return;
-    this.pulses.push({ born: performance.now(), accent, phase: step / 16 });
+    const now = performance.now();
+    this.shiftBackground(now);
+    this.pulses.push({
+      born: now,
+      accent,
+      phase: step / 16 + Math.random() * 0.3,
+    });
     this.pulses = this.pulses.slice(-2);
     this.canvas.dataset.autoBeats = String(
       Number(this.canvas.dataset.autoBeats ?? 0) + 1,
@@ -74,6 +85,10 @@ export class HouseScene {
       style.getPropertyValue("--color-play-" + name).trim(),
     );
     this.background = style.getPropertyValue("--color-play-bg").trim();
+    this.washes = ["blue", "rose", "teal", "purple", "amber"].map((name) =>
+      style.getPropertyValue("--color-play-wash-" + name).trim(),
+    );
+    this.washFrom = this.washTo = this.background;
     // Writing canvas dimensions inside ResizeObserver can trigger a same-frame
     // feedback warning during fullscreen transitions. Coalesce into the next frame.
     this.observer = new ResizeObserver(() => {
@@ -116,8 +131,10 @@ export class HouseScene {
       x,
       y,
       born: performance.now(),
-      angle: (++this.serial * 0.618 + index) % (Math.PI * 2),
+      ...chooseMotion(this.genre, index, this.serial++),
     };
+    this.canvas.dataset.lastMotif = String(burst.motif);
+    if (!this.motion.matches) this.shiftBackground(burst.born);
     this.bursts.push(burst);
     this.bursts = this.bursts.slice(this.motion.matches ? -2 : -8);
     if (this.motion.matches) {
@@ -129,14 +146,30 @@ export class HouseScene {
   private animate = (now: number) => {
     this.frame = 0;
     if (this.dead) return;
-    this.bursts = this.bursts.filter((burst) => now - burst.born < 1600);
+    this.bursts = this.bursts.filter(
+      (burst) => now - burst.born < burst.duration,
+    );
     this.pulses = this.pulses.filter(
       (pulse) => now - pulse.born < this.pulseDuration(),
     );
     this.paint(now);
-    if (this.bursts.length || this.pulses.length)
+    if (this.bursts.length || this.pulses.length || now - this.washBorn < 1800)
       this.frame = requestAnimationFrame(this.animate);
   };
+  private shiftBackground(now: number) {
+    // At most one slow transition per 2.2 seconds, even during input storms.
+    if (now - this.washBorn < 2200) return;
+    const choices = MOTION[this.genre].backgrounds.filter(
+      (index) => index !== this.washIndex,
+    );
+    this.washIndex = choices[Math.floor(Math.random() * choices.length)];
+    this.washFrom = this.washTo;
+    this.washTo = this.washes[this.washIndex];
+    this.washBorn = now;
+    this.canvas.dataset.backgroundChanges = String(
+      Number(this.canvas.dataset.backgroundChanges ?? 0) + 1,
+    );
+  }
   private pulseDuration() {
     return this.genre === "dub-techno"
       ? 2400
@@ -221,46 +254,39 @@ export class HouseScene {
     const diagonal = Math.hypot(w, h);
     c.setTransform(this.ratio, 0, 0, this.ratio, 0, 0);
     c.globalAlpha = 1;
-    c.fillStyle = this.background;
+    c.fillStyle = this.washFrom;
     c.fillRect(0, 0, w, h);
+    const washProgress = Math.min(1, Math.max(0, (now - this.washBorn) / 1800));
+    c.globalAlpha = washProgress * washProgress * (3 - 2 * washProgress);
+    c.fillStyle = this.washTo;
+    c.fillRect(0, 0, w, h);
+    c.globalAlpha = 1;
     this.paintBacking(now);
     // Intentionally no grid, ticks or idle ornament. The sound map is invisible.
     for (const burst of this.bursts) {
-      const pad = PADS[burst.index];
       const still = this.motion.matches;
       const progress = still
         ? 0.3
-        : Math.min(1, Math.max(0, (now - burst.born) / 1600));
+        : Math.min(1, Math.max(0, (now - burst.born) / burst.duration));
       const ease = 1 - (1 - progress) ** 2;
       const radius = still
         ? Math.min(w, h) * 0.22
-        : diagonal * (0.06 + ease * 0.92);
+        : diagonal * (0.06 + ease * 0.92) * burst.scale;
       const span = still ? radius : diagonal;
       // Compose across the whole stage instead of drawing small stamps in cells.
       const x = still ? burst.x * w : (0.5 + (burst.x - 0.5) * 0.25) * w;
       const y = still ? burst.y * h : (0.5 + (burst.y - 0.5) * 0.25) * h;
       c.save();
       c.translate(x, y);
-      c.rotate(
-        burst.angle * 0.25 +
-          (still
-            ? 0
-            : ease *
-              (burst.index % 2 ? -1 : 1) *
-              (this.genre === "bossa-nova"
-                ? 0.3
-                : this.genre === "dub-techno"
-                  ? 0.4
-                  : 0.65)),
-      );
+      c.rotate(burst.angle + (still ? 0 : ease * burst.spin));
       c.strokeStyle = c.fillStyle =
-        this.colors[GENRES[this.genre].colors[pad.color]];
+        this.colors[GENRES[this.genre].colors[burst.color]];
       const envelope = still
         ? 0.55
         : Math.min(1, progress / 0.09) * (1 - progress) ** 1.25 * 0.85;
       c.globalAlpha = envelope;
       c.lineWidth = Math.max(2, Math.min(w, h) * 0.005) * (1 - progress * 0.5);
-      switch (pad.motif) {
+      switch (burst.motif) {
         case 0: // Ripples sweep from the center all the way through the edges.
           for (let i = 1; i <= 5; i++) {
             c.beginPath();
@@ -350,6 +376,89 @@ export class HouseScene {
             c.fill();
           }
           break;
+        case 8: // Confetti in a spiralling fountain, alternating solid and hollow.
+          for (let i = 0; i < 18; i++) {
+            const a = i * 2.4 + burst.seed;
+            const reach = radius * (0.25 + (i % 5) * 0.17);
+            c.save();
+            c.translate(Math.cos(a) * reach, Math.sin(a) * reach);
+            c.rotate(a + ease * 2);
+            this.polygon(i % 2 ? 4 : 3, span * (0.009 + (i % 3) * 0.006));
+            if (i % 3 === 0) c.fill();
+            c.restore();
+          }
+          break;
+        case 9: // Broken vinyl discs: broad sectors instead of thin outline rings.
+          for (let i = 0; i < 5; i++) {
+            c.beginPath();
+            const a = i * Math.PI * 0.4 + burst.seed;
+            c.arc(0, 0, radius * 0.75, a, a + 0.9);
+            c.arc(0, 0, radius * 0.35, a + 0.9, a, true);
+            c.closePath();
+            c.globalAlpha = envelope * 0.22;
+            c.fill();
+            c.globalAlpha = envelope;
+            c.stroke();
+          }
+          break;
+        case 10: // Petals unfold across the stage with a warm, swaying rhythm.
+          for (let i = 0; i < 7; i++) {
+            c.save();
+            c.rotate((i * Math.PI * 2) / 7 + Math.sin(ease * 3) * 0.2);
+            c.beginPath();
+            c.ellipse(
+              radius * 0.42,
+              0,
+              radius * 0.5,
+              radius * 0.13,
+              0,
+              0,
+              Math.PI * 2,
+            );
+            c.globalAlpha = envelope * 0.18;
+            c.fill();
+            c.globalAlpha = envelope;
+            c.stroke();
+            c.restore();
+          }
+          break;
+        case 11: // Large dancing dots arc outwards rather than occupying a grid.
+          for (let i = 0; i < 12; i++) {
+            const a = i * 2.4 + burst.seed + ease;
+            const reach = radius * (0.25 + (i % 4) * 0.23);
+            c.beginPath();
+            c.arc(
+              Math.cos(a) * reach,
+              Math.sin(a) * reach,
+              span * (0.015 + (i % 3) * 0.009),
+              0,
+              Math.PI * 2,
+            );
+            c.globalAlpha = envelope * (i % 2 ? 0.7 : 0.25);
+            c.fill();
+          }
+          break;
+        case 12: // Elastic fluid contour with filled pools and nested wavefronts.
+          for (let j = 0; j < 4; j++) {
+            c.beginPath();
+            for (let i = 0; i <= 72; i++) {
+              const a = (i * Math.PI * 2) / 72;
+              const reach =
+                radius *
+                (0.85 - j * 0.16) *
+                (1 + 0.12 * Math.sin(a * 5 + ease * 7 + burst.seed));
+              if (!i) c.moveTo(Math.cos(a) * reach, Math.sin(a) * reach);
+              else c.lineTo(Math.cos(a) * reach, Math.sin(a) * reach);
+            }
+            c.closePath();
+            if (!j) {
+              c.globalAlpha = envelope * 0.16;
+              c.fill();
+            }
+            c.globalAlpha = envelope;
+            c.stroke();
+          }
+          break;
       }
       c.restore();
     }
@@ -371,6 +480,10 @@ export class HouseScene {
     clearTimeout(this.expiry);
     this.bursts = [];
     this.pulses = [];
+    this.washFrom = this.washTo = this.background;
+    this.washBorn = -Infinity;
+    this.washIndex = -1;
+    this.serial = 0;
     if (!this.dead) this.paint(performance.now());
   }
   dispose() {

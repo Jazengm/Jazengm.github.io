@@ -31,8 +31,13 @@
   --color-canvas: #142438;
   --color-canvas-overlay: rgb(10 19 31 / 82%);
   --color-on-dark: #f6f9fc;
-  /* Performance canvas palette: fixed dark stage in either site theme. */
+  /* Performance canvas: dark evolving washes shared by both site themes. */
   --color-play-bg: #090f23;
+  --color-play-wash-blue: #132955;
+  --color-play-wash-rose: #49223d;
+  --color-play-wash-teal: #123e3d;
+  --color-play-wash-purple: #35224c;
+  --color-play-wash-amber: #483521;
   --color-play-grid: #18223c;
   --color-play-blue: #82b6ff;
   --color-play-orange: #ff936b;

@@ -483,6 +483,8 @@ export const chinese: Record<string, string> = {
   "Fullscreen is unavailable in this browser.": "此浏览器暂不支持全屏。",
   Echo: "回声",
   "Sound keys / playing guide": "音效键盘 / 演奏指南",
+  "Each style changes the sound of your keys and its shape palette. Try repeating a key: colors, spin and scale vary, while the background slowly changes. Reduced motion keeps the background still.":
+    "每种曲风都有不同的按键音色和图形组合。试试重复按同一个键：颜色、旋转和大小会变化，背景也会缓慢变色。开启减少动态效果时，背景保持静止。",
   "Canvas is unavailable. The sound keys below still work.":
     "画布不可用，仍可使用下方音效按键演奏。",
   "Click or drag across the canvas. Play A–Z and 1–6 while this instrument has focus. Space toggles the backtrack on the canvas; Escape stops sound. Start quietly.":

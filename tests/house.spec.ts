@@ -1,4 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
+import { TIMBRES } from "../src/audio/house-timbres";
+import { MOTION, chooseMotion } from "../src/visuals/house-motion";
 import {
   GENRES,
   backingAt,
@@ -9,6 +11,7 @@ import {
   BPM,
   DEFAULT_VOLUME,
   masterGain,
+  protectPeak,
   KEYS,
   PADS,
   PerformanceGate,
@@ -19,11 +22,11 @@ import {
 } from "../src/audio/house-patterns";
 
 test("Performance rules: 32 unique sounds and complete canvas mapping", () => {
-  expect(masterGain(DEFAULT_VOLUME) / 2).toBe(2);
-  expect(masterGain(0.5)).toBe(2);
+  expect(masterGain(DEFAULT_VOLUME) / 4).toBe(2);
+  expect(masterGain(0.5)).toBe(4);
   expect(masterGain(0)).toBe(0);
   expect(masterGain(-1)).toBe(0);
-  expect(masterGain(10)).toBe(4);
+  expect(masterGain(10)).toBe(8);
   expect(BPM).toBe(124);
   expect(KEYS.length).toBe(32);
   expect(new Set(KEYS).size).toBe(32);
@@ -32,7 +35,6 @@ test("Performance rules: 32 unique sounds and complete canvas mapping", () => {
     expect(KEYS[pad.index]).toBe(pad.key);
     const position = padPosition(pad.index);
     expect(padAt(position.x, position.y)).toBe(pad.index);
-    expect(pad.motif).toBeLessThan(8);
   }
   expect(padAt(-1, -1)).toBe(0);
   expect(padAt(1, 1)).toBe(31);
@@ -58,6 +60,33 @@ test("Performance rules: bounded bursts, no event backlog, and optional sixteent
       Math.round((snapped - 1) / STEP_SECONDS),
     );
   }
+});
+test("Output peak guard preserves quiet samples and bounds overload in real Web Audio", async ({
+  page,
+}) => {
+  for (let i = -800; i <= 800; i++)
+    expect(protectPeak(i / 1000)).toBe(i / 1000);
+  const curve = Array.from({ length: 4097 }, (_, i) =>
+    protectPeak((i / 4096) * 2 - 1),
+  );
+  for (const sample of curve) expect(Math.abs(sample)).toBeLessThan(0.95);
+  const peak = await page.evaluate(async (values) => {
+    const context = new OfflineAudioContext(1, 4800, 48000);
+    const oscillator = context.createOscillator();
+    const gain = context.createGain();
+    gain.gain.value = 8;
+    const guard = context.createWaveShaper();
+    guard.curve = Float32Array.from(values);
+    oscillator.connect(gain).connect(guard).connect(context.destination);
+    oscillator.start();
+    const output = (await context.startRendering()).getChannelData(0);
+    return output.reduce(
+      (maximum, sample) => Math.max(maximum, Math.abs(sample)),
+      0,
+    );
+  }, curve);
+  expect(peak).toBeGreaterThan(0.8);
+  expect(peak).toBeLessThan(0.95);
 });
 type AudioWindow = Window & { __houseContexts: AudioContext[] };
 async function instrumentAudio(page: Page) {
@@ -286,6 +315,108 @@ test("Auto motion respects reduced motion and localized genre controls", async (
   expect(errors).toEqual([]);
 });
 
+test("Manual timbres and bounded random geometry differ across genres", () => {
+  expect(new Set(Object.values(TIMBRES).map((patch) => patch.lead)).size).toBe(
+    4,
+  );
+  expect(
+    new Set(Object.values(TIMBRES).map((patch) => patch.harmonicity)).size,
+  ).toBe(4);
+  expect(
+    new Set(Object.values(TIMBRES).map((patch) => patch.cutoff)).size,
+  ).toBe(4);
+  for (const preset of Object.values(GENRES)) {
+    const variants = new Set<number>();
+    for (let i = 0; i < 100; i++) {
+      const motion = chooseMotion(preset.id, 0, i, () => (i % 10) / 10);
+      expect(MOTION[preset.id].motifs).toContain(motion.motif);
+      variants.add(motion.motif);
+      expect(motion.scale).toBeGreaterThanOrEqual(0.85);
+      expect(motion.scale).toBeLessThanOrEqual(1.15);
+      expect(motion.duration).toBeGreaterThan(1000);
+      expect(motion.duration).toBeLessThan(2311);
+      expect(motion.color).toBeLessThan(5);
+    }
+    expect(variants.size).toBeGreaterThanOrEqual(4);
+    expect(chooseMotion(preset.id, 0, 0, () => 0.1)).not.toEqual(
+      chooseMotion(preset.id, 0, 0, () => 0.9),
+    );
+  }
+});
+
+for (const preset of Object.values(GENRES)) {
+  test(`${preset.label}: all manual keys work with the genre's visual vocabulary`, async ({
+    page,
+  }) => {
+    const errors = await instrumentAudio(page);
+    await openToy(page);
+    await page
+      .getByRole("combobox", { name: "Style", exact: true })
+      .selectOption(preset.id);
+    await page.getByRole("button", { name: "Backtrack", exact: true }).click();
+    await startToy(page);
+    const motifs = new Set<number>();
+    for (const key of KEYS) {
+      await page.keyboard.press(key);
+      await page.waitForTimeout(65);
+      const motif = Number(
+        await page.locator("canvas").getAttribute("data-last-motif"),
+      );
+      expect(MOTION[preset.id].motifs).toContain(motif);
+      motifs.add(motif);
+    }
+    expect(await hits(page)).toBe(32);
+    expect(motifs.size).toBeGreaterThanOrEqual(2);
+    await expect
+      .poll(async () =>
+        Number(await page.locator(".house-toy").getAttribute("data-level")),
+      )
+      .toBeGreaterThan(0);
+    await page.keyboard.press("Escape");
+    await expect.poll(() => contextStates(page)).toEqual(["closed"]);
+    expect(errors).toEqual([]);
+  });
+}
+
+test("Background evolves slowly, repeated keys vary, and Stop restores a still canvas", async ({
+  page,
+}) => {
+  await instrumentAudio(page);
+  await openToy(page);
+  await page.getByRole("button", { name: "Backtrack", exact: true }).click();
+  await startToy(page);
+  const canvas = page.locator("canvas");
+  const pixel = () =>
+    canvas.evaluate((element: HTMLCanvasElement) =>
+      Array.from(element.getContext("2d")!.getImageData(0, 0, 1, 1).data),
+    );
+  const original = await pixel();
+  const variants = new Set<string>();
+  for (let i = 0; i < 5; i++) {
+    await page.keyboard.press("q");
+    variants.add((await canvas.getAttribute("data-last-motif"))!);
+    await page.waitForTimeout(60);
+  }
+  expect(variants.size).toBe(5);
+  await expect(canvas).toHaveAttribute("data-background-changes", "1");
+  // Let all figures and the 1.8 s wash finish; this pixel is background only.
+  await page.waitForTimeout(2300);
+  expect(await pixel()).not.toEqual(original);
+  const settledFrames = await canvas.getAttribute("data-frames");
+  await page.waitForTimeout(120);
+  await expect(canvas).toHaveAttribute("data-frames", settledFrames!);
+  await page.keyboard.press("q");
+  await expect(canvas).toHaveAttribute("data-background-changes", "2");
+  await page.keyboard.press("Escape");
+  expect(await pixel()).toEqual(original);
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await startToy(page);
+  await page.keyboard.press("q");
+  await expect(canvas).toHaveAttribute("data-background-changes", "2");
+  expect(await pixel()).toEqual(original);
+  await page.keyboard.press("Escape");
+});
+
 test("Performance canvas has no idle grid and a single hit spans the stage", async ({
   page,
 }) => {
@@ -322,16 +453,11 @@ test("Performance canvas has no idle grid and a single hit spans the stage", asy
       right = 0,
       top = height,
       bottom = 0;
-    // The stage background is the centralized --color-play-bg (#090f23).
+    // Dark wash channels are all <= 85. Count bright geometry, not a changed background.
     for (let y = 0; y < height; y += 2)
       for (let x = 0; x < width; x += 2) {
         const i = (y * width + x) * 4;
-        if (
-          Math.abs(data[i] - 9) +
-            Math.abs(data[i + 1] - 15) +
-            Math.abs(data[i + 2] - 35) >
-          25
-        ) {
+        if (Math.max(data[i], data[i + 1], data[i + 2]) > 90) {
           left = Math.min(left, x);
           right = Math.max(right, x);
           top = Math.min(top, y);
