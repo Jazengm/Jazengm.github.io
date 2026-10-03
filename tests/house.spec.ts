@@ -19,10 +19,11 @@ import {
 } from "../src/audio/house-patterns";
 
 test("Performance rules: 32 unique sounds and complete canvas mapping", () => {
-  expect(masterGain(DEFAULT_VOLUME) / 0.5).toBe(4);
+  expect(masterGain(DEFAULT_VOLUME) / 2).toBe(2);
+  expect(masterGain(0.5)).toBe(2);
   expect(masterGain(0)).toBe(0);
   expect(masterGain(-1)).toBe(0);
-  expect(masterGain(10)).toBe(2);
+  expect(masterGain(10)).toBe(4);
   expect(BPM).toBe(124);
   expect(KEYS.length).toBe(32);
   expect(new Set(KEYS).size).toBe(32);

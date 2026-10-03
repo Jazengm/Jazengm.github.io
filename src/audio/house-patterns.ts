@@ -1,10 +1,10 @@
 /** Original instrument bank. Pitched sounds share A minor / C major. */
 export const BPM = 124;
 export const DEFAULT_VOLUME = 1;
-// Previous default gain was 0.5; the new default is 2 (+12.04 dB).
+// Double the previous default gain of 2 to 4 (+6.02 dB before limiting).
 // This is signal gain, not a promise of perceived loudness or device safety.
 export const masterGain = (volume: number) =>
-  Math.min(1, Math.max(0, volume)) * 2;
+  Math.min(1, Math.max(0, volume)) * 4;
 export const STEP_SECONDS = 60 / BPM / 4;
 export const KEYS = "qwertyuiopasdfghjklzxcvbnm123456";
 export type Voice =
