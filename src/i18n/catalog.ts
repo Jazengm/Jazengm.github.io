@@ -224,9 +224,9 @@ export const chinese: Record<string, string> = {
   Code: "代码",
   Slides: "幻灯片",
   Journal: "期刊",
-  "Tensor Generating Line Bundles on Toric Varieties": "环簇上的张量生成线丛",
-  "We study the geometries and combinatorics of tensor generating line bundles on toric varieties and highlight a few discoveries.":
-    "我们研究环簇上张量生成线丛的几何与组合性质，并介绍其中的一些发现。",
+  "Tensor-generating line bundles on toric varieties": "环簇上的张量生成线丛",
+  "A line bundle is ⊗-generating if its powers generate the derived category of perfect complexes. Refining the derived Nakai–Moishezon criterion of Ito–Olander, we characterize ⊗-generating line bundles on proper toric varieties by a combinatorial criterion on the fan, leading to the notion of ⊗-generating fans characterizing ⊗-generating canonical bundles. Furthermore, we prove an analogue of Kleiman's criterion of ampleness for ⊗-generation. As applications, we provide several examples including: (i) smooth proper fourfolds with no ⊗-generating line bundle, by showing that products of two or more positive-dimensional proper toric varieties admit a ⊗-generating line bundle only when they are projective, (ii) families of smooth non-projective proper threefolds with ⊗-generating canonical bundles. Finally, we study subvarieties obstructing ⊗-generation of canonical bundles and implications to autoequivalences of derived categories.":
+    "若一个线丛的张量幂生成完美复形的导出范畴，则称该线丛为张量生成线丛。我们细化了 Ito–Olander 的导出 Nakai–Moishezon 判据，通过扇上的组合判据刻画固有环簇上的张量生成线丛，并由此引入张量生成扇的概念，以刻画张量生成的典范线丛。此外，我们证明了张量生成性质的 Kleiman 丰富性判据类比。作为应用，我们给出若干例子，包括：（一）不存在张量生成线丛的光滑固有四维簇；为此，我们证明两个或更多正维固有环簇的乘积只有在射影情形下才可能具有张量生成线丛；（二）具有张量生成典范线丛的光滑非射影固有三维簇族。最后，我们研究阻碍典范线丛张量生成的子簇，以及这对导出范畴自等价的影响。",
   "[Placeholder] Curvature Constraints on Formal Moduli":
     "[占位] 形式模空间的曲率约束",
   "[Placeholder] Combinatorial Shadows of Continuous Families":
