@@ -1,38 +1,40 @@
 ---
 title: "Mixed Hodge Structures"
 term: "2026 Fall"
-summary: "On the fundations of Deligne's mixed Hodge structures"
+summary: "On the foundations of Deligne's mixed Hodge structures"
 order: 1
 ---
 
 ## Description
 
-The goal of this seminar is to cover the basic definitions of mixed Hodge structures as well as its construction on general varieties, with an emphasis on concrete examples. If time allows, we could also investigate mixed Hodge structures on degenerations and/or explicit study of mixed Hodge structures on moduli spaces.
+The goal of this seminar is to cover the basic definitions of mixed Hodge structures as well as their construction on general varieties, with an emphasis on concrete examples. In the second half, we investigate mixed Hodge structures on degenerations and their application to Ehrhart theory.
 
 ## Spacetime
 
-Weekly on Friday 3:30-5:00, Evans 762.
+Every Friday, 3:30–5:00 p.m., Evans 762.
 
 ## References
 
 - **[PS]** [_Mixed Hodge Structures_](https://link.springer.com/book/10.1007/978-3-540-77017-6) by Peters and Steenbrink, our main reference for this seminar
 - **[Co]** [_Cohomological Descent_](https://math.stanford.edu/~conrad/papers/hypercover.pdf) by Brian Conrad
 - **[De]** [_Théorie de Hodge : III_](https://www.numdam.org/item/PMIHES_1974__44__5_0/) by Pierre Deligne
+- **[KSa]** [_Tropical geometry, the motivic nearby fiber and limit mixed Hodge numbers of hypersurfaces_](https://arxiv.org/abs/1404.3000) by Eric Katz and Alan Stapledon
+- **[KSb]** [_Local h-polynomials, invariants of subdivisions, and mixed Ehrhart theory_](https://arxiv.org/abs/1411.7736) by Eric Katz and Alan Stapledon
 
 ## Tentative Schedule
 
-| Week | Date  | Topic                                         | Reference                 | Speaker          | Notes                                                                                                |
-| ---- | ----- | --------------------------------------------- | ------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
-| 2    | 9/1   | Organization and short review on Hodge theory | Chap 1                    | Xiangru Zeng     | [PDF](/seminars/mixed-hodge-structures/first-talk-concise.pdf)                                       |
-| 3    | 9/11  | Pure Hodge structures                         | 2.1-2.3                   | Cameron Chang    | [PDF](/seminars/mixed-hodge-structures/pure-hodge-structures-notes.pdf)                              |
-| 4    | 9/18  | Mixed Hodge structures                        | 3.1-3.4                   | Pranav Enugandla |                                                                                                      |
-| 5    | 9/25  | Mixed Hodge theory for smooth varieties       | 4.1-4.4+some parts of 4.5 | Xiangru Zeng     | [SVG](/seminars/mixed-hodge-structures/Week%205%20-%20MHS%20for%20Smooth%20Varieties.excalidraw.svg) |
-| 6    | 10/2  | Cohomologial descent                          | 5.1-5.2, also see [Co]    | Michael R. Zeng  |                                                                                                      |
-| 7    | 10/9  | Cohomological descent II                      | 5.1-5.2                   | Cameron Chang    |                                                                                                      |
-| 8    |       | Skip                                          |                           |                  |                                                                                                      |
-| 9    | 10/23 | Mixed Hodge theory for singular varieties     | 5.3                       | Xiangru Zeng     |                                                                                                      |
-| 10   |       | Skip                                          |                           |                  |                                                                                                      |
-| 11   |       |                                               |                           | TBD              |                                                                                                      |
-| 12   |       |                                               |                           | TBD              |                                                                                                      |
-| 13   |       |                                               |                           | TBD              |                                                                                                      |
-| 14   |       |                                               |                           | TBD              |                                                                                                      |
+| Week | Date  | Topic                                                      | Reference                                                                                    | Speaker          | Notes                                                                                                |
+| ---- | ----- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------- |
+| 2    | 9/1   | Organization and short review on Hodge theory              | Chap 1                                                                                       | Xiangru Zeng     | [PDF](/seminars/mixed-hodge-structures/first-talk-concise.pdf)                                       |
+| 3    | 9/11  | Pure Hodge structures                                      | 2.1-2.3                                                                                      | Cameron Chang    | [PDF](/seminars/mixed-hodge-structures/pure-hodge-structures-notes.pdf)                              |
+| 4    | 9/18  | Mixed Hodge structures                                     | 3.1-3.4                                                                                      | Pranav Enugandla |                                                                                                      |
+| 5    | 9/25  | Mixed Hodge theory for smooth varieties                    | 4.1-4.4+some parts of 4.5                                                                    | Xiangru Zeng     | [SVG](/seminars/mixed-hodge-structures/Week%205%20-%20MHS%20for%20Smooth%20Varieties.excalidraw.svg) |
+| 6    | 10/2  | Cohomological descent                                      | 5.1-5.2, also see [Co]                                                                       | Michael R. Zeng  |                                                                                                      |
+| 7    | 10/9  | Cohomological descent II                                   | 5.1-5.2                                                                                      | Cameron Chang    |                                                                                                      |
+| 8    |       | Skip                                                       |                                                                                              |                  |                                                                                                      |
+| 9    | 10/23 | Mixed Hodge theory for singular varieties                  | 5.3                                                                                          | Xiangru Zeng     |                                                                                                      |
+| 10   |       | Skip                                                       |                                                                                              |                  |                                                                                                      |
+| 11   | 11/6  | Hodge-Deligne polynomials and limit mixed Hodge structures | [PS] 5.5 and [KSa] 3.1-3.2, with general remarks from [PS] 11.2                              | TBD              |                                                                                                      |
+| 12   | 11/13 | Tropical nearby fibers and a curve calculation             | [KSa] §1 + tropical background from §2 and 5.1                                               | TBD              |                                                                                                      |
+| 13   | 11/20 | Ehrhart theory and the refined $h^{*}$-polynomial          | Combinatorial definitions from [KSb] §§7-9 and Hodge-theoretic interpretations from [KSa] §4 | TBD              |                                                                                                      |
+| 14   | 11/27 | Hodge interpretation and unimodality                       | [KSa] Thm 1.5, Cor 5.11 and the proof of [KSb] Thm 9.4 via Rmk 9.5                           | TBD              |                                                                                                      |
