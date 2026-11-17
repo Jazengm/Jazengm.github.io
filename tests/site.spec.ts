@@ -191,7 +191,7 @@ test("seminar index links to its Markdown-backed description", async ({
     page.getByRole("heading", { name: "Mixed Hodge Structures", level: 1 }),
   ).toBeVisible();
   await expect(page.locator(".seminar-description")).toContainText(
-    "Tentative Schedule",
+    "Archived Schedule",
   );
 });
 

@@ -17,9 +17,11 @@ test("Chinese translates the owner's name in content, credits and titles, preser
     await expect(page.locator(".name-english")).toContainText("Xiangru Zeng");
     if (route === "/publications/") {
       await page.locator("astro-island[ssr]").waitFor({ state: "detached" });
-      await expect(page.locator(".publication-authors")).toContainText(
-        "曾相如",
-      );
+      const authors = page.locator(".publication-authors");
+      await expect(authors).toHaveCount(2);
+      for (const author of await authors.all()) {
+        await expect(author).toContainText("曾相如");
+      }
     }
     if (route.includes("mixed-hodge"))
       await expect(page.locator("table")).toContainText("曾相如");
@@ -137,8 +139,10 @@ test("Chinese survives hydration and language changes preserve publication previ
   await expect(
     page.getByRole("heading", { name: "论文", exact: true }),
   ).toBeVisible();
-  await expect(page.locator("[data-publication-item]")).toHaveCount(1);
-  const item = page.locator("[data-publication-item]").first();
+  await expect(page.locator("[data-publication-item]")).toHaveCount(2);
+  const item = page.locator(
+    '[data-publication-item="toric-tensor-generation"]',
+  );
   await item.scrollIntoViewIfNeeded();
   await expect(page.locator("astro-island")).not.toHaveAttribute("ssr", "");
   await expect(item.locator("h3")).toContainText("环簇上的张量生成线丛");
@@ -150,7 +154,7 @@ test("Chinese survives hydration and language changes preserve publication previ
   await page.locator('button[data-language][aria-pressed="false"]').click();
   await expect(preview).toHaveText("Hide preview");
   await expect(preview).toHaveAttribute("aria-expanded", "true");
-  await expect(page.locator("[data-publication-item]")).toHaveCount(1);
+  await expect(page.locator("[data-publication-item]")).toHaveCount(2);
   await page.locator('button[data-language][aria-pressed="false"]').click();
   await expect(preview).toHaveAttribute("aria-expanded", "true");
   await preview.click();
